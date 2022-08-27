@@ -8,11 +8,10 @@ version = project.version
 group = project.maven_group
 
 repositories {
-	// Add repositories to retrieve artifacts from in here.
-	// You should only use this when depending on other mods because
-	// Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
-	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
-	// for more information about repositories.
+	maven {
+		name = 'Ladysnake Mods'
+		url = 'https://ladysnake.jfrog.io/artifactory/mods'
+	}
 }
 
 // All dependency versions are declared in the gradle.properties file
@@ -23,11 +22,17 @@ dependencies {
 	})
 	modImplementation "org.quiltmc:quilt-loader:${project.quilt_loader_version}"
 
-	// QSL is not a complete API; You will need Quilted Fabric API to fill in the gaps.
-	// Quilted Fabric API will automatically pull in the correct QSL version.
 	modImplementation "org.quiltmc.quilted-fabric-api:quilted-fabric-api:${quilted_fabric_api_version}-${minecraft_version}"
-	// If you want to use QSL by itself over Quilted Fabric API, uncomment the line below (and comment out the line above):
-	// 	modImplementation "org.quiltmc:qsl:${qsl_version}+${minecraft_version}"
+
+	modImplementation include ("dev.onyxstudios.cardinal-components-api:cardinal-components-base:${cca_version}") {
+		exclude(group: "net.fabricmc")
+		exclude(group: "net.fabricmc.fabric-api")
+	}
+	modImplementation include ("dev.onyxstudios.cardinal-components-api:cardinal-components-entity:${cca_version}") {
+		exclude(group: "net.fabricmc")
+		exclude(group: "net.fabricmc.fabric-api")
+	}
+
 }
 
 processResources {
