@@ -1,6 +1,7 @@
 package arathain.vigorem.mixin;
 
 import arathain.vigorem.VigoremComponents;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -22,14 +23,14 @@ public abstract class PlayerEntityRendererMixin extends LivingEntityRenderer<Abs
 	@Inject(method = "renderArm", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/entity/model/PlayerEntityModel;setAngles(Lnet/minecraft/entity/LivingEntity;FFFFF)V", shift = At.Shift.AFTER))
 	private void neko$renderArm(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, AbstractClientPlayerEntity player, ModelPart arm, ModelPart sleeve, CallbackInfo ci) {
 		if(player.getComponent(VigoremComponents.ANIMATION).current != null) {
-			player.getComponent(VigoremComponents.ANIMATION).current.setModelAngles(this.model, player);
+			player.getComponent(VigoremComponents.ANIMATION).current.setModelAngles(this.model, player, MinecraftClient.getInstance().getTickDelta());
 		}
 	}
 
 	@Inject(method = "render(Lnet/minecraft/client/network/AbstractClientPlayerEntity;FFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/entity/LivingEntityRenderer;render(Lnet/minecraft/entity/LivingEntity;FFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V", shift = At.Shift.AFTER))
 	private void neko$render(AbstractClientPlayerEntity player, float yaw, float tickDelta, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int light, CallbackInfo callbackInfo) {
 		if(player.getComponent(VigoremComponents.ANIMATION).current != null) {
-			player.getComponent(VigoremComponents.ANIMATION).current.setModelAngles(this.model, player);
+			player.getComponent(VigoremComponents.ANIMATION).current.setModelAngles(this.model, player, tickDelta);
 		}
 	}
 }

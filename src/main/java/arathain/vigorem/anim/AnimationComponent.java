@@ -24,11 +24,21 @@ public class AnimationComponent implements AutoSyncedComponent {
 				this.current = this.queued;
 			}
 			sync();
+		} else {
+			if(this.queued != null) {
+				this.current = this.queued;
+				sync();
+			}
 		}
 	}
 	@Override
 	public void readFromNbt(NbtCompound tag) {
 
+	}
+	public void queue(Animation anim) {
+		if(anim != null) {
+			queued = anim;
+		}
 	}
 
 	@Override
