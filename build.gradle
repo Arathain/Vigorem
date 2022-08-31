@@ -8,6 +8,7 @@ version = project.version
 group = project.maven_group
 
 repositories {
+	maven { url "https://jitpack.io" }
 	maven {
 		name = 'Ladysnake Mods'
 		url = 'https://ladysnake.jfrog.io/artifactory/mods'
@@ -33,6 +34,9 @@ dependencies {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
 
+	modImplementation "com.github.LlamaLad7:MixinExtras:0.0.12"
+	include "com.github.LlamaLad7:MixinExtras:0.0.12"
+	annotationProcessor "com.github.LlamaLad7:MixinExtras:0.0.12"
 }
 
 processResources {

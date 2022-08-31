@@ -31,6 +31,13 @@ public class Animation {
 		this.frame = frame;
 	}
 
+	public boolean canInterrupt() {
+		return false;
+	}
+	public boolean canCancel() {
+		return false;
+	}
+
 	public void setModelAngles(PlayerEntityModel<AbstractClientPlayerEntity> model, PlayerEntity player, float tickDelta) {
 		for(String part : keyframes.keySet()) {
 			Keyframe lastFrame = null;

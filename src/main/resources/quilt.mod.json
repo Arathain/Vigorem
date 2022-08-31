@@ -19,7 +19,8 @@
 		"intermediate_mappings": "net.fabricmc:intermediary",
 		"entrypoints": {
 			"init": "arathain.vigorem.Vigorem",
-			"cardinal-components-entity": "arathain.vigorem.VigoremComponents"
+			"cardinal-components-entity": "arathain.vigorem.VigoremComponents",
+			"pre_launch": "arathain.vigorem.VigoremPreLaunch"
 		},
 		"depends": [
 			{
@@ -36,5 +37,8 @@
 			}
 		]
 	},
-	"mixin": "vigorem.mixins.json"
+	"mixin": "vigorem.mixins.json",
+	"cardinal-components": [
+		"vigorem:animation"
+	]
 }

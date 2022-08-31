@@ -8,6 +8,7 @@
     "PlayerEntityRendererMixin"
   ],
   "client": [
+    "BipedEntityModelMixin"
   ],
   "injectors": {
     "defaultRequire": 1

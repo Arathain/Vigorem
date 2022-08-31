@@ -2,6 +2,7 @@ package arathain.vigorem.anim;
 
 import arathain.vigorem.VigoremComponents;
 import dev.onyxstudios.cca.api.v3.component.sync.AutoSyncedComponent;
+import net.minecraft.client.render.entity.model.PlayerEntityModel;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 
@@ -20,13 +21,15 @@ public class AnimationComponent implements AutoSyncedComponent {
 	public void serverTick() {
 		if(current != null) {
 			this.current.tick();
-			if(this.current.shouldRemove()) {
+			if(this.current.shouldRemove() || this.current.canCancel()) {
 				this.current = this.queued;
+				this.queued = null;
 			}
 			sync();
 		} else {
 			if(this.queued != null) {
 				this.current = this.queued;
+				this.queued = null;
 				sync();
 			}
 		}
