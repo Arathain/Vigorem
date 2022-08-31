@@ -20,6 +20,8 @@ public abstract class PlayerEntityMixin extends LivingEntity {
 	public void neko$tick(CallbackInfo info) {
 		if(!world.isClient) {
 			this.getComponent(VigoremComponents.ANIMATION).serverTick();
+		} else {
+			this.getComponent(VigoremComponents.ANIMATION).clientTick();
 		}
 	}
 }
