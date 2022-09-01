@@ -4,6 +4,7 @@ import arathain.vigorem.VigoremComponents;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -17,11 +18,18 @@ public abstract class PlayerEntityMixin extends LivingEntity {
 	}
 
 	@Inject(method = "tick", at = @At("HEAD"))
-	public void neko$tick(CallbackInfo info) {
+	public void vigorem$tick(CallbackInfo info) {
 		if(!world.isClient) {
 			this.getComponent(VigoremComponents.ANIMATION).serverTick();
 		} else {
 			this.getComponent(VigoremComponents.ANIMATION).clientTick();
 		}
 	}
+	@Inject(method = "jump", at = @At("HEAD"), cancellable = true)
+	public void vigorem$jump(CallbackInfo info) {
+		if (this.getComponent(VigoremComponents.ANIMATION).current != null && this.getComponent(VigoremComponents.ANIMATION).current.isBlockingMovement()) {
+			info.cancel();
+		}
+	}
+
 }

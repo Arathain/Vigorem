@@ -43,14 +43,23 @@ public abstract class Animation {
 		return Vigorem.id("balls");
 	}
 
+	public float getMovementMultiplier() {
+		return 1;
+	}
+	public boolean isBlockingMovement() {
+		return false;
+	}
+
 	public void setModelAngles(PlayerEntityModel<AbstractClientPlayerEntity> model, PlayerEntity player, float tickDelta) {
 		for(String part : keyframes.keySet()) {
 			Keyframe lastFrame = null;
 			Keyframe nextFrame = null;
+			boolean bl = false;
 			for(Keyframe frame : keyframes.get(part)) {
 				if(frame.frame == (this.frame + tickDelta)) {
 					lastFrame = frame;
 					nextFrame = frame;
+					bl = true;
 				}
 				if(lastFrame == null && frame.frame < (this.frame + tickDelta)) {
 					lastFrame = frame;
@@ -73,31 +82,36 @@ public abstract class Animation {
 			}
 			switch(part) {
 				case "head" -> {
-					setPartAngles(model.head, lastFrame, nextFrame, tickDelta);
+					setPartAngles(model.head, lastFrame, nextFrame, tickDelta, bl);
 				}
 				case "body" -> {
-					setPartAngles(model.body, lastFrame, nextFrame, tickDelta);
+					setPartAngles(model.body, lastFrame, nextFrame, tickDelta, bl);
 				}
 				case "right_arm" -> {
-					setPartAngles(model.rightArm, lastFrame, nextFrame, tickDelta);
+					setPartAngles(model.rightArm, lastFrame, nextFrame, tickDelta, bl);
 				}
 				case "left_arm" -> {
-					setPartAngles(model.leftArm, lastFrame, nextFrame, tickDelta);
+					setPartAngles(model.leftArm, lastFrame, nextFrame, tickDelta, bl);
 				}
 				case "left_leg" -> {
-					setPartAngles(model.leftLeg, lastFrame, nextFrame, tickDelta);
+					setPartAngles(model.leftLeg, lastFrame, nextFrame, tickDelta, bl);
 				}
 				case "right_leg" -> {
-					setPartAngles(model.rightLeg, lastFrame, nextFrame, tickDelta);
+					setPartAngles(model.rightLeg, lastFrame, nextFrame, tickDelta, bl);
 				}
 				default -> {}
 			}
 		}
 	}
-	private void setPartAngles(ModelPart part, Keyframe prev, Keyframe next, float tickDelta) {
-		float percentage = (this.frame + tickDelta - prev.frame) / ((float)next.frame - prev.frame);
-		part.setAngles(MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.rotation.getX(), next.rotation.getX()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.rotation.getY(), next.rotation.getY()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.rotation.getZ(), next.rotation.getZ()));
-		part.setPivot(MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.pivot.getX(), next.pivot.getX()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.pivot.getY(), next.pivot.getY()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.pivot.getZ(), next.pivot.getZ()));
+	private void setPartAngles(ModelPart part, Keyframe prev, Keyframe next, float tickDelta, boolean same) {
+		if(same) {
+			part.setAngles(prev.rotation.getX(),prev.rotation.getY(), prev.rotation.getZ());
+			part.setPivot(prev.pivot.getX(), prev.pivot.getY(), prev.pivot.getZ());
+		} else {
+			float percentage = (this.frame + tickDelta - prev.frame) / ((float) next.frame - prev.frame);
+			part.setAngles(MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.rotation.getX(), next.rotation.getX()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.rotation.getY(), next.rotation.getY()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.rotation.getZ(), next.rotation.getZ()));
+			part.setPivot(MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.pivot.getX(), next.pivot.getX()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.pivot.getY(), next.pivot.getY()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.pivot.getZ(), next.pivot.getZ()));
+		}
 	}
 
 }
