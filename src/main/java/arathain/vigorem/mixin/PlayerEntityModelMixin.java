@@ -3,6 +3,7 @@ package arathain.vigorem.mixin;
 import arathain.vigorem.VigoremComponents;
 import net.minecraft.block.Block;
 import net.minecraft.client.model.*;
+import net.minecraft.client.render.entity.FrogEntityRenderer;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
 import net.minecraft.entity.LivingEntity;
@@ -34,6 +35,7 @@ public abstract class PlayerEntityModelMixin<T extends LivingEntity> extends Bip
 	private void vigorem$appendCustoms(ModelPart modelPart, boolean bl, CallbackInfo ci) {
 		this.leftHand = modelPart.getChild("left_arm").getChild("left_hand");
 		this.rightHand = modelPart.getChild("right_arm").getChild("right_hand");
+		//.getChild("body")
 	}
 	@Inject(method = "getTexturedModelData", at = @At("TAIL"), locals = LocalCapture.CAPTURE_FAILSOFT)
 	private static void vigorem$fixthemodeldammit(Dilation dilation, boolean slim, CallbackInfoReturnable<ModelData> cir, ModelData modelData, ModelPartData data) {

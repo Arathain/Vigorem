@@ -7,6 +7,7 @@ import net.minecraft.client.render.entity.model.PlayerEntityModel;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3f;
 
 import java.util.List;
 import java.util.Map;
@@ -106,11 +107,11 @@ public abstract class Animation {
 	private void setPartAngles(ModelPart part, Keyframe prev, Keyframe next, float tickDelta, boolean same) {
 		if(same) {
 			part.setAngles(prev.rotation.getX(),prev.rotation.getY(), prev.rotation.getZ());
-			part.setPivot(prev.pivot.getX(), prev.pivot.getY(), prev.pivot.getZ());
+			part.translate(new Vec3f(prev.translation.getX(), prev.translation.getY(), prev.translation.getZ()));
 		} else {
 			float percentage = (this.frame + tickDelta - prev.frame) / ((float) next.frame - prev.frame);
 			part.setAngles(MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.rotation.getX(), next.rotation.getX()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.rotation.getY(), next.rotation.getY()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.rotation.getZ(), next.rotation.getZ()));
-			part.setPivot(MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.pivot.getX(), next.pivot.getX()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.pivot.getY(), next.pivot.getY()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.pivot.getZ(), next.pivot.getZ()));
+			part.translate(new Vec3f(MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.translation.getX(), next.translation.getX()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.translation.getY(), next.translation.getY()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.translation.getZ(), next.translation.getZ())));
 		}
 	}
 

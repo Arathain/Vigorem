@@ -3,7 +3,10 @@ package arathain.vigorem.mixin;
 import com.llamalad7.mixinextras.injector.ModifyReceiver;
 import com.llamalad7.mixinextras.injector.WrapWithCondition;
 import net.minecraft.client.model.*;
+import net.minecraft.client.render.entity.FrogEntityRenderer;
+import net.minecraft.client.render.entity.animation.FrogEntityAnimations;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
+import net.minecraft.client.render.entity.model.ZombieEntityModel;
 import net.minecraft.client.render.entity.model.ZombieVillagerEntityModel;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -26,7 +29,7 @@ public class BipedEntityModelMixin {
 //	}
 	@ModifyArg(method = "getModelData", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/model/ModelPartData;addChild(Ljava/lang/String;Lnet/minecraft/client/model/ModelPartBuilder;Lnet/minecraft/client/model/ModelTransform;)Lnet/minecraft/client/model/ModelPartData;", ordinal = 2), index = 2)
 	private static ModelTransform vigorem$body(ModelTransform rotationData) {
-		return ModelTransform.pivot(rotationData.pivotX, rotationData.pivotY - 12f, rotationData.pivotZ);
+		return ModelTransform.pivot(rotationData.pivotX, rotationData.pivotY, rotationData.pivotZ);
 	}
 //	@WrapWithCondition(method = "Lnet/minecraft/client/render/entity/model/BipedEntityModel;getModelData(Lnet/minecraft/client/model/Dilation;F)Lnet/minecraft/client/model/ModelData;", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/model/ModelPartData;addChild(Ljava/lang/String;Lnet/minecraft/client/model/ModelPartBuilder;Lnet/minecraft/client/model/ModelTransform;)Lnet/minecraft/client/model/ModelPartData;", ordinal = 3)
 //	)
