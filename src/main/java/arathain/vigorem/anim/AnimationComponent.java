@@ -26,7 +26,6 @@ public class AnimationComponent implements AutoSyncedComponent {
 			if(this.current.shouldRemove() || this.current.canCancel()) {
 				this.current = this.queued;
 				this.queued = null;
-				System.out.println(this.current == null);
 			}
 			sync();
 		} else {
@@ -38,7 +37,6 @@ public class AnimationComponent implements AutoSyncedComponent {
 		}
 	}
 	public void clientTick() {
-		System.out.println(current == null);
 		if(current != null) {
 			this.current.tick();
 			if(this.current.shouldRemove()) {

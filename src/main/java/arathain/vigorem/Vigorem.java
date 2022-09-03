@@ -25,7 +25,7 @@ public class Vigorem implements ModInitializer {
 				if (player.getStackInHand(hand).isOf(Items.ECHO_SHARD) && !world.isClient) {
 					player.getComponent(VigoremComponents.ANIMATION).queue(Animations.getAnimation(Vigorem.id("t_pose")));
 				}
-				return TypedActionResult.success(player.getStackInHand(hand));
+				return TypedActionResult.pass(player.getStackInHand(hand));
 			});
 		}
 	}

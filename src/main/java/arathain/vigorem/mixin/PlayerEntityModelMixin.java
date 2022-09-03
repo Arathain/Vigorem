@@ -1,6 +1,7 @@
 package arathain.vigorem.mixin;
 
 import arathain.vigorem.VigoremComponents;
+import arathain.vigorem.anim.OffsetModelPart;
 import net.minecraft.block.Block;
 import net.minecraft.client.model.*;
 import net.minecraft.client.render.entity.FrogEntityRenderer;
@@ -9,6 +10,7 @@ import net.minecraft.client.render.entity.model.PlayerEntityModel;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -18,6 +20,9 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(PlayerEntityModel.class)
 public abstract class PlayerEntityModelMixin<T extends LivingEntity> extends BipedEntityModel<T> {
+	@Shadow
+	protected abstract Iterable<ModelPart> getBodyParts();
+
 	public PlayerEntityModelMixin(ModelPart modelPart) {
 		super(modelPart);
 	}
@@ -29,7 +34,11 @@ public abstract class PlayerEntityModelMixin<T extends LivingEntity> extends Bip
 	private void vigorem$angles(T livingEntity, float f, float g, float h, float i, float j, CallbackInfo ci) {
 		if(livingEntity instanceof PlayerEntity plr && plr.getComponent(VigoremComponents.ANIMATION).current != null) {
 			plr.getComponent(VigoremComponents.ANIMATION).current.setModelAngles(((PlayerEntityModel)(Object)this), plr, g);
+		} else {
+			this.getBodyParts().forEach(part -> ((OffsetModelPart)(Object)part).setOffset(0, 0, 0));
+			this.getHeadParts().forEach(part -> ((OffsetModelPart)(Object)part).setOffset(0, 0, 0));
 		}
+		System.out.println(((OffsetModelPart)(Object)this.body).getOffsetY());
 	}
 	@Inject(method = "<init>", at = @At("TAIL"))
 	private void vigorem$appendCustoms(ModelPart modelPart, boolean bl, CallbackInfo ci) {

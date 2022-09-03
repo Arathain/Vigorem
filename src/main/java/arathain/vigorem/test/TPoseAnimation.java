@@ -8,6 +8,7 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.entity.model.TridentEntityModel;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.MathHelper;
 
 import java.util.List;
 import java.util.Map;
@@ -24,7 +25,7 @@ public class TPoseAnimation extends Animation {
 
 	@Override
 	public float getMovementMultiplier() {
-		return 0.05f;
+		return MathHelper.clamp(2/(float)this.frame, 0, 1);
 	}
 
 	@Override
