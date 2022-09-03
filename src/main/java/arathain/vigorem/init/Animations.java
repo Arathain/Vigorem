@@ -20,13 +20,13 @@ public class Animations {
 	public static void init() {
 		List<Keyframe> rarm = new ArrayList<>();
 		rarm.add(new Keyframe(Easing.QUAD_IN_OUT, Vec3f.ZERO, Vec3f.ZERO, Vec3f.ZERO, Vec3f.ZERO, 0));
-		rarm.add(new Keyframe(Easing.QUAD_IN_OUT, Vec3f.ZERO, new Vec3f(0, 0, 1.57079632679f), Vec3f.ZERO, new Vec3f(0, 0.1f, 0), 20));
+		rarm.add(new Keyframe(Easing.QUAD_IN_OUT, Vec3f.ZERO, new Vec3f(0, 0, 1.57079632679f), Vec3f.ZERO, Vec3f.ZERO, 20));
 		rarm.add(new Keyframe(Easing.QUAD_IN_OUT, Vec3f.ZERO, new Vec3f(0, 0, 1.57079632679f), Vec3f.ZERO, Vec3f.ZERO, 30));
 		rarm.add(new Keyframe(Easing.QUAD_IN_OUT, Vec3f.ZERO, new Vec3f(0, 0, 0), Vec3f.ZERO, Vec3f.ZERO, 40));
 		TPOSE.put("right_arm", new ArrayList<>(rarm));
 		rarm.clear();
 		rarm.add(new Keyframe(Easing.QUAD_IN_OUT, Vec3f.ZERO, Vec3f.ZERO, Vec3f.ZERO, Vec3f.ZERO, 0));
-		rarm.add(new Keyframe(Easing.QUAD_IN_OUT, Vec3f.ZERO, new Vec3f(0, 0, -1.57079632679f), Vec3f.ZERO, new Vec3f(0, 0.1f, 0), 20));
+		rarm.add(new Keyframe(Easing.QUAD_IN_OUT, Vec3f.ZERO, new Vec3f(0, 0, -1.57079632679f), Vec3f.ZERO, Vec3f.ZERO, 20));
 		rarm.add(new Keyframe(Easing.QUAD_IN_OUT, Vec3f.ZERO, new Vec3f(0, 0, -1.57079632679f), Vec3f.ZERO, Vec3f.ZERO, 30));
 		rarm.add(new Keyframe(Easing.QUAD_IN_OUT, Vec3f.ZERO, new Vec3f(0, 0, 0), Vec3f.ZERO, Vec3f.ZERO, 40));
 		TPOSE.put("left_arm", new ArrayList<>(rarm));
