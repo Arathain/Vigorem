@@ -1,32 +1,57 @@
 package arathain.vigorem.mixin;
 
-import com.llamalad7.mixinextras.injector.ModifyReceiver;
-import com.llamalad7.mixinextras.injector.WrapWithCondition;
+import arathain.vigorem.anim.OffsetModelPart;
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import net.minecraft.client.model.*;
-import net.minecraft.client.render.entity.FrogEntityRenderer;
-import net.minecraft.client.render.entity.animation.FrogEntityAnimations;
+import net.minecraft.client.render.entity.feature.HeldItemFeatureRenderer;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
-import net.minecraft.client.render.entity.model.ZombieEntityModel;
-import net.minecraft.client.render.entity.model.ZombieVillagerEntityModel;
-import net.minecraft.entity.Entity;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.util.Arm;
+import net.minecraft.util.math.Vec3f;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(BipedEntityModel.class)
 public class BipedEntityModelMixin<T extends LivingEntity> {
-//	@ModifyArg(method = "getModelData", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/model/ModelPartData;addChild(Ljava/lang/String;Lnet/minecraft/client/model/ModelPartBuilder;Lnet/minecraft/client/model/ModelTransform;)Lnet/minecraft/client/model/ModelPartData;", ordinal = 2), index = 2)
-//	private static ModelTransform vigorem$body(ModelTransform rotationData) {
-//		return ModelTransform.pivot(rotationData.pivotX, -12f, rotationData.pivotZ);
-//	}
-//	@Inject(method = "setAttributes", at = @At("TAIL"))
-//	private void vigorem$playerModelFix(BipedEntityModel<T> model, CallbackInfo ci) {
-//
-//	}
+	@Shadow
+	@Final
+	public ModelPart head;
+
+	@Shadow
+	@Final
+	public ModelPart body;
+
+	@Shadow
+	public boolean sneaking;
+
+	@ModifyExpressionValue(method = "setAngles(Lnet/minecraft/entity/LivingEntity;FFFFF)V", at = @At(value = "FIELD", target = "Lnet/minecraft/client/render/entity/model/BipedEntityModel;sneaking:Z"))
+	private boolean vigorem$cancelSneak(boolean original) {
+		if(original) {
+			this.body.pitch += 0.5f;
+			this.body.pivotX = 3.2F;
+		}
+		return false;
+	}
+	@Inject(method = "setAngles(Lnet/minecraft/entity/LivingEntity;FFFFF)V", at = @At(value = "FIELD", target = "Lnet/minecraft/client/render/entity/model/BipedEntityModel;body:Lnet/minecraft/client/model/ModelPart;", ordinal = 4, shift = At.Shift.AFTER))
+	private void vigorem$sneaktwo(T livingEntity, float f, float g, float h, float i, float j, CallbackInfo ci) {
+		if(this.sneaking) {
+			this.body.pitch += 0.5f;
+			this.body.pivotX = 3.2F;
+		}
+	}
+	@Inject(method = "setAngles(Lnet/minecraft/entity/LivingEntity;FFFFF)V", at = @At("TAIL"))
+	private void vigorem$e(T livingEntity, float f, float g, float h, float i, float j, CallbackInfo ci) {
+		this.body.setPivot(0, 12, 0);
+		((OffsetModelPart)(Object)this.body).setOffset(0, -12, 0);
+	}
+	@Inject(method = "setArmAngle", at = @At("TAIL"))
+	private void vigorem$setArmAngle(Arm arm, MatrixStack matrices, CallbackInfo ci) {
+		this.body.rotate(matrices);
+	}
 
 }

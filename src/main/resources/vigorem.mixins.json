@@ -11,9 +11,7 @@
     "ModelPartMixin",
     "PlayerEntityMixin",
     "PlayerEntityModelMixin",
-    "PlayerEntityRendererMixin"
-  ],
-  "client": [
+    "PlayerEntityRendererMixin",
     "BipedEntityModelMixin",
     "ClientPlayerEntityMixin"
   ],

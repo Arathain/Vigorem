@@ -31,10 +31,10 @@ public class Animations {
 		rarm.add(new Keyframe(Easing.QUAD_IN_OUT, Vec3f.ZERO, new Vec3f(0, 0, 0), Vec3f.ZERO, Vec3f.ZERO, 40));
 		TPOSE.put("left_arm", new ArrayList<>(rarm));
 		rarm.clear();
-		rarm.add(new Keyframe(Easing.QUAD_IN_OUT, new Vec3f(0, 12, 0), Vec3f.ZERO, Vec3f.ZERO,  new Vec3f(0, -12, 0), 0));
-		rarm.add(new Keyframe(Easing.QUAD_IN_OUT, new Vec3f(0, 12, 0), new Vec3f(-0.1f, 0, 0), Vec3f.ZERO, new Vec3f(0, -12, 0), 10));
-		rarm.add(new Keyframe(Easing.QUAD_IN_OUT, new Vec3f(0, 12, 0), new Vec3f(-0.1f, 0, 0), Vec3f.ZERO, new Vec3f(0, -12, 0), 20));
-		rarm.add(new Keyframe(Easing.QUAD_IN_OUT, new Vec3f(0, 12, 0), Vec3f.ZERO, Vec3f.ZERO, new Vec3f(0, -12, 0), 40));
+		rarm.add(new Keyframe(Easing.QUAD_IN_OUT, Vec3f.ZERO, Vec3f.ZERO, Vec3f.ZERO,  new Vec3f(0, -12, 0), 0));
+		rarm.add(new Keyframe(Easing.QUAD_IN_OUT, Vec3f.ZERO, new Vec3f(-0.1f, 0, 0), Vec3f.ZERO, new Vec3f(0, -12, 0), 10));
+		rarm.add(new Keyframe(Easing.QUAD_IN_OUT, Vec3f.ZERO, new Vec3f(-0.1f, 0, 0), Vec3f.ZERO, new Vec3f(0, -12, 0), 20));
+		rarm.add(new Keyframe(Easing.QUAD_IN_OUT, Vec3f.ZERO, Vec3f.ZERO, Vec3f.ZERO, new Vec3f(0, -12, 0), 40));
 		TPOSE.put("body", new ArrayList<>(rarm));
 		put(Vigorem.id("t_pose"), () -> new TPoseAnimation(40, TPOSE)); //new Vec3f(0f, 0, 0.05f)
 	}
