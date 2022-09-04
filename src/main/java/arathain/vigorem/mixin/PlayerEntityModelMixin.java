@@ -7,8 +7,10 @@ import net.minecraft.client.model.*;
 import net.minecraft.client.render.entity.FrogEntityRenderer;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.Arm;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -34,11 +36,11 @@ public abstract class PlayerEntityModelMixin<T extends LivingEntity> extends Bip
 	private void vigorem$angles(T livingEntity, float f, float g, float h, float i, float j, CallbackInfo ci) {
 		if(livingEntity instanceof PlayerEntity plr && plr.getComponent(VigoremComponents.ANIMATION).current != null) {
 			plr.getComponent(VigoremComponents.ANIMATION).current.setModelAngles(((PlayerEntityModel)(Object)this), plr, g);
-		} else {
-			this.getBodyParts().forEach(part -> ((OffsetModelPart)(Object)part).setOffset(0, 0, 0));
-			this.getHeadParts().forEach(part -> ((OffsetModelPart)(Object)part).setOffset(0, 0, 0));
+			if(plr.getComponent(VigoremComponents.ANIMATION).current.shouldRemove()) {
+				this.getBodyParts().forEach(part -> ((OffsetModelPart)(Object)part).setOffset(0, 0, 0));
+				this.getHeadParts().forEach(part -> ((OffsetModelPart)(Object)part).setOffset(0, 0, 0));
+			}
 		}
-		System.out.println(((OffsetModelPart)(Object)this.body).getOffsetY());
 	}
 	@Inject(method = "<init>", at = @At("TAIL"))
 	private void vigorem$appendCustoms(ModelPart modelPart, boolean bl, CallbackInfo ci) {
@@ -50,6 +52,10 @@ public abstract class PlayerEntityModelMixin<T extends LivingEntity> extends Bip
 	private static void vigorem$fixthemodeldammit(Dilation dilation, boolean slim, CallbackInfoReturnable<ModelData> cir, ModelData modelData, ModelPartData data) {
 		data.getChild("right_arm").addChild("right_hand", ModelPartBuilder.create(), ModelTransform.pivot(0.0F, 10F, 0.0F));
 		data.getChild("left_arm").addChild("left_hand", ModelPartBuilder.create(), ModelTransform.pivot(0.0F, 10F, 0.0F));
+	}
+	@Inject(method = "setArmAngle", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/model/ModelPart;rotate(Lnet/minecraft/client/util/math/MatrixStack;)V", shift = At.Shift.BEFORE))
+	private void vigorem$setArmAngle(Arm arm, MatrixStack matrices, CallbackInfo ci) {
+		this.body.rotate(matrices);
 	}
 
 }

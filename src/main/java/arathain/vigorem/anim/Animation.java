@@ -25,6 +25,8 @@ public abstract class Animation {
 	public boolean shouldRemove() {
 		return frame >= length;
 	}
+	public void serverTick(PlayerEntity player) {}
+	public void clientTick(PlayerEntity player) {}
 
 	public void tick() {
 		this.frame++;

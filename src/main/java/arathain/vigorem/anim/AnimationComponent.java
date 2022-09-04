@@ -23,6 +23,7 @@ public class AnimationComponent implements AutoSyncedComponent {
 	public void serverTick() {
 		if(current != null) {
 			this.current.tick();
+			this.current.serverTick(obj);
 			if(this.current.shouldRemove() || this.current.canCancel()) {
 				this.current = this.queued;
 				this.queued = null;
@@ -39,6 +40,7 @@ public class AnimationComponent implements AutoSyncedComponent {
 	public void clientTick() {
 		if(current != null) {
 			this.current.tick();
+			this.current.clientTick(obj);
 			if(this.current.shouldRemove()) {
 				this.current = null;
 			}
@@ -46,7 +48,7 @@ public class AnimationComponent implements AutoSyncedComponent {
 	}
 	@Override
 	public void readFromNbt(NbtCompound tag) {
-		if(tag.contains("namespace")) {
+		if(tag.contains("namespace") && Animations.getAnimation(new Identifier(tag.getString("namespace"), tag.getString("path"))) != null) {
 			this.current = Animations.getAnimation(new Identifier(tag.getString("namespace"), tag.getString("path")));
 			this.current.setFrame(tag.getInt("time"));
 		}

@@ -57,7 +57,7 @@ public class AnimalModelMixin {
 				temp.push();
 				boolean b = headPart.equals(biped.leftArm) || headPart.equals(biped.head) || headPart.equals(biped.rightArm);
 				if(b) {
-					act(biped.body, temp);
+					act(biped.body, temp, (headPart.equals(biped.head)));
 				}
 				headPart.render(temp, vertices, light, overlay, red, green, blue, alpha);
 				temp.pop();
@@ -65,7 +65,7 @@ public class AnimalModelMixin {
 		}
 	}
 	@Unique
-	public void act(ModelPart part, MatrixStack matrix) {
+	public void act(ModelPart part, MatrixStack matrix, boolean bl) {
 		matrix.translate((double)(part.pivotX / 16.0F), (double)(part.pivotY / 16.0F), (double)(part.pivotZ / 16.0F));
 		if (part.roll != 0.0F) {
 			matrix.multiply(Vec3f.POSITIVE_Z.getRadialQuaternion(part.roll));
@@ -77,6 +77,21 @@ public class AnimalModelMixin {
 
 		if (part.pitch != 0.0F) {
 			matrix.multiply(Vec3f.POSITIVE_X.getRadialQuaternion(part.pitch));
+		}
+		if(bl) {
+			matrix.translate((double)-(part.pivotX / 16.0F), -(double)(part.pivotY / 16.0F), -(double)(part.pivotZ / 16.0F));
+			if (part.roll != 0.0F) {
+				matrix.multiply(Vec3f.POSITIVE_Z.getRadialQuaternion(-part.roll));
+			}
+
+			if (part.yaw != 0.0F) {
+				matrix.multiply(Vec3f.POSITIVE_Y.getRadialQuaternion(-part.yaw));
+			}
+
+			if (part.pitch != 0.0F) {
+				matrix.multiply(Vec3f.POSITIVE_X.getRadialQuaternion(-part.pitch));
+			}
+			matrix.translate((double)(part.pivotX / 16.0F), (double)(part.pivotY / 16.0F), (double)(part.pivotZ / 16.0F));
 		}
 
 		if (part.scaleX != 1.0F || part.scaleY != 1.0F || part.scaleZ != 1.0F) {
