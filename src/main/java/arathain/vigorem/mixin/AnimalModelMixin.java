@@ -6,6 +6,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.entity.model.AnimalModel;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
+import net.minecraft.client.render.entity.model.PlayerEntityModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Vec3f;
 import org.spongepowered.asm.mixin.Mixin;
@@ -55,9 +56,12 @@ public class AnimalModelMixin {
 			args.set(0, ((Consumer<ModelPart>)(headPart) -> {
 				MatrixStack temp = matrices.get();
 				temp.push();
-				boolean b = headPart.equals(biped.leftArm) || headPart.equals(biped.head) || headPart.equals(biped.rightArm);
+				boolean b = headPart.equals(biped.leftArm) || headPart.equals(biped.head) || headPart.equals(biped.rightArm) || headPart.equals(biped.hat) || ((OffsetModelPart)(Object)biped.rightArm).isChild(headPart) || ((OffsetModelPart)(Object)biped.head).isChild(headPart) || ((OffsetModelPart)(Object)biped.leftArm).isChild(headPart);
+				if(biped instanceof PlayerEntityModel<?> p && !b) {
+					b = headPart.equals(p.leftSleeve) || headPart.equals(p.rightSleeve);
+				}
 				if(b) {
-					act(biped.body, temp, (headPart.equals(biped.head)));
+					act(biped.body, temp, (headPart.equals(biped.head) || headPart.equals(biped.hat)));
 				}
 				headPart.render(temp, vertices, light, overlay, red, green, blue, alpha);
 				temp.pop();
@@ -65,7 +69,7 @@ public class AnimalModelMixin {
 		}
 	}
 	@Unique
-	public void act(ModelPart part, MatrixStack matrix, boolean bl) {
+	private void act(ModelPart part, MatrixStack matrix, boolean bl) {
 		matrix.translate((double)(part.pivotX / 16.0F), (double)(part.pivotY / 16.0F), (double)(part.pivotZ / 16.0F));
 		if (part.roll != 0.0F) {
 			matrix.multiply(Vec3f.POSITIVE_Z.getRadialQuaternion(part.roll));

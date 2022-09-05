@@ -8,6 +8,12 @@ version = project.version
 group = project.maven_group
 
 repositories {
+	maven {
+		url 'https://api.modrinth.com/maven'
+		content {
+			includeGroup 'maven.modrinth'
+		}
+	}
 	maven { url "https://jitpack.io" }
 	maven {
 		name = 'Ladysnake Mods'
@@ -33,10 +39,17 @@ dependencies {
 		exclude(group: "net.fabricmc")
 		exclude(group: "net.fabricmc.fabric-api")
 	}
+	//modRuntimeOnly("maven.modrinth:ears:1.4.6+fabric-1.19")
+	modCompileOnly("maven.modrinth:ears:1.4.6+fabric-1.19")
 
 	modImplementation "com.github.LlamaLad7:MixinExtras:0.0.12"
 	include "com.github.LlamaLad7:MixinExtras:0.0.12"
 	annotationProcessor "com.github.LlamaLad7:MixinExtras:0.0.12"
+}
+
+
+loom {
+	accessWidenerPath = file("src/main/resources/vigorem.accesswidener")
 }
 
 processResources {

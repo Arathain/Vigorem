@@ -40,7 +40,7 @@ public class SmashAnimation extends Animation {
 		if(this.frame > 9 && this.frame < 24) {
 			return 0f;
 		}
-		return 0.7f;
+		return 0.02f;
 	}
 
 	@Override
@@ -57,7 +57,6 @@ public class SmashAnimation extends Animation {
 		if(this.frame == 15) {
 			Vec3d vec = new Vec3d(player.getRotationVecClient().x, 0, player.getRotationVecClient().z).multiply(2);
 			player.getWorld().playSound(player.getX() + vec.x, player.getY(), player.getZ() + vec.z, SoundEvents.BLOCK_ANVIL_LAND, SoundCategory.PLAYERS, 0.4f, 0.8f + player.getRandom().nextFloat() * 0.2f, false);
-
 		}
 	}
 
@@ -72,7 +71,12 @@ public class SmashAnimation extends Animation {
 			player.getWorld().getEntitiesByClass(LivingEntity.class, player.getBoundingBox().offset(vec).expand(0.5, 0.4, 0.5), livingEntity -> livingEntity.isAlive() && !livingEntity.isInvulnerable()).forEach(entity -> {
 				entity.damage(DamageSource.mob(player), (float) (9.0f + player.getAttributeValue(EntityAttributes.GENERIC_ATTACK_DAMAGE)));
 				entity.addVelocity((player.getRandom().nextFloat() - 0.5f) * 0.2f, 0.3, (player.getRandom().nextFloat() - 0.5f) * 0.2f);
-
+				if(!player.getWorld().getBlockState(player.getBlockPos().add(MathHelper.floor(vec.x), MathHelper.floor(vec.y), MathHelper.floor(vec.z))).isAir()) {
+					player.getWorld().setBlockBreakingInfo(player.getId(), player.getBlockPos().add(MathHelper.floor(vec.x), MathHelper.floor(vec.y), MathHelper.floor(vec.z)), (int) ((float) 0.6f * 10.0F));
+				}
+				if(!player.getWorld().getBlockState(player.getBlockPos().add(MathHelper.floor(vec.x), MathHelper.floor(vec.y - 1), MathHelper.floor(vec.z))).isAir()) {
+					player.getWorld().setBlockBreakingInfo(player.getId(), player.getBlockPos().add(MathHelper.floor(vec.x), MathHelper.floor(vec.y), MathHelper.floor(vec.z)), (int) ((float) 0.6f * 10.0F));
+				}
 			});
 		}
 	}

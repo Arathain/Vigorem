@@ -36,7 +36,6 @@ public class AnimationPacket {
 
 		server.execute(() -> {
 			if(player.getStackInHand(Hand.MAIN_HAND).getItem() instanceof AnimatingWeaponItem) {
-				System.out.println(Animations.getAnimation(animId));
 				player.getComponent(VigoremComponents.ANIMATION).queue(Animations.getAnimation(animId));
 			}
 		});

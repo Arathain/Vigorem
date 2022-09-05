@@ -52,7 +52,12 @@ public class ModelPartMixin implements OffsetModelPart {
 		this.offsetZ = z;
 	} //
 
-//	@Inject(method = "getChild", at = @At("HEAD"), cancellable = true)
+	@Override
+	public boolean isChild(ModelPart part) {
+		return this.children.containsValue(part);
+	}
+
+	//	@Inject(method = "getChild", at = @At("HEAD"), cancellable = true)
 //	public void vigorem$getChild(String name, CallbackInfoReturnable<ModelPart> cir) {
 //		switch (name) {
 ////			case "head" -> {

@@ -9,7 +9,6 @@
     "ClientPlayerEntityMixin",
     "EntityMixin",
     "LivingEntityMixin",
-    "ModelPartDataMixin",
     "ModelPartMixin",
     "PlayerEntityMixin",
     "PlayerEntityModelMixin",
@@ -17,12 +16,11 @@
   ],
   "client": [
     "BipedEntityModelMixin",
-    "ClientPlayerEntityMixin"
+    "ClientPlayerEntityMixin",
+    "HeldItemFeatureRendererMixin",
+    "MinecraftClientMixin"
   ],
   "injectors": {
     "defaultRequire": 1
-  },
-  "client": [
-    "MinecraftClientMixin"
-  ]
+  }
 }
