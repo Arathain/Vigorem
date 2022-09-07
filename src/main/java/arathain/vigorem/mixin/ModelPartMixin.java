@@ -1,5 +1,6 @@
 package arathain.vigorem.mixin;
 
+import arathain.vigorem.anim.CrackCocaine;
 import arathain.vigorem.anim.OffsetModelPart;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.model.ModelPartBuilder;
@@ -7,6 +8,7 @@ import net.minecraft.client.model.ModelPartData;
 import net.minecraft.client.model.ModelTransform;
 import net.minecraft.client.render.entity.feature.ArmorFeatureRenderer;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.util.math.Vec3f;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -17,15 +19,21 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Map;
+import java.util.function.Supplier;
 
 @Mixin(ModelPart.class)
-public class ModelPartMixin implements OffsetModelPart {
+public class ModelPartMixin implements OffsetModelPart, CrackCocaine {
 	@Unique
 	public float offsetX = 0;
 	@Unique
 	public float offsetY = 0;
 	@Unique
 	public float offsetZ = 0;
+	@Unique
+	private Supplier<ModelPart> parent = () -> null;
+	@Unique
+	boolean preserveRot = false;
+
 	@Shadow
 	@Final
 	private Map<String, ModelPart> children;
@@ -76,10 +84,65 @@ public class ModelPartMixin implements OffsetModelPart {
 			matrix.translate(this.offsetX/16F, this.offsetY/16F, this.offsetZ/16F);
 		}
 	}
+	@Inject(method = "rotate(Lnet/minecraft/client/util/math/MatrixStack;)V", at = @At("HEAD"))
+	public void vigorem$protato(MatrixStack matrix, CallbackInfo ci) {
+		if(this.parent.get() != null) {
+			act(parent.get(), matrix, preserveRot);
+		}
+	}
 	@Inject(method = "copyTransform", at = @At("TAIL"))
 	public void vigorem$copyTrans(ModelPart part, CallbackInfo ci) {
 		this.offsetX = ((OffsetModelPart)(Object)part).getOffsetX();
 		this.offsetY = ((OffsetModelPart)(Object)part).getOffsetY();
 		this.offsetZ = ((OffsetModelPart)(Object)part).getOffsetZ();
+	}
+
+	@Override
+	public Supplier<ModelPart> getParent() {
+		return parent;
+	}
+
+	@Override
+	public void setParent(Supplier<ModelPart> parent, boolean bl) {
+		this.parent = parent;
+		this.preserveRot = bl;
+	}
+	@Unique
+	private void act(ModelPart part, MatrixStack matrix, boolean bl) {
+		matrix.translate((double)(part.pivotX / 16.0F), (double)(part.pivotY / 16.0F), (double)(part.pivotZ / 16.0F));
+		if (part.roll != 0.0F) {
+			matrix.multiply(Vec3f.POSITIVE_Z.getRadialQuaternion(part.roll));
+		}
+
+		if (part.yaw != 0.0F) {
+			matrix.multiply(Vec3f.POSITIVE_Y.getRadialQuaternion(part.yaw));
+		}
+
+		if (part.pitch != 0.0F) {
+			matrix.multiply(Vec3f.POSITIVE_X.getRadialQuaternion(part.pitch));
+		}
+		if(bl) {
+			matrix.translate((double)-(part.pivotX / 16.0F), -(double)(part.pivotY / 16.0F), -(double)(part.pivotZ / 16.0F));
+			if (part.roll != 0.0F) {
+				matrix.multiply(Vec3f.POSITIVE_Z.getRadialQuaternion(-part.roll));
+			}
+
+			if (part.yaw != 0.0F) {
+				matrix.multiply(Vec3f.POSITIVE_Y.getRadialQuaternion(-part.yaw));
+			}
+
+			if (part.pitch != 0.0F) {
+				matrix.multiply(Vec3f.POSITIVE_X.getRadialQuaternion(-part.pitch));
+			}
+			matrix.translate((double)(part.pivotX / 16.0F), (double)(part.pivotY / 16.0F), (double)(part.pivotZ / 16.0F));
+		}
+
+		if (part.scaleX != 1.0F || part.scaleY != 1.0F || part.scaleZ != 1.0F) {
+			matrix.scale(part.scaleX, part.scaleY, part.scaleZ);
+		}
+
+		if (((OffsetModelPart)(Object)part).getOffsetX() != 0F || ((OffsetModelPart)(Object)part).getOffsetY() != 0F || ((OffsetModelPart)(Object)part).getOffsetZ() != 0F) {
+			matrix.translate((((OffsetModelPart)(Object)part).getOffsetX() / 16F), (((OffsetModelPart)(Object)part).getOffsetY() / 16F), (((OffsetModelPart)(Object)part).getOffsetZ() / 16F));
+		}
 	}
 }

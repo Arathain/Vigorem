@@ -1,6 +1,6 @@
 package arathain.vigorem.mixin;
 
-import arathain.vigorem.anim.CloneableMatrix;
+import arathain.vigorem.anim.CrackCocaine;
 import arathain.vigorem.anim.OffsetModelPart;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.ModelPart;
@@ -61,49 +61,12 @@ public class AnimalModelMixin {
 					b = headPart.equals(p.leftSleeve) || headPart.equals(p.rightSleeve);
 				}
 				if(b) {
-					act(biped.body, temp, (headPart.equals(biped.head) || headPart.equals(biped.hat)));
+					((CrackCocaine)(Object)headPart).setParent(() -> biped.body, headPart.equals(biped.head) || headPart.equals(biped.hat) || ((OffsetModelPart)(Object)biped.head).isChild(headPart));
 				}
 				headPart.render(temp, vertices, light, overlay, red, green, blue, alpha);
 				temp.pop();
 			}));
 		}
 	}
-	@Unique
-	private void act(ModelPart part, MatrixStack matrix, boolean bl) {
-		matrix.translate((double)(part.pivotX / 16.0F), (double)(part.pivotY / 16.0F), (double)(part.pivotZ / 16.0F));
-		if (part.roll != 0.0F) {
-			matrix.multiply(Vec3f.POSITIVE_Z.getRadialQuaternion(part.roll));
-		}
 
-		if (part.yaw != 0.0F) {
-			matrix.multiply(Vec3f.POSITIVE_Y.getRadialQuaternion(part.yaw));
-		}
-
-		if (part.pitch != 0.0F) {
-			matrix.multiply(Vec3f.POSITIVE_X.getRadialQuaternion(part.pitch));
-		}
-		if(bl) {
-			matrix.translate((double)-(part.pivotX / 16.0F), -(double)(part.pivotY / 16.0F), -(double)(part.pivotZ / 16.0F));
-			if (part.roll != 0.0F) {
-				matrix.multiply(Vec3f.POSITIVE_Z.getRadialQuaternion(-part.roll));
-			}
-
-			if (part.yaw != 0.0F) {
-				matrix.multiply(Vec3f.POSITIVE_Y.getRadialQuaternion(-part.yaw));
-			}
-
-			if (part.pitch != 0.0F) {
-				matrix.multiply(Vec3f.POSITIVE_X.getRadialQuaternion(-part.pitch));
-			}
-			matrix.translate((double)(part.pivotX / 16.0F), (double)(part.pivotY / 16.0F), (double)(part.pivotZ / 16.0F));
-		}
-
-		if (part.scaleX != 1.0F || part.scaleY != 1.0F || part.scaleZ != 1.0F) {
-			matrix.scale(part.scaleX, part.scaleY, part.scaleZ);
-		}
-
-		if (((OffsetModelPart)(Object)part).getOffsetX() != 0F || ((OffsetModelPart)(Object)part).getOffsetY() != 0F || ((OffsetModelPart)(Object)part).getOffsetZ() != 0F) {
-			matrix.translate((((OffsetModelPart)(Object)part).getOffsetX() / 16F), (((OffsetModelPart)(Object)part).getOffsetY() / 16F), (((OffsetModelPart)(Object)part).getOffsetZ() / 16F));
-		}
-	}
 }

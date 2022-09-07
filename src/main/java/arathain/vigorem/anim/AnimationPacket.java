@@ -18,6 +18,9 @@ import org.quiltmc.qsl.networking.impl.client.ClientNetworkingImpl;
 
 import javax.annotation.Nullable;
 
+import static net.minecraft.entity.EntityPose.CROUCHING;
+import static net.minecraft.entity.EntityPose.STANDING;
+
 public class AnimationPacket {
 	public static final Identifier ID = Vigorem.id("animation");
 
@@ -35,7 +38,7 @@ public class AnimationPacket {
 		Identifier animId = buf.isReadable() ? buf.readIdentifier() : null;
 
 		server.execute(() -> {
-			if(player.getStackInHand(Hand.MAIN_HAND).getItem() instanceof AnimatingWeaponItem) {
+			if(player.getStackInHand(Hand.MAIN_HAND).getItem() instanceof AnimatingWeaponItem && (player.getPose().equals(STANDING) || player.getPose().equals(CROUCHING))) {
 				player.getComponent(VigoremComponents.ANIMATION).queue(Animations.getAnimation(animId));
 			}
 		});

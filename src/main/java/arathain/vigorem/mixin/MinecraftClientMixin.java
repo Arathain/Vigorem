@@ -1,5 +1,6 @@
 package arathain.vigorem.mixin;
 
+import arathain.vigorem.VigoremComponents;
 import arathain.vigorem.anim.AnimationPacket;
 import arathain.vigorem.api.AnimatingWeaponItem;
 import net.minecraft.client.MinecraftClient;
@@ -21,6 +22,8 @@ import javax.annotation.Nullable;
 import javax.swing.text.JTextComponent;
 
 import static arathain.vigorem.api.AnimatingWeaponItem.AttackType.*;
+import static net.minecraft.entity.EntityPose.CROUCHING;
+import static net.minecraft.entity.EntityPose.STANDING;
 
 @Mixin(MinecraftClient.class)
 public abstract class MinecraftClientMixin {
@@ -28,13 +31,21 @@ public abstract class MinecraftClientMixin {
 	public ClientPlayerEntity player;
 
 	@Inject(method = "doAttack", at = @At("HEAD"), cancellable = true)
-	private void pre_doAttack(CallbackInfoReturnable<Boolean> info) {
+	private void vigorem$doAttack(CallbackInfoReturnable<Boolean> info) {
 		MinecraftClient client = (MinecraftClient)((Object)this);
-		if (client.player.getMainHandStack().getItem() instanceof AnimatingWeaponItem anim) {
+		if (client.player.getMainHandStack().getItem() instanceof AnimatingWeaponItem anim && (player.getPose().equals(STANDING) || player.getPose().equals(CROUCHING))) {
 			AnimationPacket.send(anim.getAnimId(client.player.isSneaking() ? NORMAL : SHIFT, false, client.player.getMainArm()));
 			info.setReturnValue(false);
 			info.cancel();
 		}
 	}
+//	@Inject(method = "handleBlockBreaking", at = @At("HEAD"), cancellable = true)
+//	private void vigorem$handleBlockBreaking(boolean bl, CallbackInfo ci) {
+//		MinecraftClient client = (MinecraftClient)((Object)this);
+//		if (client.options.attackKey.isPressed() && client.player.getMainHandStack().getItem() instanceof AnimatingWeaponItem anim && client.player.getComponent(VigoremComponents.ANIMATION).current == null && (player.getPose().equals(STANDING) || player.getPose().equals(CROUCHING))) {
+//			AnimationPacket.send(anim.getAnimId(client.player.isSneaking() ? NORMAL : SHIFT, false, client.player.getMainArm()));
+//			ci.cancel();
+//		}
+//	}
 
 }

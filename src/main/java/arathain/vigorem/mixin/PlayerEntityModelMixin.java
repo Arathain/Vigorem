@@ -3,6 +3,7 @@ package arathain.vigorem.mixin;
 import arathain.vigorem.VigoremComponents;
 import arathain.vigorem.anim.OffsetModelPart;
 import net.minecraft.client.model.*;
+import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
 import net.minecraft.client.util.math.MatrixStack;
@@ -25,16 +26,12 @@ public abstract class PlayerEntityModelMixin<T extends LivingEntity> extends Bip
 	}
 	@Inject(method = "setAngles(Lnet/minecraft/entity/LivingEntity;FFFFF)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/model/ModelPart;copyTransform(Lnet/minecraft/client/model/ModelPart;)V", ordinal = 0))
 	private void vigorem$angles(T livingEntity, float f, float g, float h, float i, float j, CallbackInfo ci) {
-		if(livingEntity instanceof PlayerEntity plr && plr.getComponent(VigoremComponents.ANIMATION).current != null) {
-			plr.getComponent(VigoremComponents.ANIMATION).current.setModelAngles(((PlayerEntityModel)(Object)this), plr, g);
-			if(plr.getComponent(VigoremComponents.ANIMATION).current.shouldRemove()) {
-				this.getBodyParts().forEach(part -> ((OffsetModelPart)(Object)part).setOffset(0, 0, 0));
-				this.getHeadParts().forEach(part -> ((OffsetModelPart)(Object)part).setOffset(0, 0, 0));
+		if (livingEntity instanceof PlayerEntity plr && plr.getComponent(VigoremComponents.ANIMATION).current != null) {
+			plr.getComponent(VigoremComponents.ANIMATION).current.setModelAngles(((PlayerEntityModel<AbstractClientPlayerEntity>) (Object) this), plr, g);
+			if (plr.getComponent(VigoremComponents.ANIMATION).current.shouldRemove()) {
+				this.getBodyParts().forEach(part -> ((OffsetModelPart) (Object) part).setOffset(0, 0, 0));
+				this.getHeadParts().forEach(part -> ((OffsetModelPart) (Object) part).setOffset(0, 0, 0));
 			}
 		}
-	}
-	@Inject(method = "setArmAngle", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/model/ModelPart;rotate(Lnet/minecraft/client/util/math/MatrixStack;)V", shift = At.Shift.BEFORE))
-	private void vigorem$setArmAngle(Arm arm, MatrixStack matrices, CallbackInfo ci) {
-		this.body.rotate(matrices);
 	}
 }
