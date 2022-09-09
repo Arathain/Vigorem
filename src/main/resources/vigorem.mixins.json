@@ -15,10 +15,14 @@
     "PlayerEntityRendererMixin"
   ],
   "client": [
+    "ArmorFeatureRendererMixin",
     "BipedEntityModelMixin",
     "ClientPlayerEntityMixin",
+    "EntityRenderDispatcherMixin",
     "HeldItemFeatureRendererMixin",
-    "MinecraftClientMixin"
+    "HeldItemRendererMixin",
+    "MinecraftClientMixin",
+    "WorldRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -21,7 +21,9 @@ import org.slf4j.LoggerFactory;
 public class Vigorem implements ModInitializer {
 	public static final String MODID = "vigorem";
 	public static final Logger LOGGER = LoggerFactory.getLogger("Vigorem");
+	public static boolean firstPersonLoaded = QuiltLoader.isModLoaded("firstperson");
 	public static boolean renderingFirstPerson = false;
+	public static boolean pehkuiLoaded = QuiltLoader.isModLoaded("pehkui");
 
 	@Override
 	public void onInitialize(ModContainer mod) {

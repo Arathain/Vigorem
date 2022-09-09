@@ -1,5 +1,6 @@
 package arathain.vigorem.mixin;
 
+import arathain.vigorem.Vigorem;
 import arathain.vigorem.anim.CrackCocaine;
 import arathain.vigorem.anim.OffsetModelPart;
 import net.minecraft.client.model.ModelPart;
