@@ -1,6 +1,7 @@
 package arathain.vigorem.mixin;
 
 import arathain.vigorem.Vigorem;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.util.math.MatrixStack;

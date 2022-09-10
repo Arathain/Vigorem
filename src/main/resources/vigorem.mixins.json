@@ -5,14 +5,17 @@
   "compatibilityLevel": "JAVA_17",
   "mixins": [
     "AnimalModelMixin",
+    "ArrayVoxelShapeInvoker",
     "BipedEntityModelMixin",
+    "BoxMixin",
     "ClientPlayerEntityMixin",
     "EntityMixin",
     "LivingEntityMixin",
     "ModelPartMixin",
     "PlayerEntityMixin",
     "PlayerEntityModelMixin",
-    "PlayerEntityRendererMixin"
+    "PlayerEntityRendererMixin",
+    "VoxelShapesMixin"
   ],
   "client": [
     "ArmorFeatureRendererMixin",

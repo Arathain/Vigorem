@@ -55,6 +55,75 @@ public abstract class Animation {
 		return false;
 	}
 
+	public Vec3f getRot(String query, float tickDelta) {
+		if(!keyframes.containsKey(query)) {
+			return Vec3f.ZERO;
+		}
+		Keyframe lastFrame = null;
+		Keyframe nextFrame = null;
+		boolean bl = false;
+		for(Keyframe frame : keyframes.get(query)) {
+			if(frame.frame == (this.frame + tickDelta)) {
+				lastFrame = frame;
+				nextFrame = frame;
+				bl = true;
+			}
+			if(lastFrame == null && frame.frame < (this.frame + tickDelta)) {
+				lastFrame = frame;
+			} else {
+				if(lastFrame != null && frame.frame > lastFrame.frame && frame.frame < (this.frame + tickDelta)) {
+					lastFrame = frame;
+				}
+			}
+			if(nextFrame == null && frame.frame > (this.frame + tickDelta)) {
+				nextFrame = frame;
+			} else {
+				if(nextFrame != null && frame.frame < nextFrame.frame && frame.frame > (this.frame + tickDelta)) {
+					nextFrame = frame;
+				}
+			}
+		}
+		assert lastFrame != null;
+		if(nextFrame == null) {
+			nextFrame = lastFrame;
+		}
+		return getRot(lastFrame, nextFrame, tickDelta, bl);
+	}
+	public Vec3f getPivot(String query, float tickDelta) {
+		if(!keyframes.containsKey(query)) {
+			return Vec3f.ZERO;
+		}
+		Keyframe lastFrame = null;
+		Keyframe nextFrame = null;
+		boolean bl = false;
+		for(Keyframe frame : keyframes.get(query)) {
+			if(frame.frame == (this.frame + tickDelta)) {
+				lastFrame = frame;
+				nextFrame = frame;
+				bl = true;
+			}
+			if(lastFrame == null && frame.frame < (this.frame + tickDelta)) {
+				lastFrame = frame;
+			} else {
+				if(lastFrame != null && frame.frame > lastFrame.frame && frame.frame < (this.frame + tickDelta)) {
+					lastFrame = frame;
+				}
+			}
+			if(nextFrame == null && frame.frame > (this.frame + tickDelta)) {
+				nextFrame = frame;
+			} else {
+				if(nextFrame != null && frame.frame < nextFrame.frame && frame.frame > (this.frame + tickDelta)) {
+					nextFrame = frame;
+				}
+			}
+		}
+		assert lastFrame != null;
+		if(nextFrame == null) {
+			nextFrame = lastFrame;
+		}
+		return getPivot(lastFrame, nextFrame, tickDelta, bl);
+	}
+
 	public void setModelAngles(PlayerEntityModel<AbstractClientPlayerEntity> model, PlayerEntity player, float tickDelta) {
 		for(String part : keyframes.keySet()) {
 			Keyframe lastFrame = null;
@@ -106,6 +175,22 @@ public abstract class Animation {
 				}
 				default -> {}
 			}
+		}
+	}
+	private Vec3f getRot(Keyframe prev, Keyframe next, float tickDelta, boolean same) {
+		if(same) {
+			return new Vec3f(prev.rotation.getX(),prev.rotation.getY(), prev.rotation.getZ());
+		} else {
+			float percentage = (this.frame + tickDelta - prev.frame) / ((float) next.frame - prev.frame);
+			return new Vec3f(MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.rotation.getX(), next.rotation.getX()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.rotation.getY(), next.rotation.getY()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.rotation.getZ(), next.rotation.getZ()));
+		}
+	}
+	private Vec3f getPivot(Keyframe prev, Keyframe next, float tickDelta, boolean same) {
+		if(same) {
+			return new Vec3f(prev.translation.getX(), prev.translation.getY(), prev.translation.getZ());
+		} else {
+			float percentage = (this.frame + tickDelta - prev.frame) / ((float) next.frame - prev.frame);
+			return new Vec3f(MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.translation.getX(), next.translation.getX()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.translation.getY(), next.translation.getY()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.translation.getZ(), next.translation.getZ()));
 		}
 	}
 	private void setPartAngles(ModelPart part, Keyframe prev, Keyframe next, float tickDelta, boolean same) {

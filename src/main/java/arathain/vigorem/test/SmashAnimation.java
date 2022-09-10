@@ -53,7 +53,7 @@ public class SmashAnimation extends Animation {
 	@Override
 	public void clientTick(PlayerEntity player) {
 		super.clientTick(player);
-		if(this.frame > 10 && this.frame < 22) {
+		if(this.frame > 10 && this.frame < 15) {
 			player.setBodyYaw(player.headYaw);
 		}
 		if(this.frame == 15) {
@@ -65,7 +65,7 @@ public class SmashAnimation extends Animation {
 	@Override
 	public void serverTick(PlayerEntity player) {
 		super.serverTick(player);
-		if(this.frame > 10 && this.frame < 22) {
+		if(this.frame > 10 && this.frame < 15) {
 			player.setBodyYaw(player.headYaw);
 		}
 		if(this.frame == 15) {
