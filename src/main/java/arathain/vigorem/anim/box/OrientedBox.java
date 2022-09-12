@@ -1,15 +1,23 @@
 package arathain.vigorem.anim.box;
 
+import arathain.vigorem.mixin.ArrayVoxelShapeInvoker;
+import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
+import it.unimi.dsi.fastutil.doubles.DoubleList;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.shape.BitSetVoxelSet;
+import net.minecraft.util.shape.VoxelShape;
 
 import javax.annotation.Nullable;
-/***
- * @author miyo6032
+import java.util.Optional;
+
+/**
  * Taken from <a href="https://github.com/miyo6032/MultipartEntities/blob/master/src/main/java/io/github/stuff_stuffs/multipart_entities/common/util/OrientedBox.java">...</a>
- ***/
-public final class OrientedBox {
+ * @author miyo6032
+ **/
+public final class OrientedBox extends Box {
 	private final Vec3d center;
 	private final Vec3d halfExtents;
 	private final DoubleQuat rotation;
@@ -19,31 +27,118 @@ public final class OrientedBox {
 	private Vec3d[] vertices;
 	private Vec3d[] basis;
 
+	private VoxelShape cached;
+
 	public OrientedBox(final Box box) {
+		super(0, 0, 0, 0, 0, 0);
 		center = box.getCenter();
 		halfExtents = new Vec3d(box.getXLength() / 2, box.getYLength() / 2, box.getZLength() / 2);
 		rotation = DoubleQuat.IDENTITY;
 	}
 
 	public OrientedBox(final Vec3d center, final Vec3d halfExtents, final DoubleQuat rotation) {
+		super(0, 0, 0, 0, 0, 0);
 		this.center = center;
 		this.halfExtents = halfExtents;
 		this.rotation = rotation;
 	}
 
 	public OrientedBox(final double minX, final double minY, final double minZ, final double maxX, final double maxY, final double maxZ, final DoubleQuat rotation) {
+		super(0, 0, 0, 0, 0, 0);
 		center = new Vec3d((minX + maxX) / 2, (minY + maxY) / 2, (minZ + maxZ) / 2);
 		halfExtents = new Vec3d((maxX - minX) / 2, (maxY - minY) / 2, (maxZ - minZ) / 2);
 		this.rotation = rotation;
 	}
 
 	private OrientedBox(final Vec3d center, final Vec3d halfExtents, final DoubleQuat rotation, final Matrix3d matrix, final Matrix3d inverse, final Vec3d[] basis) {
+		super(0, 0, 0, 0, 0, 0);
 		this.center = center;
 		this.halfExtents = halfExtents;
 		this.rotation = rotation;
 		this.matrix = matrix;
 		this.inverse = inverse;
 		this.basis = basis;
+	}
+
+	@Override
+	public Box offset(final BlockPos blockPos) {
+		return offset(blockPos.getX(), blockPos.getY(), blockPos.getZ());
+	}
+
+	@Override
+	public Optional<Vec3d> raycast(final Vec3d min, final Vec3d max) {
+		double t = Double.MAX_VALUE;
+		final double tmp = raycast1(min, max);
+		if (tmp != -1) {
+			t = Math.min(t, tmp);
+		}
+		if (t != Double.MAX_VALUE) {
+			final double d = max.x - min.x;
+			final double e = max.y - min.y;
+			final double f = max.z - min.z;
+			return Optional.of(min.add(t * d, t * e, t * f));
+		}
+		return Optional.empty();
+	}
+
+	@Override
+	public boolean intersects(final double minX, final double minY, final double minZ, final double maxX, final double maxY, final double maxZ) {
+		return intersects(new Box(minX, minY, minZ, maxX, maxY, maxZ));
+	}
+
+	public VoxelShape toVoxelShape() {
+		if (cached != null) {
+			return cached;
+		}
+		final double minX = getMin(Direction.Axis.X) + 0.0001;
+		final double minY = getMin(Direction.Axis.Y) + 0.0001;
+		final double minZ = getMin(Direction.Axis.Z) + 0.0001;
+
+		final double deltaX = getMax(Direction.Axis.X) - minX;
+		final double deltaY = getMax(Direction.Axis.Y) - minY;
+		final double deltaZ = getMax(Direction.Axis.Z) - minZ;
+		double resolution = 4.0;
+		final int xResolution = (int) Math.ceil(deltaX * resolution + 0.0001);
+		final int yResolution = (int) Math.ceil(deltaY * resolution + 0.0001);
+		final int zResolution = (int) Math.ceil(deltaZ * resolution + 0.0001);
+
+		final BitSetVoxelSet bitSet = new BitSetVoxelSet(xResolution, yResolution, zResolution);
+		for (int i = 0; i < xResolution; i++) {
+			final double x = minX + i / resolution;
+			for (int j = 0; j < zResolution; j++) {
+				final double z = minZ + j / resolution;
+				for (int k = 0; k < yResolution; k++) {
+					final double y = minY + k / resolution;
+					final Box box = new Box(x, y, z, x + 0.9999 / xResolution, y + 0.9999 / yResolution, z + 0.9999 / zResolution);
+					if (intersects(box)) {
+						bitSet.set(i, k, j);
+					}
+				}
+			}
+		}
+		final DoubleList xPoints = new DoubleArrayList(xResolution + 1);
+		for (int i = 0; i < xResolution + 1; i++) {
+			xPoints.add(minX + i / resolution);
+		}
+		final DoubleList yPoints = new DoubleArrayList(yResolution + 1);
+		for (int i = 0; i < yResolution + 1; i++) {
+			yPoints.add(minY + i / resolution);
+		}
+		final DoubleList zPoints = new DoubleArrayList(zResolution + 1);
+		for (int i = 0; i < zResolution + 1; i++) {
+			zPoints.add(minZ + i / resolution);
+		}
+		return cached = ArrayVoxelShapeInvoker.init(bitSet, xPoints, yPoints, zPoints);
+	}
+
+	public double calculateMaxDistance(final Direction.Axis axis, final VoxelShape voxelShape, double maxDist) {
+		for (final Box boundingBox : toVoxelShape().getBoundingBoxes()) {
+			maxDist = voxelShape.calculateMaxDistance(axis, boundingBox, maxDist);
+			if (Math.abs(maxDist) < 0.0001) {
+				return 0;
+			}
+		}
+		return maxDist;
 	}
 
 	public Matrix3d getMatrix() {
@@ -74,6 +169,18 @@ public final class OrientedBox {
 		return basis;
 	}
 
+	public OrientedBox setRotation(final DoubleQuat quat) {
+		if (DoubleQuat.IDENTITY.equals(quat)) {
+			return this;
+		}
+		return new OrientedBox(center, halfExtents, quat);
+	}
+	public OrientedBox setPivot(final double x, final double y, final double z, final double pivotX, final double pivotY, final double pivotZ) {
+		final Vec3d vec = getMatrix().transform(x - pivotX, y - pivotY, z - pivotZ);
+
+		return new OrientedBox(center.add(vec), halfExtents, rotation).translate(pivotX, pivotY, pivotZ);
+	}
+
 	public OrientedBox rotate(final DoubleQuat quaternion) {
 		if (DoubleQuat.IDENTITY.equals(quaternion)) {
 			return this;
@@ -102,6 +209,7 @@ public final class OrientedBox {
 		return rotation;
 	}
 
+	@Override
 	public Vec3d getCenter() {
 		return center;
 	}
@@ -109,7 +217,7 @@ public final class OrientedBox {
 	public Vec3d getHalfExtents() {
 		return halfExtents;
 	}
-
+	@Override
 	public OrientedBox offset(final double x, final double y, final double z) {
 		return new OrientedBox(center.add(x, y, z), halfExtents, rotation, matrix, inverse, basis);
 	}
@@ -145,11 +253,10 @@ public final class OrientedBox {
 			return box.getMax(axis);
 		}
 	}
-
+	@Override
 	public boolean intersects(final Box other) {
 		return intersects(getVertices(other));
 	}
-
 	public boolean intersects(final Vec3d[] otherVertices) {
 		if (vertices == null) {
 			computeVertices();
@@ -201,7 +308,7 @@ public final class OrientedBox {
 		return min1 <= min2 && min2 <= max1 || min2 <= min1 && min1 <= max2;
 	}
 
-	public double raycast(final Vec3d start, final Vec3d end) {
+	public double raycast1(final Vec3d start, final Vec3d end) {
 		final Matrix3d inverse = getInverse();
 		final Vec3d d = inverse.transform(start.x - center.x, start.y - center.y, start.z - center.z);
 		final Vec3d e = inverse.transform(end.x - center.x, end.y - center.y, end.z - center.z);
@@ -257,6 +364,7 @@ public final class OrientedBox {
 		}
 	}
 
+	@Override
 	public boolean contains(double x, double y, double z) {
 		x -= center.x;
 		y -= center.y;
@@ -294,7 +402,7 @@ public final class OrientedBox {
 	}
 
 	public OrientedBox expand(double x, double y, double z) {
-		if(x==0&&y==0&&z==0) {
+		if(x==0 && y==0 && z==0) {
 			return this;
 		}
 		return new OrientedBox(center, halfExtents.add(x/2,y/2,z/2), rotation, matrix, inverse, basis);

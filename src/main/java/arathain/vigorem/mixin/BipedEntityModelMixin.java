@@ -2,13 +2,11 @@ package arathain.vigorem.mixin;
 
 import arathain.vigorem.anim.OffsetModelPart;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-import net.minecraft.client.model.*;
-import net.minecraft.client.render.entity.feature.HeldItemFeatureRenderer;
+import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Arm;
-import net.minecraft.util.math.Vec3f;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;

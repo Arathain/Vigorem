@@ -66,19 +66,6 @@ public class ModelPartMixin implements OffsetModelPart, CrackCocaine {
 		return this.children.containsValue(part);
 	}
 
-	//	@Inject(method = "getChild", at = @At("HEAD"), cancellable = true)
-//	public void vigorem$getChild(String name, CallbackInfoReturnable<ModelPart> cir) {
-//		switch (name) {
-////			case "head" -> {
-////
-////			}
-//			case "right_arm", "left_arm" -> {
-//				if(this.children.get("body") != null && this.children.get("body").getChild(name) != null)
-//					cir.setReturnValue(this.children.get("body").getChild(name));
-//			}
-//			default -> {}
-//		}
-//	}
 	@Inject(method = "rotate(Lnet/minecraft/client/util/math/MatrixStack;)V", at = @At("TAIL"))
 	public void vigorem$rotato(MatrixStack matrix, CallbackInfo ci) {
 		if (this.offsetX != 0F || this.offsetY != 0F || this.offsetZ != 0F) {

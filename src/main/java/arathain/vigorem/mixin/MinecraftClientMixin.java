@@ -39,13 +39,5 @@ public abstract class MinecraftClientMixin {
 			info.cancel();
 		}
 	}
-//	@Inject(method = "handleBlockBreaking", at = @At("HEAD"), cancellable = true)
-//	private void vigorem$handleBlockBreaking(boolean bl, CallbackInfo ci) {
-//		MinecraftClient client = (MinecraftClient)((Object)this);
-//		if (client.options.attackKey.isPressed() && client.player.getMainHandStack().getItem() instanceof AnimatingWeaponItem anim && client.player.getComponent(VigoremComponents.ANIMATION).current == null && (player.getPose().equals(STANDING) || player.getPose().equals(CROUCHING))) {
-//			AnimationPacket.send(anim.getAnimId(client.player.isSneaking() ? NORMAL : SHIFT, false, client.player.getMainArm()));
-//			ci.cancel();
-//		}
-//	}
 
 }

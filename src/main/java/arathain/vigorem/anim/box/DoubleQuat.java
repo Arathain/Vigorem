@@ -3,10 +3,10 @@ package arathain.vigorem.anim.box;
 import net.minecraft.util.math.Quaternion;
 import net.minecraft.util.math.Vec3d;
 
-/***
- * @author miyo6032
+/**
  * Taken from <a href="https://github.com/miyo6032/MultipartEntities/blob/master/src/main/java/io/github/stuff_stuffs/multipart_entities/common/util/QuaternionD.java">...</a>
- ***/
+ * @author miyo6032
+ **/
 public class DoubleQuat {
 	public static final DoubleQuat IDENTITY = new DoubleQuat(0, 0, 0, 1);
 	private final double x;
