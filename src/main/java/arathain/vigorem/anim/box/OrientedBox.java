@@ -1,410 +1,201 @@
 package arathain.vigorem.anim.box;
 
-import arathain.vigorem.mixin.ArrayVoxelShapeInvoker;
-import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
-import it.unimi.dsi.fastutil.doubles.DoubleList;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Matrix3f;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.shape.BitSetVoxelSet;
-import net.minecraft.util.shape.VoxelShape;
-
-import javax.annotation.Nullable;
-import java.util.Optional;
+import net.minecraft.util.math.Vec3f;
 
 /**
- * Taken from <a href="https://github.com/miyo6032/MultipartEntities/blob/master/src/main/java/io/github/stuff_stuffs/multipart_entities/common/util/OrientedBox.java">...</a>
- * @author miyo6032
- **/
-public final class OrientedBox extends Box {
-	private final Vec3d center;
-	private final Vec3d halfExtents;
-	private final DoubleQuat rotation;
-	private Box extents;
-	private Matrix3d matrix;
-	private Matrix3d inverse;
-	private Vec3d[] vertices;
-	private Vec3d[] basis;
+ * Literally just <a href="https://github.com/ZsoltMolnarrr/BetterCombat/blob/1.19.X/common/src/main/java/net/bettercombat/client/collision/OrientedBoundingBox.java">this code from BetterCombat</a>
+ * Praise the god code \o/
+ * @author ZsoltMolnarrr
+ */
+public class OrientedBox {
 
-	private VoxelShape cached;
+	// TOPOLOGY
 
-	public OrientedBox(final Box box) {
-		super(0, 0, 0, 0, 0, 0);
-		center = box.getCenter();
-		halfExtents = new Vec3d(box.getXLength() / 2, box.getYLength() / 2, box.getZLength() / 2);
-		rotation = DoubleQuat.IDENTITY;
-	}
+	// Y ^       8   +-------+   7     axisY   axisZ
+	//   |          /|      /|             | /
+	//   |     4   +-------+ | 3           |/
+	//   |  Z      | |     | |             +-- axisX
+	//   |   /   5 | +-----|-+  6       Center
+	//   |  /      |/      |/
+	//   | /   1   +-------+   2
+	//   |/
+	//   +--------------------> X
 
-	public OrientedBox(final Vec3d center, final Vec3d halfExtents, final DoubleQuat rotation) {
-		super(0, 0, 0, 0, 0, 0);
+	// DEFINITIVE PROPERTIES
+
+	// Center position of the cuboid
+	public Vec3d center;
+
+	// Extent defines the half size in all directions
+	public Vec3d extent;
+
+	// Orthogonal basis vectors define orientation
+	public Vec3d axisX, axisY, axisZ;
+
+	// DERIVED PROPERTIES
+	public Vec3d scaledAxisX, scaledAxisY, scaledAxisZ;
+	public Matrix3f rotation = new Matrix3f();
+	public Vec3d vertex1, vertex2, vertex3, vertex4, vertex5, vertex6, vertex7, vertex8;
+	public Vec3d[] vertices;
+
+	// 1. CONSTRUCT
+
+	public OrientedBox(Vec3d center, double width, double height, double depth, float yaw, float pitch) {
 		this.center = center;
-		this.halfExtents = halfExtents;
-		this.rotation = rotation;
+		this.extent = new Vec3d(width/2.0, height/2.0, depth/2.0);
+		this.axisZ = Vec3d.fromPolar(yaw, pitch).normalize();
+		this.axisY = Vec3d.fromPolar(yaw + 90, pitch).negate().normalize();
+		this.axisX = axisZ.crossProduct(axisY);
 	}
 
-	public OrientedBox(final double minX, final double minY, final double minZ, final double maxX, final double maxY, final double maxZ, final DoubleQuat rotation) {
-		super(0, 0, 0, 0, 0, 0);
-		center = new Vec3d((minX + maxX) / 2, (minY + maxY) / 2, (minZ + maxZ) / 2);
-		halfExtents = new Vec3d((maxX - minX) / 2, (maxY - minY) / 2, (maxZ - minZ) / 2);
-		this.rotation = rotation;
+	public OrientedBox(Vec3d center, Vec3d size, float yaw, float pitch) {
+		this(center,size.x, size.y, size.z, yaw, pitch);
 	}
 
-	private OrientedBox(final Vec3d center, final Vec3d halfExtents, final DoubleQuat rotation, final Matrix3d matrix, final Matrix3d inverse, final Vec3d[] basis) {
-		super(0, 0, 0, 0, 0, 0);
-		this.center = center;
-		this.halfExtents = halfExtents;
-		this.rotation = rotation;
-		this.matrix = matrix;
-		this.inverse = inverse;
-		this.basis = basis;
+	public OrientedBox(Box box) {
+		this.center = new Vec3d((box.maxX + box.minX) / 2.0, (box.maxY + box.minY) / 2.0, (box.maxZ + box.minZ) / 2.0);
+		this.extent = new Vec3d(Math.abs(box.maxX - box.minX) / 2.0, Math.abs(box.maxY - box.minY) / 2.0, Math.abs(box.maxZ - box.minZ) / 2.0);
+		this.axisX = new Vec3d(1, 0, 0);
+		this.axisY = new Vec3d(0, 1, 0);
+		this.axisZ = new Vec3d(0, 0, 1);
 	}
 
-	@Override
-	public Box offset(final BlockPos blockPos) {
-		return offset(blockPos.getX(), blockPos.getY(), blockPos.getZ());
+	public OrientedBox(OrientedBox obb) {
+		this.center = obb.center;
+		this.extent = obb.extent;
+		this.axisX = obb.axisX;
+		this.axisY = obb.axisY;
+		this.axisZ = obb.axisZ;
 	}
 
-	@Override
-	public Optional<Vec3d> raycast(final Vec3d min, final Vec3d max) {
-		double t = Double.MAX_VALUE;
-		final double tmp = raycast1(min, max);
-		if (tmp != -1) {
-			t = Math.min(t, tmp);
-		}
-		if (t != Double.MAX_VALUE) {
-			final double d = max.x - min.x;
-			final double e = max.y - min.y;
-			final double f = max.z - min.z;
-			return Optional.of(min.add(t * d, t * e, t * f));
-		}
-		return Optional.empty();
+	public OrientedBox copy() {
+		return new OrientedBox(this);
 	}
 
-	@Override
-	public boolean intersects(final double minX, final double minY, final double minZ, final double maxX, final double maxY, final double maxZ) {
-		return intersects(new Box(minX, minY, minZ, maxX, maxY, maxZ));
+	// 2. CONFIGURE
+
+	public OrientedBox offsetX(double offset) {
+		this.center = this.center.add(axisX.multiply(offset));
+		return this;
 	}
 
-	public VoxelShape toVoxelShape() {
-		if (cached != null) {
-			return cached;
-		}
-		final double minX = getMin(Direction.Axis.X) + 0.0001;
-		final double minY = getMin(Direction.Axis.Y) + 0.0001;
-		final double minZ = getMin(Direction.Axis.Z) + 0.0001;
-
-		final double deltaX = getMax(Direction.Axis.X) - minX;
-		final double deltaY = getMax(Direction.Axis.Y) - minY;
-		final double deltaZ = getMax(Direction.Axis.Z) - minZ;
-		double resolution = 4.0;
-		final int xResolution = (int) Math.ceil(deltaX * resolution + 0.0001);
-		final int yResolution = (int) Math.ceil(deltaY * resolution + 0.0001);
-		final int zResolution = (int) Math.ceil(deltaZ * resolution + 0.0001);
-
-		final BitSetVoxelSet bitSet = new BitSetVoxelSet(xResolution, yResolution, zResolution);
-		for (int i = 0; i < xResolution; i++) {
-			final double x = minX + i / resolution;
-			for (int j = 0; j < zResolution; j++) {
-				final double z = minZ + j / resolution;
-				for (int k = 0; k < yResolution; k++) {
-					final double y = minY + k / resolution;
-					final Box box = new Box(x, y, z, x + 0.9999 / xResolution, y + 0.9999 / yResolution, z + 0.9999 / zResolution);
-					if (intersects(box)) {
-						bitSet.set(i, k, j);
-					}
-				}
-			}
-		}
-		final DoubleList xPoints = new DoubleArrayList(xResolution + 1);
-		for (int i = 0; i < xResolution + 1; i++) {
-			xPoints.add(minX + i / resolution);
-		}
-		final DoubleList yPoints = new DoubleArrayList(yResolution + 1);
-		for (int i = 0; i < yResolution + 1; i++) {
-			yPoints.add(minY + i / resolution);
-		}
-		final DoubleList zPoints = new DoubleArrayList(zResolution + 1);
-		for (int i = 0; i < zResolution + 1; i++) {
-			zPoints.add(minZ + i / resolution);
-		}
-		return cached = ArrayVoxelShapeInvoker.init(bitSet, xPoints, yPoints, zPoints);
+	public OrientedBox offsetY(double offset) {
+		this.center = this.center.add(axisY.multiply(offset));
+		return this;
 	}
 
-	public double calculateMaxDistance(final Direction.Axis axis, final VoxelShape voxelShape, double maxDist) {
-		for (final Box boundingBox : toVoxelShape().getBoundingBoxes()) {
-			maxDist = voxelShape.calculateMaxDistance(axis, boundingBox, maxDist);
-			if (Math.abs(maxDist) < 0.0001) {
-				return 0;
-			}
-		}
-		return maxDist;
+	public OrientedBox offsetZ(double offset) {
+		this.center = this.center.add(axisZ.multiply(offset));
+		return this;
 	}
 
-	public Matrix3d getMatrix() {
-		if (matrix == null) {
-			matrix = new Matrix3d(rotation);
-		}
-		return matrix;
+	public OrientedBox offset(Vec3d offset) {
+		this.center = this.center.add(offset);
+		return this;
 	}
 
-	public Matrix3d getInverse() {
-		if (inverse == null) {
-			inverse = getMatrix().invert();
-		}
-		return inverse;
+	public OrientedBox scale(double scale) {
+		this.extent = this.extent.multiply(scale);
+		return this;
 	}
 
-	public Box getExtents() {
-		if (extents == null) {
-			extents = new Box(halfExtents.multiply(-1), halfExtents);
-		}
-		return extents;
+	// 3. UPDATE
+
+	public OrientedBox updateVertex() {
+		rotation.set(0,0, (float) axisX.x);
+		rotation.set(0,1, (float) axisX.y);
+		rotation.set(0,2, (float) axisX.z);
+		rotation.set(1,0, (float) axisY.x);
+		rotation.set(1,1, (float) axisY.y);
+		rotation.set(1,2, (float) axisY.z);
+		rotation.set(2,0, (float) axisZ.x);
+		rotation.set(2,1, (float) axisZ.y);
+		rotation.set(2,2, (float) axisZ.z);
+
+		scaledAxisX = axisX.multiply(extent.x);
+		scaledAxisY = axisY.multiply(extent.y);
+		scaledAxisZ = axisZ.multiply(extent.z);
+
+		vertex1 = center.subtract(scaledAxisZ).subtract(scaledAxisX).subtract(scaledAxisY);
+		vertex2 = center.subtract(scaledAxisZ).add(scaledAxisX).subtract(scaledAxisY);
+		vertex3 = center.subtract(scaledAxisZ).add(scaledAxisX).add(scaledAxisY);
+		vertex4 = center.subtract(scaledAxisZ).subtract(scaledAxisX).add(scaledAxisY);
+		vertex5 = center.add(scaledAxisZ).subtract(scaledAxisX).subtract(scaledAxisY);
+		vertex6 = center.add(scaledAxisZ).add(scaledAxisX).subtract(scaledAxisY);
+		vertex7 = center.add(scaledAxisZ).add(scaledAxisX).add(scaledAxisY);
+		vertex8 = center.add(scaledAxisZ).subtract(scaledAxisX).add(scaledAxisY);
+
+		vertices = new Vec3d[]{  vertex1, vertex2, vertex3, vertex4, vertex5, vertex6, vertex7, vertex8  };
+
+		return this;
 	}
 
-	public Vec3d[] getBasis() {
-		if (basis == null) {
-			basis = matrix.getBasis();
-		}
-		return basis;
+	// 4. CHECK INTERSECTIONS
+
+	public boolean contains(Vec3d point) {
+		Vec3f distance = new Vec3f(point.subtract(center));
+		distance.transform(rotation);
+		return Math.abs(distance.getX()) < extent.x &&
+				Math.abs(distance.getY()) < extent.y &&
+				Math.abs(distance.getZ()) < extent.z;
 	}
 
-	public OrientedBox setRotation(final DoubleQuat quat) {
-		if (DoubleQuat.IDENTITY.equals(quat)) {
-			return this;
-		}
-		return new OrientedBox(center, halfExtents, quat);
-	}
-	public OrientedBox setPivot(final double x, final double y, final double z, final double pivotX, final double pivotY, final double pivotZ) {
-		final Vec3d vec = getMatrix().transform(x - pivotX, y - pivotY, z - pivotZ);
-
-		return new OrientedBox(center.add(vec), halfExtents, rotation).translate(pivotX, pivotY, pivotZ);
+	public boolean intersects(Box boundingBox) {
+		OrientedBox otherOBB = new OrientedBox(boundingBox).updateVertex();
+		return intersects(this, otherOBB);
 	}
 
-	public OrientedBox rotate(final DoubleQuat quaternion) {
-		if (DoubleQuat.IDENTITY.equals(quaternion)) {
-			return this;
-		}
-		return new OrientedBox(center, halfExtents, rotation.hamiltonProduct(quaternion));
+	public boolean intersects(OrientedBox otherBox) {
+		return intersects(this, otherBox);
 	}
 
-	public OrientedBox translate(final double x, final double y, final double z) {
-		if (x == 0 && y == 0 && z == 0) {
-			return this;
-		}
-		final Matrix3d matrix = getMatrix();
-		final double transX = matrix.transformX(x, y, z);
-		final double transY = matrix.transformY(x, y, z);
-		final double transZ = matrix.transformZ(x, y, z);
-		return new OrientedBox(center.add(transX, transY, transZ), halfExtents, rotation, matrix, inverse, basis);
+	/**
+	 * Calculates if there is intersection between given OBBs.
+	 * Separating Axes Theorem implementation.
+	 */
+	public static boolean intersects(OrientedBox a, OrientedBox b)  {
+		if (separated(a.vertices, b.vertices, a.scaledAxisX) || separated(a.vertices, b.vertices, a.scaledAxisY) || separated(a.vertices, b.vertices, a.scaledAxisZ))
+			return false;
+
+		if (separated(a.vertices, b.vertices, b.scaledAxisX) || separated(a.vertices, b.vertices, b.scaledAxisY) || separated(a.vertices, b.vertices, b.scaledAxisZ))
+			return false;
+
+		if (separated(a.vertices, b.vertices, a.scaledAxisX.crossProduct(b.scaledAxisX)) || separated(a.vertices, b.vertices, a.scaledAxisX.crossProduct(b.scaledAxisY)) || separated(a.vertices, b.vertices, a.scaledAxisX.crossProduct(b.scaledAxisZ)))
+			return false;
+
+		if (separated(a.vertices, b.vertices, a.scaledAxisY.crossProduct(b.scaledAxisX)) || separated(a.vertices, b.vertices, a.scaledAxisY.crossProduct(b.scaledAxisY)) || separated(a.vertices, b.vertices, a.scaledAxisY.crossProduct(b.scaledAxisZ)))
+			return false;
+
+		return !separated(a.vertices, b.vertices, a.scaledAxisZ.crossProduct(b.scaledAxisX)) && !separated(a.vertices, b.vertices, a.scaledAxisZ.crossProduct(b.scaledAxisY)) && !separated(a.vertices, b.vertices, a.scaledAxisZ.crossProduct(b.scaledAxisY));
 	}
 
-	public OrientedBox transform(final double x, final double y, final double z, final double pivotX, final double pivotY, final double pivotZ, final DoubleQuat quaternion) {
-		final Vec3d vec = getMatrix().transform(x - pivotX, y - pivotY, z - pivotZ);
-		final boolean bl = quaternion.equals(DoubleQuat.IDENTITY);
-		return new OrientedBox(center.add(vec), halfExtents, rotation.hamiltonProduct(quaternion), bl ? matrix : null, bl ? inverse : null, bl ? basis : null).translate(pivotX, pivotY, pivotZ);
-	}
+	private static boolean separated(Vec3d[] vertsA, Vec3d[] vertsB, Vec3d axis)  {
+		// Handles the crossProduct product = {0,0,0} case
+		if (axis.equals(Vec3d.ZERO))
+			return false;
 
-	public DoubleQuat getRotation() {
-		return rotation;
-	}
+		double aMin = Double.POSITIVE_INFINITY;
+		double aMax = Double.NEGATIVE_INFINITY;
+		double bMin = Double.POSITIVE_INFINITY;
+		double bMax = Double.NEGATIVE_INFINITY;
 
-	@Override
-	public Vec3d getCenter() {
-		return center;
-	}
-
-	public Vec3d getHalfExtents() {
-		return halfExtents;
-	}
-	@Override
-	public OrientedBox offset(final double x, final double y, final double z) {
-		return new OrientedBox(center.add(x, y, z), halfExtents, rotation, matrix, inverse, basis);
-	}
-
-	private void computeVertices() {
-		final Box box = getExtents();
-		final Vec3d[] vertices = getVertices(box);
-		this.vertices = new Vec3d[8];
-		final Matrix3d matrix = getMatrix();
-		for (int i = 0; i < vertices.length; i++) {
-			this.vertices[i] = matrix.transform(vertices[i]).add(center);
-		}
-	}
-
-	public static Vec3d[] getVertices(final Box box) {
-		final Vec3d[] vertices = new Vec3d[8];
-		int index = 0;
-		final Direction.AxisDirection[] axisDirections = Direction.AxisDirection.values();
-		for (final Direction.AxisDirection x : axisDirections) {
-			for (final Direction.AxisDirection y : axisDirections) {
-				for (final Direction.AxisDirection z : axisDirections) {
-					vertices[index++] = new Vec3d(getPoint(box, x, Direction.Axis.X), getPoint(box, y, Direction.Axis.Y), getPoint(box, z, Direction.Axis.Z));
-				}
-			}
-		}
-		return vertices;
-	}
-
-	private static double getPoint(final Box box, final Direction.AxisDirection direction, final Direction.Axis axis) {
-		if (direction == Direction.AxisDirection.NEGATIVE) {
-			return box.getMin(axis);
-		} else {
-			return box.getMax(axis);
-		}
-	}
-	@Override
-	public boolean intersects(final Box other) {
-		return intersects(getVertices(other));
-	}
-	public boolean intersects(final Vec3d[] otherVertices) {
-		if (vertices == null) {
-			computeVertices();
-		}
-		final Vec3d[] vertices1 = vertices;
-		final Vec3d[] normals1 = getBasis();
-		for (final Vec3d normal : normals1) {
-			if (!sat(normal, vertices1, otherVertices)) {
-				return false;
-			}
-		}
-		final Vec3d[] normals2 = Matrix3d.IDENTITY_BASIS;
-		for (final Vec3d normal : normals2) {
-			if (!sat(normal, vertices1, otherVertices)) {
-				return false;
-			}
-		}
-		for (int i = 0; i < normals1.length; i++) {
-			for (int j = i; j < normals2.length; j++) {
-				final Vec3d normal = cross(normals1[i], normals2[j]);
-				if (!sat(normal, vertices1, otherVertices)) {
-					return false;
-				}
-			}
-		}
-		return true;
-	}
-
-
-	private static Vec3d cross(final Vec3d first, final Vec3d second) {
-		return new Vec3d(first.y * second.z - first.z * second.y, first.z * second.x - first.x * second.z, first.x * second.y - first.y * second.x);
-	}
-
-	private static boolean sat(final Vec3d normal, final Vec3d[] vertices1, final Vec3d[] vertices2) {
-		double min1 = Double.MAX_VALUE;
-		double max1 = -Double.MAX_VALUE;
-		for (final Vec3d d : vertices1) {
-			final double v = d.dotProduct(normal);
-			min1 = Math.min(min1, v);
-			max1 = Math.max(max1, v);
-		}
-		double min2 = Double.MAX_VALUE;
-		double max2 = -Double.MAX_VALUE;
-		for (final Vec3d vec3d : vertices2) {
-			final double v = vec3d.dotProduct(normal);
-			min2 = Math.min(min2, v);
-			max2 = Math.max(max2, v);
-		}
-		return min1 <= min2 && min2 <= max1 || min2 <= min1 && min1 <= max2;
-	}
-
-	public double raycast1(final Vec3d start, final Vec3d end) {
-		final Matrix3d inverse = getInverse();
-		final Vec3d d = inverse.transform(start.x - center.x, start.y - center.y, start.z - center.z);
-		final Vec3d e = inverse.transform(end.x - center.x, end.y - center.y, end.z - center.z);
-		return raycast0(d, e);
-	}
-
-	private double raycast0(final Vec3d start, final Vec3d end) {
-		final double d = end.x - start.x;
-		final double e = end.y - start.y;
-		final double f = end.z - start.z;
-		final double[] t = new double[]{1};
-		final Direction direction = traceCollisionSide(getExtents(), start, t, d, e, f);
-		if (direction != null) {
-			return t[0];
-		}
-		return -1;
-	}
-
-	@Nullable
-	private static Direction traceCollisionSide(final Box box, final Vec3d intersectingVector, final double[] traceDistanceResult, final double xDelta, final double yDelta, final double zDelta) {
-		Direction approachDirection = null;
-		if (xDelta > 1.0E-7D) {
-			approachDirection = traceCollisionSide(traceDistanceResult, approachDirection, xDelta, yDelta, zDelta, box.minX, box.minY, box.maxY, box.minZ, box.maxZ, Direction.WEST, intersectingVector.x, intersectingVector.y, intersectingVector.z);
-		} else if (xDelta < -1.0E-7D) {
-			approachDirection = traceCollisionSide(traceDistanceResult, approachDirection, xDelta, yDelta, zDelta, box.maxX, box.minY, box.maxY, box.minZ, box.maxZ, Direction.EAST, intersectingVector.x, intersectingVector.y, intersectingVector.z);
+		// Define two intervals, a and b. Calculate their min and max values
+		for (int i = 0; i < 8; i++)
+		{
+			double aDist = vertsA[i].dotProduct(axis);
+			aMin = Math.min(aDist, aMin);
+			aMax = Math.max(aDist, aMax);
+			double bDist = vertsB[i].dotProduct(axis);
+			bMin = Math.min(bDist, bMin);
+			bMax = Math.max(bDist, bMax);
 		}
 
-		if (yDelta > 1.0E-7D) {
-			approachDirection = traceCollisionSide(traceDistanceResult, approachDirection, yDelta, zDelta, xDelta, box.minY, box.minZ, box.maxZ, box.minX, box.maxX, Direction.DOWN, intersectingVector.y, intersectingVector.z, intersectingVector.x);
-		} else if (yDelta < -1.0E-7D) {
-			approachDirection = traceCollisionSide(traceDistanceResult, approachDirection, yDelta, zDelta, xDelta, box.maxY, box.minZ, box.maxZ, box.minX, box.maxX, Direction.UP, intersectingVector.y, intersectingVector.z, intersectingVector.x);
-		}
-
-		if (zDelta > 1.0E-7D) {
-			approachDirection = traceCollisionSide(traceDistanceResult, approachDirection, zDelta, xDelta, yDelta, box.minZ, box.minX, box.maxX, box.minY, box.maxY, Direction.NORTH, intersectingVector.z, intersectingVector.x, intersectingVector.y);
-		} else if (zDelta < -1.0E-7D) {
-			approachDirection = traceCollisionSide(traceDistanceResult, approachDirection, zDelta, xDelta, yDelta, box.maxZ, box.minX, box.maxX, box.minY, box.maxY, Direction.SOUTH, intersectingVector.z, intersectingVector.x, intersectingVector.y);
-		}
-
-		return approachDirection;
-	}
-
-	@Nullable
-	private static Direction traceCollisionSide(final double[] traceDistanceResult, final Direction approachDirection, final double xDelta, final double yDelta, final double zDelta, final double begin, final double minX, final double maxX, final double minZ, final double maxZ, final Direction resultDirection, final double startX, final double startY, final double startZ) {
-		final double d = (begin - startX) / xDelta;
-		final double e = startY + d * yDelta;
-		final double f = startZ + d * zDelta;
-		if (0.0D < d && d < traceDistanceResult[0] && minX - 1.0E-7D < e && e < maxX + 1.0E-7D && minZ - 1.0E-7D < f && f < maxZ + 1.0E-7D) {
-			traceDistanceResult[0] = d;
-			return resultDirection;
-		} else {
-			return approachDirection;
-		}
-	}
-
-	@Override
-	public boolean contains(double x, double y, double z) {
-		x -= center.x;
-		y -= center.y;
-		z -= center.z;
-		final double transX = getMatrix().transformX(x, y, z);
-		final double transY = getMatrix().transformY(x, y, z);
-		final double transZ = getMatrix().transformZ(x, y, z);
-		return getExtents().contains(transX, transY, transZ);
-	}
-
-	public double getMax(final Direction.Axis axis) {
-		final Matrix3d matrix = getMatrix();
-		switch (axis) {
-			case X:
-				return Math.max(matrix.m00, Math.max(matrix.m01, matrix.m02)) * halfExtents.x + center.x;
-			case Y:
-				return Math.max(matrix.m10, Math.max(matrix.m11, matrix.m12)) * halfExtents.y + center.y;
-			case Z:
-				return Math.max(matrix.m20, Math.max(matrix.m21, matrix.m22)) * halfExtents.z + center.z;
-		}
-		throw new NullPointerException();
-	}
-
-	public double getMin(final Direction.Axis axis) {
-		final Matrix3d matrix = getMatrix();
-		switch (axis) {
-			case X:
-				return Math.min(matrix.m00, Math.min(matrix.m01, matrix.m02)) * halfExtents.x + center.x;
-			case Y:
-				return Math.min(matrix.m10, Math.min(matrix.m11, matrix.m12)) * halfExtents.y + center.y;
-			case Z:
-				return Math.min(matrix.m20, Math.min(matrix.m21, matrix.m22)) * halfExtents.z + center.z;
-		}
-		throw new NullPointerException();
-	}
-
-	public OrientedBox expand(double x, double y, double z) {
-		if(x==0 && y==0 && z==0) {
-			return this;
-		}
-		return new OrientedBox(center, halfExtents.add(x/2,y/2,z/2), rotation, matrix, inverse, basis);
+		// One-dimensional intersection test between a and b
+		double longSpan = Math.max(aMax, bMax) - Math.min(aMin, bMin);
+		double sumSpan = aMax - aMin + bMax - bMin;
+		return longSpan >= sumSpan; // > to treat touching as intersection
 	}
 }

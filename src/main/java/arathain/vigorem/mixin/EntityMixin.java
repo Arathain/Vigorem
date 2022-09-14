@@ -2,20 +2,12 @@ package arathain.vigorem.mixin;
 
 import arathain.vigorem.VigoremComponents;
 import arathain.vigorem.anim.AnimationComponent;
-import arathain.vigorem.anim.box.RotatableEntityPart;
-import dev.onyxstudios.cca.api.v3.component.ComponentAccess;
-import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MovementType;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Entity.class)
 public class EntityMixin {
@@ -30,10 +22,4 @@ public class EntityMixin {
 		return value;
 	}
 
-	@Inject(method = "getBoundingBox", at = @At("HEAD"), cancellable = true)
-	private void vigorem$box(CallbackInfoReturnable<Box> cir) {
-		if(((Entity)(Object)this) instanceof RotatableEntityPart<?> r) {
-			cir.setReturnValue(r.getBox());
-		}
-	}
 }

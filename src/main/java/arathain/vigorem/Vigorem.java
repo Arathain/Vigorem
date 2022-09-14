@@ -3,7 +3,6 @@ package arathain.vigorem;
 import arathain.vigorem.anim.AnimationPacket;
 import arathain.vigorem.init.Animations;
 import arathain.vigorem.test.BrickShithouseHammerItem;
-import arathain.vigorem.test.TPoseAnimation;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.minecraft.item.Items;
 import net.minecraft.util.Identifier;

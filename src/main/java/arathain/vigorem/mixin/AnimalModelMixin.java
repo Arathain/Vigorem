@@ -13,6 +13,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.decoration.painting.PaintingEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.Vec3f;
+import org.quiltmc.qsl.entity.multipart.api.AbstractEntityPart;
+import org.quiltmc.qsl.entity.multipart.api.MultipartEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;

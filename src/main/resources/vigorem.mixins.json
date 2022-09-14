@@ -7,17 +7,13 @@
     "AnimalModelMixin",
     "ArrayVoxelShapeInvoker",
     "BipedEntityModelMixin",
-    "BoxMixin",
     "ClientPlayerEntityMixin",
-    "CreeperEntityMixin",
     "EntityMixin",
     "LivingEntityMixin",
     "ModelPartMixin",
     "PlayerEntityMixin",
     "PlayerEntityModelMixin",
-    "PlayerEntityRendererMixin",
-    "VoxelShapeMixin",
-    "VoxelShapesMixin"
+    "PlayerEntityRendererMixin"
   ],
   "client": [
     "ArmorFeatureRendererMixin",
