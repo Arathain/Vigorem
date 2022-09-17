@@ -38,7 +38,7 @@ public abstract class HeldItemFeatureRendererMixin<T extends LivingEntity, M ext
 				Vec3f rot = anim.getRot(arm == Arm.LEFT ? "left_hand" : "right_hand", MinecraftClient.getInstance().getTickDelta());
 				Vec3f pivot = anim.getPivot(arm == Arm.RIGHT ? "right_hand" : "left_hand", MinecraftClient.getInstance().getTickDelta());
 
-				matrices.translate(pivot.getX(), pivot.getY(), pivot.getZ());
+				matrices.translate(pivot.getX()/16f, pivot.getY()/16f, pivot.getZ()/16f);
 				matrices.multiply(Vec3f.POSITIVE_Z.getRadialQuaternion(rot.getZ()));
 				matrices.multiply(Vec3f.POSITIVE_Y.getRadialQuaternion(rot.getY()));
 				matrices.multiply(Vec3f.POSITIVE_X.getRadialQuaternion(rot.getX()));

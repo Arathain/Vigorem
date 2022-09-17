@@ -19,6 +19,7 @@
     "ArmorFeatureRendererMixin",
     "BipedEntityModelMixin",
     "ClientPlayerEntityMixin",
+    "DebugRendererMixin",
     "EntityRenderDispatcherMixin",
     "HeldItemFeatureRendererMixin",
     "HeldItemRendererMixin",

@@ -2,6 +2,8 @@ package arathain.vigorem.mixin;
 
 import arathain.vigorem.VigoremComponents;
 import arathain.vigorem.anim.AnimationComponent;
+import com.mojang.blaze3d.texture.NativeImage;
+import net.minecraft.client.texture.PlayerSkinTexture;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MovementType;
 import net.minecraft.util.math.Vec3d;
