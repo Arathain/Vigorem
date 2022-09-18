@@ -1,33 +1,27 @@
 package arathain.vigorem.test;
 
 import arathain.vigorem.Vigorem;
-import arathain.vigorem.anim.Animation;
 import arathain.vigorem.anim.Keyframe;
-import arathain.vigorem.api.WeaponAnimation;
-import net.minecraft.block.AnvilBlock;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.FlowerBlock;
-import net.minecraft.client.render.WorldRenderer;
+import arathain.vigorem.api.ColliderAnimation;
+import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.render.Camera;
+import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.mob.IllagerEntity;
-import net.minecraft.entity.mob.RavagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.WorldEvents;
-import net.minecraft.world.explosion.Explosion;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public class SmashAnimation extends WeaponAnimation {
+public class SmashAnimation extends ColliderAnimation {
 	private final boolean right;
 	public SmashAnimation(int length, Map<String, List<Keyframe>> keyframes, boolean right) {
 		super(length, keyframes);
@@ -87,5 +81,10 @@ public class SmashAnimation extends WeaponAnimation {
 	@Override
 	public void damage(Entity entity) {
 		System.out.println(entity.getDisplayName().getString());
+	}
+
+	@Override
+	public void render(MatrixStack matrices, VertexConsumerProvider.Immediate vertexConsumers, ClientPlayerEntity player, Camera camera) {
+
 	}
 }

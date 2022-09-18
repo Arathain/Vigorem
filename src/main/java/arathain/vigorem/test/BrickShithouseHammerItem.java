@@ -23,11 +23,11 @@ public class BrickShithouseHammerItem extends AnimatingWeaponItem {
 
 	@Override
 	public Vec3d getHitbox() {
-		return new Vec3d(1, 0.4, 0.4).multiply(2);
+		return new Vec3d(0.3, 0.3, 0.75);
 	}
 
 	@Override
 	public Vec3d getHitboxOffset() {
-		return new Vec3d(0, 2, 0);
+		return new Vec3d(0, 1, 0);
 	}
 }

@@ -57,8 +57,8 @@ public class OrientedBox {
 	public OrientedBox(Vec3d center, Vec3d size, float yaw, float pitch, float roll) {
 		this.center = center;
 		this.extent = new Vec3d(size.x/2.0, size.y/2.0, size.z/2.0);
-		this.axisZ = Vec3d.fromPolar(yaw, pitch).normalize();
-		this.axisY = Vec3d.fromPolar(yaw + 90, pitch).negate().rotateZ(roll).normalize();
+		this.axisZ = Vec3d.fromPolar(yaw, pitch).rotateZ(roll * (float) (Math.PI / 180.0)).normalize();
+		this.axisY = Vec3d.fromPolar(yaw + 90, pitch).negate().rotateZ(roll * (float) (Math.PI / 180.0)).normalize();
 		this.axisX = axisZ.crossProduct(axisY);
 	}
 
