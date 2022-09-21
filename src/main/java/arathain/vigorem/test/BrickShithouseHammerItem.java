@@ -2,7 +2,9 @@ package arathain.vigorem.test;
 
 import arathain.vigorem.Vigorem;
 import arathain.vigorem.api.AnimatingWeaponItem;
+import net.minecraft.client.render.entity.model.EndermanEntityModel;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Arm;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
@@ -17,16 +19,14 @@ public class BrickShithouseHammerItem extends AnimatingWeaponItem {
 	}
 
 	@Override
-	public Identifier getAnimId(AttackType type, boolean rightClick, Arm arm) {
+	public Identifier getAnimId(PlayerEntity player, AttackType type, boolean rightClick, Arm arm) {
 		return Vigorem.id(arm == Arm.RIGHT ? "smash_right" : "smash_left");
 	}
 
-	@Override
 	public Vec3d getHitbox() {
 		return new Vec3d(0.3, 0.3, 0.75);
 	}
 
-	@Override
 	public Vec3d getHitboxOffset() {
 		return new Vec3d(0, 1, 0);
 	}

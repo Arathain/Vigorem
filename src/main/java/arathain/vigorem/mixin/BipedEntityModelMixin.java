@@ -6,6 +6,7 @@ import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Arm;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -44,8 +45,10 @@ public class BipedEntityModelMixin<T extends LivingEntity> {
 	}
 	@Inject(method = "setAngles(Lnet/minecraft/entity/LivingEntity;FFFFF)V", at = @At("TAIL"))
 	private void vigorem$e(T livingEntity, float f, float g, float h, float i, float j, CallbackInfo ci) {
-		this.body.setPivot(0, 12, 0);
-		((OffsetModelPart)(Object)this.body).setOffset(0, -12, 0);
+		if(livingEntity instanceof PlayerEntity) {
+			this.body.setPivot(0, 12, 0);
+			((OffsetModelPart) (Object) this.body).setOffset(0, -12, 0);
+		}
 	}
 	@Inject(method = "setArmAngle", at = @At("TAIL"))
 	private void vigorem$setArmAngle(Arm arm, MatrixStack matrices, CallbackInfo ci) {

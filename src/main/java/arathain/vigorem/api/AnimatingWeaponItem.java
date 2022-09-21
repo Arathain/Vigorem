@@ -1,6 +1,7 @@
 package arathain.vigorem.api;
 
 import arathain.vigorem.Vigorem;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.util.Arm;
 import net.minecraft.util.Hand;
@@ -13,10 +14,7 @@ public abstract class AnimatingWeaponItem extends Item {
 	public AnimatingWeaponItem(Settings settings) {
 		super(settings);
 	}
-	public abstract Identifier getAnimId(AttackType type, boolean rightClick, Arm arm);
-
-	public abstract Vec3d getHitbox();
-	public abstract Vec3d getHitboxOffset();
+	public abstract Identifier getAnimId(PlayerEntity player, AttackType type, boolean rightClick, Arm arm);
 	public enum AttackType {
 		NORMAL,
 		SHIFT,

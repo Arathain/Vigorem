@@ -6,6 +6,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.entity.model.AnimalModel;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
+import net.minecraft.client.render.entity.model.EndermanEntityModel;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.world.ClientWorld;
@@ -58,7 +59,7 @@ public class AnimalModelMixin {
 	}
 	@ModifyArgs(method = "render(Lnet/minecraft/client/util/math/MatrixStack;Lcom/mojang/blaze3d/vertex/VertexConsumer;IIFFFF)V", at = @At(value = "INVOKE", target = "Ljava/lang/Iterable;forEach(Ljava/util/function/Consumer;)V"))
 	private void vigorem$doublethecursed(Args args) {
-		if(((AnimalModel)(Object)this) instanceof BipedEntityModel<?> biped) {
+		if(((AnimalModel)(Object)this) instanceof BipedEntityModel<?> biped && !(biped instanceof EndermanEntityModel)) {
 			args.set(0, ((Consumer<ModelPart>)(headPart) -> {
 				MatrixStack temp = matrices.get();
 				temp.push();

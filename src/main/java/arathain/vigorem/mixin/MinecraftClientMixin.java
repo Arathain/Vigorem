@@ -34,7 +34,7 @@ public abstract class MinecraftClientMixin {
 	private void vigorem$doAttack(CallbackInfoReturnable<Boolean> info) {
 		MinecraftClient client = (MinecraftClient)((Object)this);
 		if (client.player.getMainHandStack().getItem() instanceof AnimatingWeaponItem anim && (player.getPose().equals(STANDING) || player.getPose().equals(CROUCHING))) {
-			AnimationPacket.send(anim.getAnimId(client.player.isSneaking() ? NORMAL : SHIFT, false, client.player.getMainArm()));
+			AnimationPacket.send(anim.getAnimId(client.player, client.player.isSneaking() ? NORMAL : SHIFT, false, client.player.getMainArm()));
 			info.setReturnValue(false);
 			info.cancel();
 		}
