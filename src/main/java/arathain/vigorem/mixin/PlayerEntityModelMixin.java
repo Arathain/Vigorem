@@ -28,6 +28,7 @@ public abstract class PlayerEntityModelMixin<T extends LivingEntity> extends Bip
 	private void vigorem$angles(T livingEntity, float f, float g, float h, float i, float j, CallbackInfo ci) {
 		if (livingEntity instanceof PlayerEntity plr && plr.getComponent(VigoremComponents.ANIMATION).current != null) {
 			plr.getComponent(VigoremComponents.ANIMATION).current.setModelAngles(((PlayerEntityModel<AbstractClientPlayerEntity>) (Object) this), plr, g);
+			this.hat.copyTransform(this.head);
 			if (plr.getComponent(VigoremComponents.ANIMATION).current.shouldRemove()) {
 				this.getBodyParts().forEach(part -> ((OffsetModelPart) (Object) part).setOffset(0, 0, 0));
 				this.getHeadParts().forEach(part -> ((OffsetModelPart) (Object) part).setOffset(0, 0, 0));
