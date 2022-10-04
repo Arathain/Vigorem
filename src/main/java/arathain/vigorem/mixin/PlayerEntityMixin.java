@@ -16,7 +16,7 @@ public abstract class PlayerEntityMixin extends LivingEntity {
 		super(entityType, world);
 	}
 
-	@Inject(method = "tick", at = @At("HEAD"))
+	@Inject(method = "tick", at = @At("TAIL"))
 	public void vigorem$tick(CallbackInfo info) {
 		if(!world.isClient) {
 			this.getComponent(VigoremComponents.ANIMATION).serverTick();
