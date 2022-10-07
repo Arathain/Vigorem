@@ -104,11 +104,12 @@ public class MirrorableAnimation extends Animation {
 
 	@Override
 	protected void setPartAngles(ModelPart part, Keyframe prev, Keyframe next, float tickDelta, boolean same) {
+		if(this.mirrored) {
+			prev = new Keyframe(prev.easing, prev.translation, new Vec3f(prev.rotation.getX(), -prev.rotation.getY(), -prev.rotation.getZ()), prev.scale, prev.offset, prev.frame, prev.override);
+			next = new Keyframe(next.easing, next.translation, new Vec3f(next.rotation.getX(), -next.rotation.getY(), -next.rotation.getZ()), next.scale, next.offset, next.frame, next.override);
+		}
 		if(same) {
 			part.setAngles(prev.rotation.getX() + (!prev.override ? part.pitch : 0),prev.rotation.getY() + (!prev.override ? part.yaw : 0), prev.rotation.getZ() + (!prev.override ? part.roll : 0));
-			if(this.mirrored) {
-				part.setAngles(part.pitch, -part.yaw, -part.roll);
-			}
 			part.setPivot(part.pivotX + prev.translation.getX(), part.pivotY + prev.translation.getY(), part.pivotZ + prev.translation.getZ());
 			part.scaleX = 1 + prev.scale.getX();
 			part.scaleY = 1 + prev.scale.getY();
@@ -117,9 +118,6 @@ public class MirrorableAnimation extends Animation {
 		} else {
 			float percentage = (this.frame + tickDelta - prev.frame) / ((float) next.frame - prev.frame);
 			part.setAngles(MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.rotation.getX() + (!prev.override ? part.pitch : 0), next.rotation.getX() + (!next.override ? part.pitch : 0)), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.rotation.getY() + (!prev.override ? part.yaw : 0), next.rotation.getY() + (!next.override ? part.yaw : 0)), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.rotation.getZ() + (!prev.override ? part.roll : 0), next.rotation.getZ() + (!next.override ? part.roll : 0)));
-			if(this.mirrored) {
-				part.setAngles(part.pitch, -part.yaw, -part.roll);
-			}
 			part.setPivot(part.pivotX + MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.translation.getX(), next.translation.getX()), part.pivotY + MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.translation.getY(), next.translation.getY()), part.pivotZ + MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.translation.getZ(), next.translation.getZ()));
 			part.scaleX = 1 + MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.scale.getX(), next.scale.getX());
 			part.scaleY = 1 + MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.scale.getY(), next.scale.getY());
