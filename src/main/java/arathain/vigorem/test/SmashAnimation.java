@@ -3,6 +3,7 @@ package arathain.vigorem.test;
 import arathain.vigorem.Vigorem;
 import arathain.vigorem.anim.Keyframe;
 import arathain.vigorem.api.ColliderAnimation;
+import arathain.vigorem.api.MirrorableAnimation;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -21,15 +22,13 @@ import net.minecraft.util.math.Vec3d;
 import java.util.List;
 import java.util.Map;
 
-public class SmashAnimation extends ColliderAnimation {
-	private final boolean right;
+public class SmashAnimation extends MirrorableAnimation {
 	public SmashAnimation(int length, Map<String, List<Keyframe>> keyframes, boolean right) {
-		super(length, keyframes);
-		this.right = right;
+		super(length, keyframes, right);
 	}
 	@Override
 	public Identifier getId() {
-		return Vigorem.id(right ? "smash_right" : "smash_left");
+		return Vigorem.id(mirrored ? "smash_left" : "smash_right");
 	}
 
 	@Override
@@ -76,15 +75,5 @@ public class SmashAnimation extends ColliderAnimation {
 				}
 			});
 		}
-	}
-
-	@Override
-	public void damage(Entity entity) {
-		System.out.println(entity.getDisplayName().getString());
-	}
-
-	@Override
-	public void render(MatrixStack matrices, VertexConsumerProvider.Immediate vertexConsumers, ClientPlayerEntity player, Camera camera) {
-
 	}
 }

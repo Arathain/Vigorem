@@ -18,7 +18,6 @@ import java.util.function.Supplier;
 public class Animations {
 	private static final Map<Identifier, Supplier<Animation>> ANIMATIONS = new HashMap<>();
 	private static final Map<String, List<Keyframe>> TPOSE = new HashMap<>();
-	private static final Map<String, List<Keyframe>> SMASH_L = new HashMap<>();
 	private static final Map<String, List<Keyframe>> SMASH_R = new HashMap<>();
 	public static void init() {
 		List<Keyframe> cache = new ArrayList<>();
@@ -47,7 +46,6 @@ public class Animations {
 		cache.add(new Keyframe(Easing.LINEAR, Vec3f.ZERO, new Vec3f(0.9354f, 0, 0), Vec3f.ZERO,  new Vec3f(0, -12, 0), 20));
 		cache.add(new Keyframe(Easing.QUAD_IN_OUT, Vec3f.ZERO, new Vec3f(0.9354f, 0, 0), Vec3f.ZERO,  new Vec3f(0, -12, 0), 25));
 		cache.add(new Keyframe(Easing.QUAD_IN_OUT, Vec3f.ZERO, new Vec3f(0f, 0, 0), Vec3f.ZERO,  new Vec3f(0, -12, 0), 33));
-		SMASH_L.put("body", new ArrayList<>(cache));
 		SMASH_R.put("body", new ArrayList<>(cache));
 		cache.clear();
 		cache.add(new Keyframe(Easing.CUBIC_IN, Vec3f.ZERO, Vec3f.ZERO, Vec3f.ZERO, Vec3f.ZERO, 0));
@@ -57,7 +55,6 @@ public class Animations {
 		cache.add(new Keyframe(Easing.LINEAR, Vec3f.ZERO, new Vec3f(0.5817f, 0.383f, 0.465f), Vec3f.ZERO,  Vec3f.ZERO, 20));
 		cache.add(new Keyframe(Easing.QUAD_IN_OUT, Vec3f.ZERO, new Vec3f(0.5817f, 0.383f, 0.465f), Vec3f.ZERO, Vec3f.ZERO, 25));
 		cache.add(new Keyframe(Easing.QUAD_IN_OUT, Vec3f.ZERO, Vec3f.ZERO, Vec3f.ZERO, Vec3f.ZERO, 33));
-		SMASH_L.put("right_arm", new ArrayList<>(cache));
 		SMASH_R.put("left_arm", new ArrayList<>(cache));
 		cache.clear();
 		cache.add(new Keyframe(Easing.CUBIC_IN, Vec3f.ZERO, Vec3f.ZERO, Vec3f.ZERO, Vec3f.ZERO, 0));
@@ -70,15 +67,6 @@ public class Animations {
 		SMASH_R.put("right_arm", new ArrayList<>(cache));
 		cache.clear();
 		cache.add(new Keyframe(Easing.CUBIC_IN, Vec3f.ZERO, Vec3f.ZERO, Vec3f.ZERO, Vec3f.ZERO, 0));
-		cache.add(new Keyframe(Easing.EXPO_OUT, Vec3f.ZERO, new Vec3f(-1.204f, 0.09f, -0.09f), Vec3f.ZERO, Vec3f.ZERO, 4));
-		cache.add(new Keyframe(Easing.EXPO_IN, Vec3f.ZERO, new Vec3f(-2.456f, 0.175f, -0.175f), Vec3f.ZERO, Vec3f.ZERO, 8));
-		cache.add(new Keyframe(Easing.SINE_OUT, Vec3f.ZERO, new Vec3f(-1.702f, 0.09f, -0.47f), Vec3f.ZERO,  Vec3f.ZERO, 15));
-		cache.add(new Keyframe(Easing.LINEAR, Vec3f.ZERO, new Vec3f(-1.7745f, -0.06f, -0.40f), Vec3f.ZERO,  Vec3f.ZERO, 20));
-		cache.add(new Keyframe(Easing.QUAD_IN_OUT, Vec3f.ZERO, new Vec3f(-1.7745f, -0.06f, -0.40f), Vec3f.ZERO, Vec3f.ZERO, 25));
-		cache.add(new Keyframe(Easing.QUAD_IN_OUT, Vec3f.ZERO, Vec3f.ZERO, Vec3f.ZERO, Vec3f.ZERO, 33));
-		SMASH_L.put("left_arm", new ArrayList<>(cache));
-		cache.clear();
-		cache.add(new Keyframe(Easing.CUBIC_IN, Vec3f.ZERO, Vec3f.ZERO, Vec3f.ZERO, Vec3f.ZERO, 0));
 		cache.add(new Keyframe(Easing.EXPO_IN, Vec3f.ZERO, Vec3f.ZERO, Vec3f.ZERO, Vec3f.ZERO, 8));
 		cache.add(new Keyframe(Easing.SINE_OUT, Vec3f.ZERO, new Vec3f(-0.95f, 0, 0), Vec3f.ZERO,  Vec3f.ZERO, 15));
 		cache.add(new Keyframe(Easing.LINEAR, Vec3f.ZERO, new Vec3f(-0.9f, 0, 0), Vec3f.ZERO,  Vec3f.ZERO, 20));
@@ -87,21 +75,12 @@ public class Animations {
 		SMASH_R.put("right_hand", new ArrayList<>(cache));
 		cache.clear();
 		cache.add(new Keyframe(Easing.CUBIC_IN, Vec3f.ZERO, Vec3f.ZERO, Vec3f.ZERO, Vec3f.ZERO, 0));
-		cache.add(new Keyframe(Easing.EXPO_IN, Vec3f.ZERO, Vec3f.ZERO, Vec3f.ZERO, Vec3f.ZERO, 8));
-		cache.add(new Keyframe(Easing.SINE_OUT, Vec3f.ZERO, new Vec3f(-0.95f, 0, 0), Vec3f.ZERO,  Vec3f.ZERO, 15));
-		cache.add(new Keyframe(Easing.LINEAR, Vec3f.ZERO, new Vec3f(-0.9f, 0, 0), Vec3f.ZERO,  Vec3f.ZERO, 20));
-		cache.add(new Keyframe(Easing.QUAD_IN_OUT, Vec3f.ZERO, new Vec3f(-0.9f, 0, 0), Vec3f.ZERO, Vec3f.ZERO, 25));
-		cache.add(new Keyframe(Easing.QUAD_IN_OUT, Vec3f.ZERO, Vec3f.ZERO, Vec3f.ZERO, Vec3f.ZERO, 33));
-		SMASH_L.put("left_hand", new ArrayList<>(cache));
-		cache.clear();
-		cache.add(new Keyframe(Easing.CUBIC_IN, Vec3f.ZERO, Vec3f.ZERO, Vec3f.ZERO, Vec3f.ZERO, 0));
 		cache.add(new Keyframe(Easing.EXPO_OUT, Vec3f.ZERO, new Vec3f(0f, -0.0445f, 0f), Vec3f.ZERO, Vec3f.ZERO, 3));
 		cache.add(new Keyframe(Easing.CUBIC_IN, Vec3f.ZERO,new Vec3f(0f, -0.087266f, 0f), Vec3f.ZERO, Vec3f.ZERO, 7));
 		cache.add(new Keyframe(Easing.SINE_OUT, Vec3f.ZERO, new Vec3f(-0.087266f, 0.087266f, 0f), Vec3f.ZERO,  Vec3f.ZERO, 16));
 		cache.add(new Keyframe(Easing.LINEAR, Vec3f.ZERO, new Vec3f(-0.0775f, 0.06789f, 0f), Vec3f.ZERO,  Vec3f.ZERO, 21));
 		cache.add(new Keyframe(Easing.QUAD_IN_OUT, Vec3f.ZERO, new Vec3f(-0.0775f, 0.06789f, 0f), Vec3f.ZERO, Vec3f.ZERO, 26));
 		cache.add(new Keyframe(Easing.QUAD_IN_OUT, Vec3f.ZERO, Vec3f.ZERO, Vec3f.ZERO, Vec3f.ZERO, 33));
-		SMASH_L.put("left_leg", new ArrayList<>(cache));
 		SMASH_R.put("right_leg", new ArrayList<>(cache));
 		cache.clear();
 		cache.add(new Keyframe(Easing.CUBIC_IN, Vec3f.ZERO, Vec3f.ZERO, Vec3f.ZERO, Vec3f.ZERO, 0));
@@ -112,12 +91,11 @@ public class Animations {
 		cache.add(new Keyframe(Easing.LINEAR, Vec3f.ZERO, new Vec3f(-0.3103f, 0f, 0.0534f), Vec3f.ZERO,  new Vec3f(0, 0.067f, -2f), 15));
 		cache.add(new Keyframe(Easing.QUAD_IN_OUT, Vec3f.ZERO, new Vec3f(-0.3103f, 0f, 0.0534f), Vec3f.ZERO,  new Vec3f(0, 0.067f, -2f), 25));
 		cache.add(new Keyframe(Easing.QUAD_IN_OUT, Vec3f.ZERO, Vec3f.ZERO, Vec3f.ZERO, Vec3f.ZERO, 33));
-		SMASH_L.put("right_leg", new ArrayList<>(cache));
 		SMASH_R.put("left_leg", new ArrayList<>(cache));
 		cache.clear();
 
-		put(Vigorem.id("smash_left"), () -> new SmashAnimation(33, SMASH_L, false));
-		put(Vigorem.id("smash_right"), () -> new SmashAnimation(33, SMASH_R, true));
+		put(Vigorem.id("smash_left"), () -> new SmashAnimation(33, SMASH_R, true));
+		put(Vigorem.id("smash_right"), () -> new SmashAnimation(33, SMASH_R, false));
 		put(Vigorem.id("t_pose"), () -> new TPoseAnimation(40, TPOSE));
 	}
 	public static void put(Identifier id, Supplier<Animation> anim) {

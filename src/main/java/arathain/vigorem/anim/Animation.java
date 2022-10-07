@@ -177,7 +177,7 @@ public abstract class Animation {
 			}
 		}
 	}
-	private Vec3f getRot(Keyframe prev, Keyframe next, float tickDelta, boolean same) {
+	protected Vec3f getRot(Keyframe prev, Keyframe next, float tickDelta, boolean same) {
 		if(same) {
 			return new Vec3f(prev.rotation.getX(),prev.rotation.getY(), prev.rotation.getZ());
 		} else {
@@ -185,7 +185,7 @@ public abstract class Animation {
 			return new Vec3f(MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.rotation.getX(), next.rotation.getX()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.rotation.getY(), next.rotation.getY()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.rotation.getZ(), next.rotation.getZ()));
 		}
 	}
-	private Vec3f getPivot(Keyframe prev, Keyframe next, float tickDelta, boolean same) {
+	protected Vec3f getPivot(Keyframe prev, Keyframe next, float tickDelta, boolean same) {
 		if(same) {
 			return new Vec3f(prev.translation.getX(), prev.translation.getY(), prev.translation.getZ());
 		} else {
@@ -193,7 +193,7 @@ public abstract class Animation {
 			return new Vec3f(MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.translation.getX(), next.translation.getX()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.translation.getY(), next.translation.getY()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.translation.getZ(), next.translation.getZ()));
 		}
 	}
-	private void setPartAngles(ModelPart part, Keyframe prev, Keyframe next, float tickDelta, boolean same) {
+	protected void setPartAngles(ModelPart part, Keyframe prev, Keyframe next, float tickDelta, boolean same) {
 		if(same) {
 			part.setAngles(prev.rotation.getX() + (!prev.override ? part.pitch : 0),prev.rotation.getY() + (!prev.override ? part.yaw : 0), prev.rotation.getZ() + (!prev.override ? part.roll : 0));
 			part.setPivot(part.pivotX + prev.translation.getX(), part.pivotY + prev.translation.getY(), part.pivotZ + prev.translation.getZ());
