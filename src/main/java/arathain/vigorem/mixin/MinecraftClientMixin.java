@@ -3,9 +3,12 @@ package arathain.vigorem.mixin;
 import arathain.vigorem.VigoremComponents;
 import arathain.vigorem.anim.AnimationPacket;
 import arathain.vigorem.api.AnimatingWeaponItem;
+import com.llamalad7.mixinextras.injector.WrapWithCondition;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.KeyBind;
+import net.minecraft.network.Packet;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
 import org.spongepowered.asm.mixin.Mixin;
@@ -38,6 +41,14 @@ public abstract class MinecraftClientMixin {
 			info.setReturnValue(false);
 			info.cancel();
 		}
+	}
+
+	@WrapWithCondition(
+			method = "handleInputEvents",
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayNetworkHandler;sendPacket(Lnet/minecraft/network/Packet;)V")
+	)
+	private boolean charter$hand(ClientPlayNetworkHandler instance, Packet packet) {
+		return player != null && !(player.getComponent(VigoremComponents.ANIMATION).current != null && player.getComponent(VigoremComponents.ANIMATION).current.lockHeldItem());
 	}
 
 }

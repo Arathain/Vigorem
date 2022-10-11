@@ -54,6 +54,9 @@ public abstract class Animation {
 	public boolean isBlockingMovement() {
 		return false;
 	}
+	public boolean lockHeldItem(){
+		return false;
+	}
 
 	public Vec3f getRot(String query, float tickDelta) {
 		if(!keyframes.containsKey(query)) {

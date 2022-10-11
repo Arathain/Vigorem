@@ -13,7 +13,9 @@
     "ModelPartMixin",
     "PlayerEntityMixin",
     "PlayerEntityModelMixin",
-    "PlayerEntityRendererMixin"
+    "PlayerEntityRendererMixin",
+    "PlayerInventoryMixin",
+    "SlotMixin"
   ],
   "client": [
     "ArmorFeatureRendererMixin",

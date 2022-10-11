@@ -40,6 +40,11 @@ public class SmashAnimation extends MirrorableAnimation {
 	}
 
 	@Override
+	public boolean lockHeldItem() {
+		return true;
+	}
+
+	@Override
 	public boolean isBlockingMovement() {
 		return true;
 	}
