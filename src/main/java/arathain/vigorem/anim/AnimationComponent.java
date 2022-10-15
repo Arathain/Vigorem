@@ -14,7 +14,7 @@ public class AnimationComponent implements AutoSyncedComponent {
 	@Nullable
 	public Animation current;
 	@Nullable
-	private Animation queued;
+	public Animation queued;
 	private final PlayerEntity obj;
 
 	public AnimationComponent(PlayerEntity player) {
