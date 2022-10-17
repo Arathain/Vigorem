@@ -3,10 +3,10 @@ package arathain.vigorem.anim;
 import arathain.vigorem.VigoremComponents;
 import arathain.vigorem.init.Animations;
 import dev.onyxstudios.cca.api.v3.component.sync.AutoSyncedComponent;
-import net.minecraft.client.render.entity.model.PlayerEntityModel;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 
@@ -56,11 +56,12 @@ public class AnimationComponent implements AutoSyncedComponent {
 	public void queue(Animation anim) {
 		if(anim != null) {
 			this.queued = anim;
+			sync();
 		}
 	}
 
 	@Override
-	public void writeToNbt(NbtCompound tag) {
+	public void writeToNbt(@NotNull NbtCompound tag) {
 		if(current != null) {
 			tag.putString("namespace", current.getId().getNamespace());
 			tag.putString("path", current.getId().getPath());
