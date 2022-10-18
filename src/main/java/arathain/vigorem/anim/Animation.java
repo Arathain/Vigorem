@@ -51,6 +51,9 @@ public abstract class Animation {
 	public float getMovementMultiplier() {
 		return 1;
 	}
+	public boolean isAffectingGravity() {
+		return false;
+	}
 	public boolean isBlockingMovement() {
 		return false;
 	}

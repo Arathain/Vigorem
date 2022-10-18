@@ -29,7 +29,8 @@ public class AnimationComponent implements AutoSyncedComponent {
 				this.queued = null;
 			}
 			sync();
-		} else {
+		}
+		if(current == null) {
 			if(this.queued != null) {
 				this.current = this.queued;
 				this.queued = null;
@@ -41,7 +42,13 @@ public class AnimationComponent implements AutoSyncedComponent {
 		if(current != null) {
 			this.current.tick();
 			this.current.clientTick(obj);
-			if(this.current.shouldRemove()) {
+			if(this.current.shouldRemove()  || this.current.canCancel()) {
+				this.current = this.queued;
+				this.queued = null;
+			}
+		}
+		if(current == null) {
+			if(this.queued != null) {
 				this.current = this.queued;
 				this.queued = null;
 			}

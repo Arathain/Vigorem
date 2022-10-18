@@ -18,7 +18,7 @@ public class EntityMixin {
 		if (movementType == MovementType.SELF) {
 			AnimationComponent component = VigoremComponents.ANIMATION.getNullable(this);
 			if (component != null && component.current != null) {
-				return value.multiply(component.current.getMovementMultiplier(), 1, component.current.getMovementMultiplier());
+				return value.multiply(component.current.getMovementMultiplier(), component.current.isAffectingGravity() ? component.current.getMovementMultiplier() : 1, component.current.getMovementMultiplier());
 			}
 		}
 		return value;
