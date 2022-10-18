@@ -42,7 +42,8 @@ public class AnimationComponent implements AutoSyncedComponent {
 			this.current.tick();
 			this.current.clientTick(obj);
 			if(this.current.shouldRemove()) {
-				this.current = null;
+				this.current = this.queued;
+				this.queued = null;
 			}
 		}
 	}
