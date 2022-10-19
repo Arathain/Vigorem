@@ -79,7 +79,7 @@ public class AnimationComponent implements AutoSyncedComponent {
 			tag.putInt("time", current.frame);
 		}
 		if(queued != null) {
-			tag.putString("Quu", current.getId().toString());
+			tag.putString("Quu", queued.getId().toString());
 		}
 	}
 	public void sync() {
