@@ -59,12 +59,21 @@ public class AnimationComponent implements AutoSyncedComponent {
 		if(tag.contains("namespace") && Animations.getAnimation(new Identifier(tag.getString("namespace"), tag.getString("path"))) != null) {
 			this.current = Animations.getAnimation(new Identifier(tag.getString("namespace"), tag.getString("path")));
 			this.current.setFrame(tag.getInt("time"));
+		} else {
+			this.current = null;
 		}
 		if(tag.contains("Quu") && Animations.getAnimation(new Identifier(tag.getString("Quu"))) != null) {
 			this.queued = Animations.getAnimation(new Identifier(tag.getString("Quu")));
+		} else {
+			this.queued = null;
 		}
 	}
 	public void queue(Animation anim) {
+		if(current == null || ((current.getLength() - current.frame) <= Math.max(10, current.getLength()/5))) {
+			queueUnconditional(anim);
+		}
+	}
+	public void queueUnconditional(Animation anim) {
 		if(anim != null) {
 			this.queued = anim;
 			sync();

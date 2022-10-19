@@ -34,6 +34,10 @@ public abstract class Animation {
 		this.frame++;
 	}
 
+	public int getLength() {
+		return length;
+	}
+
 	public void setFrame(int frame) {
 		this.frame = frame;
 	}
