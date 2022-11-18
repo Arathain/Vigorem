@@ -27,6 +27,8 @@ public abstract class PlayerEntityModelMixin<T extends LivingEntity> extends Bip
 	@Inject(method = "setAngles(Lnet/minecraft/entity/LivingEntity;FFFFF)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/model/ModelPart;copyTransform(Lnet/minecraft/client/model/ModelPart;)V", ordinal = 0))
 	private void vigorem$angles(T livingEntity, float f, float g, float h, float i, float j, CallbackInfo ci) {
 		if (livingEntity instanceof PlayerEntity plr && plr.getComponent(VigoremComponents.ANIMATION).current != null) {
+			this.rightLeg.pivotX = -1.9f;
+			this.leftLeg.pivotX = 1.9f;
 			plr.getComponent(VigoremComponents.ANIMATION).current.setModelAngles(((PlayerEntityModel<AbstractClientPlayerEntity>) (Object) this), plr, g);
 			this.hat.copyTransform(this.head);
 			if (plr.getComponent(VigoremComponents.ANIMATION).current.shouldRemove()) {

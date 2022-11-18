@@ -51,8 +51,6 @@ public class BipedEntityModelMixin<T extends LivingEntity> {
 			this.body.pitch += 0.5f;
 			this.head.pitch -= 0.5f;
 			this.body.pivotX = 3.2F;
-			this.rightLeg.pivotX = -1.9f;
-			this.leftLeg.pivotX = 1.9f;
 		}
 	}
 	@Inject(method = "setAngles(Lnet/minecraft/entity/LivingEntity;FFFFF)V", at = @At("TAIL"))
