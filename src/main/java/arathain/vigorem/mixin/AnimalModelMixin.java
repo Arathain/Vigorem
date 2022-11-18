@@ -68,7 +68,7 @@ public class AnimalModelMixin {
 					b = headPart.equals(p.leftSleeve) || headPart.equals(p.rightSleeve);
 				}
 				if(b) {
-					((CrackCocaine)(Object)headPart).setParent(() -> biped.body, headPart.equals(biped.head) || headPart.equals(biped.hat) || ((OffsetModelPart)(Object)biped.head).isChild(headPart));
+					((CrackCocaine)(Object)headPart).setParent(() -> biped.body);
 				}
 				headPart.render(temp, vertices, light, overlay, red, green, blue, alpha);
 				temp.pop();

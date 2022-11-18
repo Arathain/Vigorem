@@ -32,8 +32,6 @@ public class ModelPartMixin implements OffsetModelPart, CrackCocaine {
 	public float offsetZ = 0;
 	@Unique
 	private Supplier<ModelPart> parent = () -> null;
-	@Unique
-	boolean preserveRot = false;
 
 	@Shadow
 	@Final
@@ -75,7 +73,7 @@ public class ModelPartMixin implements OffsetModelPart, CrackCocaine {
 	@Inject(method = "rotate(Lnet/minecraft/client/util/math/MatrixStack;)V", at = @At("HEAD"))
 	public void vigorem$protato(MatrixStack matrix, CallbackInfo ci) {
 		if(this.parent.get() != null) {
-			act(parent.get(), matrix, preserveRot);
+			act(parent.get(), matrix);
 		}
 	}
 	@Inject(method = "copyTransform", at = @At("TAIL"))
@@ -91,12 +89,11 @@ public class ModelPartMixin implements OffsetModelPart, CrackCocaine {
 	}
 
 	@Override
-	public void setParent(Supplier<ModelPart> parent, boolean bl) {
+	public void setParent(Supplier<ModelPart> parent) {
 		this.parent = parent;
-		this.preserveRot = bl;
 	}
 	@Unique
-	private void act(ModelPart part, MatrixStack matrix, boolean bl) {
+	private void act(ModelPart part, MatrixStack matrix) {
 		matrix.translate((double)(part.pivotX / 16.0F), (double)(part.pivotY / 16.0F), (double)(part.pivotZ / 16.0F));
 		if (part.roll != 0.0F) {
 			matrix.multiply(Vec3f.POSITIVE_Z.getRadialQuaternion(part.roll));
@@ -108,21 +105,6 @@ public class ModelPartMixin implements OffsetModelPart, CrackCocaine {
 
 		if (part.pitch != 0.0F) {
 			matrix.multiply(Vec3f.POSITIVE_X.getRadialQuaternion(part.pitch));
-		}
-		if(bl) {
-			matrix.translate((double)-(part.pivotX / 16.0F), -(double)(part.pivotY / 16.0F), -(double)(part.pivotZ / 16.0F));
-			if (part.roll != 0.0F) {
-				matrix.multiply(Vec3f.POSITIVE_Z.getRadialQuaternion(-part.roll));
-			}
-
-			if (part.yaw != 0.0F) {
-				matrix.multiply(Vec3f.POSITIVE_Y.getRadialQuaternion(-part.yaw));
-			}
-
-			if (part.pitch != 0.0F) {
-				matrix.multiply(Vec3f.POSITIVE_X.getRadialQuaternion(-part.pitch));
-			}
-			matrix.translate((double)(part.pivotX / 16.0F), (double)(part.pivotY / 16.0F), (double)(part.pivotZ / 16.0F));
 		}
 
 		if (part.scaleX != 1.0F || part.scaleY != 1.0F || part.scaleZ != 1.0F) {

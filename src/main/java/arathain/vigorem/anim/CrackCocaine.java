@@ -6,5 +6,5 @@ import java.util.function.Supplier;
 
 public interface CrackCocaine {
 	Supplier<ModelPart> getParent();
-	void setParent(Supplier<ModelPart> p, boolean b);
+	void setParent(Supplier<ModelPart> p);
 }
