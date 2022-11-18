@@ -28,6 +28,14 @@ public class BipedEntityModelMixin<T extends LivingEntity> {
 	@Shadow
 	public boolean sneaking;
 
+	@Shadow
+	@Final
+	public ModelPart rightLeg;
+
+	@Shadow
+	@Final
+	public ModelPart leftLeg;
+
 	@ModifyExpressionValue(method = "setAngles(Lnet/minecraft/entity/LivingEntity;FFFFF)V", at = @At(value = "FIELD", target = "Lnet/minecraft/client/render/entity/model/BipedEntityModel;sneaking:Z"))
 	private boolean vigorem$cancelSneak(boolean original) {
 		if(original) {
@@ -43,6 +51,8 @@ public class BipedEntityModelMixin<T extends LivingEntity> {
 			this.body.pitch += 0.5f;
 			this.head.pitch -= 0.5f;
 			this.body.pivotX = 3.2F;
+			this.rightLeg.pivotX = -1.9f;
+			this.leftLeg.pivotX = 1.9f;
 		}
 	}
 	@Inject(method = "setAngles(Lnet/minecraft/entity/LivingEntity;FFFFF)V", at = @At("TAIL"))
