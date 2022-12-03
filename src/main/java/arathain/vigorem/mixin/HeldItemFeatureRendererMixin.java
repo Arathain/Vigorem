@@ -36,7 +36,7 @@ public abstract class HeldItemFeatureRendererMixin<T extends LivingEntity, M ext
 				Animation anim = player.getComponent(VigoremComponents.ANIMATION).current;
 
 				Vec3f rot = anim.getRot(arm == Arm.LEFT ? "left_hand" : "right_hand", MinecraftClient.getInstance().getTickDelta());
-				Vec3f offset = anim.getRot(arm == Arm.LEFT ? "left_hand" : "right_hand", MinecraftClient.getInstance().getTickDelta());
+				Vec3f offset = anim.getOffset(arm == Arm.LEFT ? "left_hand" : "right_hand", MinecraftClient.getInstance().getTickDelta());
 				Vec3f pivot = anim.getPivot(arm == Arm.RIGHT ? "right_hand" : "left_hand", MinecraftClient.getInstance().getTickDelta());
 
 				matrices.translate(pivot.getX()/16f, pivot.getY()/16f, pivot.getZ()/16f);
