@@ -99,6 +99,40 @@ public abstract class Animation {
 		}
 		return getRot(lastFrame, nextFrame, tickDelta, bl);
 	}
+	public Vec3f getOffset(String query, float tickDelta) {
+		if(!keyframes.containsKey(query)) {
+			return Vec3f.ZERO;
+		}
+		Keyframe lastFrame = null;
+		Keyframe nextFrame = null;
+		boolean bl = false;
+		for(Keyframe frame : keyframes.get(query)) {
+			if(frame.frame == (this.frame + tickDelta)) {
+				lastFrame = frame;
+				nextFrame = frame;
+				bl = true;
+			}
+			if(lastFrame == null && frame.frame < (this.frame + tickDelta)) {
+				lastFrame = frame;
+			} else {
+				if(lastFrame != null && frame.frame > lastFrame.frame && frame.frame < (this.frame + tickDelta)) {
+					lastFrame = frame;
+				}
+			}
+			if(nextFrame == null && frame.frame > (this.frame + tickDelta)) {
+				nextFrame = frame;
+			} else {
+				if(nextFrame != null && frame.frame < nextFrame.frame && frame.frame > (this.frame + tickDelta)) {
+					nextFrame = frame;
+				}
+			}
+		}
+		assert lastFrame != null;
+		if(nextFrame == null) {
+			nextFrame = lastFrame;
+		}
+		return getOffset(lastFrame, nextFrame, tickDelta, bl);
+	}
 	public Vec3f getPivot(String query, float tickDelta) {
 		if(!keyframes.containsKey(query)) {
 			return Vec3f.ZERO;
@@ -201,6 +235,14 @@ public abstract class Animation {
 		} else {
 			float percentage = (this.frame + tickDelta - prev.frame) / ((float) next.frame - prev.frame);
 			return new Vec3f(MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.translation.getX(), next.translation.getX()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.translation.getY(), next.translation.getY()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.translation.getZ(), next.translation.getZ()));
+		}
+	}
+	protected Vec3f getOffset(Keyframe prev, Keyframe next, float tickDelta, boolean same) {
+		if(same) {
+			return new Vec3f(prev.offset.getX(), prev.offset.getY(), prev.offset.getZ());
+		} else {
+			float percentage = (this.frame + tickDelta - prev.frame) / ((float) next.frame - prev.frame);
+			return new Vec3f(MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.offset.getX(), next.offset.getX()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.offset.getY(), next.offset.getY()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.offset.getZ(), next.offset.getZ()));
 		}
 	}
 	protected void setPartAngles(ModelPart part, Keyframe prev, Keyframe next, float tickDelta, boolean same) {

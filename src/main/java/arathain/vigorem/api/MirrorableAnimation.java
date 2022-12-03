@@ -101,6 +101,20 @@ public class MirrorableAnimation extends Animation {
 		}
 		return super.getPivot(query, tickDelta);
 	}
+	public Vec3f getOffset(String query, float tickDelta) {
+		if(mirrored) {
+			switch (query) {
+				case "left_arm" -> query = "right_arm";
+				case "right_arm" -> query = "left_arm";
+				case "right_leg" -> query = "left_leg";
+				case "left_leg" -> query = "right_leg";
+				case "left_hand" -> query = "right_hand";
+				case "right_hand" -> query = "left_hand";
+				default -> {}
+			}
+		}
+		return super.getOffset(query, tickDelta);
+	}
 
 	@Override
 	protected void setPartAngles(ModelPart part, Keyframe prev, Keyframe next, float tickDelta, boolean same) {
@@ -137,6 +151,13 @@ public class MirrorableAnimation extends Animation {
 	}
 	protected Vec3f getPivot(Keyframe prev, Keyframe next, float tickDelta, boolean same) {
 		Vec3f soup = super.getPivot(prev, next, tickDelta, same);
+		if(mirrored) {
+			soup = new Vec3f(-soup.getX(), soup.getY(), -soup.getZ());
+		}
+		return soup;
+	}
+	protected Vec3f getOffset(Keyframe prev, Keyframe next, float tickDelta, boolean same) {
+		Vec3f soup = super.getOffset(prev, next, tickDelta, same);
 		if(mirrored) {
 			soup = new Vec3f(-soup.getX(), soup.getY(), -soup.getZ());
 		}
