@@ -57,7 +57,7 @@ public class ModelPartMixin implements OffsetModelPart, CrackCocaine {
 		this.offsetX = x;
 		this.offsetY = y;
 		this.offsetZ = z;
-	} //
+	}
 
 	@Override
 	public boolean isChild(ModelPart part) {

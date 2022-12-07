@@ -67,7 +67,7 @@ public class AnimalModelMixin {
 				if(biped instanceof PlayerEntityModel<?> p && !b) {
 					b = headPart.equals(p.leftSleeve) || headPart.equals(p.rightSleeve);
 				}
-				if(b) {
+				if(b && ((CrackCocaine)(Object)headPart).getParent().get() == null) {
 					((CrackCocaine)(Object)headPart).setParent(() -> biped.body);
 				}
 				headPart.render(temp, vertices, light, overlay, red, green, blue, alpha);
