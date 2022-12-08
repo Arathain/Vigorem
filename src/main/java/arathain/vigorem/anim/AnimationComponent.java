@@ -1,6 +1,7 @@
 package arathain.vigorem.anim;
 
 import arathain.vigorem.VigoremComponents;
+import arathain.vigorem.api.ContinuousAnimation;
 import arathain.vigorem.init.Animations;
 import dev.onyxstudios.cca.api.v3.component.sync.AutoSyncedComponent;
 import net.minecraft.entity.player.PlayerEntity;
@@ -24,6 +25,9 @@ public class AnimationComponent implements AutoSyncedComponent {
 		if(current != null) {
 			this.current.tick();
 			this.current.serverTick(obj);
+			if(this.current instanceof ContinuousAnimation c && c.shouldEnd(obj)) {
+				c.update();
+			}
 			if(this.current.shouldRemove() || this.current.canCancel()) {
 				this.current = this.queued;
 				this.queued = null;
@@ -42,6 +46,9 @@ public class AnimationComponent implements AutoSyncedComponent {
 		if(current != null) {
 			this.current.tick();
 			this.current.clientTick(obj);
+			if(this.current instanceof ContinuousAnimation c && c.shouldEnd(obj)) {
+				c.update();
+			}
 			if(this.current.shouldRemove()  || this.current.canCancel()) {
 				this.current = this.queued;
 				this.queued = null;
@@ -58,7 +65,8 @@ public class AnimationComponent implements AutoSyncedComponent {
 	public void readFromNbt(NbtCompound tag) {
 		if(tag.contains("namespace") && Animations.getAnimation(new Identifier(tag.getString("namespace"), tag.getString("path"))) != null) {
 			this.current = Animations.getAnimation(new Identifier(tag.getString("namespace"), tag.getString("path")));
-			this.current.setFrame(tag.getInt("time"));
+			assert this.current != null;
+			this.current.readNbt(tag);
 		} else {
 			this.current = null;
 		}
@@ -69,7 +77,7 @@ public class AnimationComponent implements AutoSyncedComponent {
 		}
 	}
 	public void queue(Animation anim) {
-		if(current == null || ((current.getLength() - current.frame) <= Math.max(10, current.getLength()/5))) {
+		if(current == null || ((current.getLength() - current.frame) <= Math.max(15, current.getLength()/4))) {
 			queueUnconditional(anim);
 		}
 	}
@@ -85,7 +93,7 @@ public class AnimationComponent implements AutoSyncedComponent {
 		if(current != null) {
 			tag.putString("namespace", current.getId().getNamespace());
 			tag.putString("path", current.getId().getPath());
-			tag.putInt("time", current.frame);
+			current.writeNbt(tag);
 		}
 		if(queued != null) {
 			tag.putString("Quu", queued.getId().toString());

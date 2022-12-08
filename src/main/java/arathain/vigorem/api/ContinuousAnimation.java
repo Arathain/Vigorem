@@ -5,6 +5,7 @@ import arathain.vigorem.anim.Keyframe;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.Vec3f;
 
 import java.util.List;
@@ -31,9 +32,6 @@ public abstract class ContinuousAnimation extends Animation {
 			stage = 1;
 		}
 		if(stage == 1) {
-			if(this.shouldEnd()) {
-				stage = 2;
-			}
 			codeTick();
 		}
 	}
@@ -123,6 +121,16 @@ public abstract class ContinuousAnimation extends Animation {
 
 	protected abstract Vec3f getCodePivot(String query, float tickDelta);
 
+	public Vec3f getOffsetSuper(String query, float tickDelta) {
+		return super.getOffset(query, tickDelta);
+	}
+	public Vec3f getPivotSuper(String query, float tickDelta) {
+		return super.getPivot(query, tickDelta);
+	}
+	public Vec3f getRotSuper(String query, float tickDelta) {
+		return super.getRot(query, tickDelta);
+	}
+
 	@Override
 	public Vec3f getOffset(String query, float tickDelta) {
 		if(stage == 1) {
@@ -163,14 +171,31 @@ public abstract class ContinuousAnimation extends Animation {
 		}
 		return super.getOffset(query, tickDelta);
 	}
+
 	protected abstract Vec3f getCodeOffset(String query, float tickDelta);
+
+	protected void setModelAnglesSuper(PlayerEntityModel<AbstractClientPlayerEntity> model, PlayerEntity player, float tickDelta) {
+		super.setModelAngles(model, player, tickDelta);
+	}
+
+	@Override
+	public void readNbt(NbtCompound nbt) {
+		super.readNbt(nbt);
+		this.stage = nbt.getInt("stage");
+	}
+
+	@Override
+	public void writeNbt(NbtCompound nbt) {
+		super.writeNbt(nbt);
+		nbt.putInt("stage", this.stage);
+	}
 
 	@Override
 	public void setModelAngles(PlayerEntityModel<AbstractClientPlayerEntity> model, PlayerEntity player, float tickDelta) {
-		switch(stage) {
+		switch(this.stage) {
 			case 0 -> super.setModelAngles(model, player, tickDelta);
 			case 1 -> this.setCodeModelAngles(model, player, tickDelta);
-			default -> {
+			case 2 -> {
 				for(String part : endKeyframes.keySet()) {
 					Keyframe lastFrame = null;
 					Keyframe nextFrame = null;
@@ -225,8 +250,14 @@ public abstract class ContinuousAnimation extends Animation {
 			}
 		}
 	}
+	public void update() {
+		this.stage = 2;
+		this.frame = 0;
+	}
 	protected abstract void setCodeModelAngles(PlayerEntityModel<AbstractClientPlayerEntity> model, PlayerEntity player, float tickDelta);
 
 	protected abstract void codeTick();
-	public abstract boolean shouldEnd();
+	public boolean shouldEnd(PlayerEntity player) {
+		return stage == 1;
+	}
 }

@@ -7,6 +7,7 @@ import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3f;
@@ -166,6 +167,12 @@ public abstract class Animation {
 			nextFrame = lastFrame;
 		}
 		return getPivot(lastFrame, nextFrame, tickDelta, bl);
+	}
+	public void writeNbt(NbtCompound nbt) {
+		nbt.putInt("time", this.frame);
+	}
+	public void readNbt(NbtCompound nbt) {
+		this.frame = nbt.getInt("time");
 	}
 
 	public void setModelAngles(PlayerEntityModel<AbstractClientPlayerEntity> model, PlayerEntity player, float tickDelta) {

@@ -2,20 +2,26 @@ package arathain.vigorem.test;
 
 import arathain.vigorem.Vigorem;
 import arathain.vigorem.anim.Animation;
+import arathain.vigorem.anim.Easing;
 import arathain.vigorem.anim.Keyframe;
+import arathain.vigorem.api.ContinuousAnimation;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.render.entity.model.PlayerEntityModel;
 import net.minecraft.client.render.entity.model.TridentEntityModel;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3f;
 
 import java.util.List;
 import java.util.Map;
 
-public class TPoseAnimation extends Animation {
-	public TPoseAnimation(int length, Map<String, List<Keyframe>> keyframes) {
-		super(length, keyframes);
+public class TPoseAnimation extends ContinuousAnimation {
+	public TPoseAnimation(int length, Map<String, List<Keyframe>> keyframes, int endLength, Map<String, List<Keyframe>> endKeyframes) {
+		super(length, keyframes, endLength, endKeyframes);
 	}
 
 	@Override
@@ -31,5 +37,35 @@ public class TPoseAnimation extends Animation {
 	@Override
 	public boolean isBlockingMovement() {
 		return true;
+	}
+
+	@Override
+	protected Vec3f getCodeRot(String query, float tickDelta) {
+		return getRotSuper(query, tickDelta);
+	}
+
+	@Override
+	protected Vec3f getCodePivot(String query, float tickDelta) {
+		return getPivotSuper(query, tickDelta);
+	}
+
+	@Override
+	protected Vec3f getCodeOffset(String query, float tickDelta) {
+		return getOffsetSuper(query, tickDelta);
+	}
+
+	@Override
+	protected void setCodeModelAngles(PlayerEntityModel<AbstractClientPlayerEntity> model, PlayerEntity player, float tickDelta) {
+		this.setModelAnglesSuper(model, player, 0);
+	}
+
+	@Override
+	protected void codeTick() {
+
+	}
+
+	@Override
+	public boolean shouldEnd(PlayerEntity player) {
+		return super.shouldEnd(player) && MathHelper.abs(player.getPitch()) > 80;
 	}
 }
