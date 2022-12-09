@@ -17,8 +17,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import javax.annotation.Nullable;
 
-import static arathain.vigorem.api.AnimatingWeaponItem.AttackType.NORMAL;
-import static arathain.vigorem.api.AnimatingWeaponItem.AttackType.SHIFT;
 import static net.minecraft.entity.EntityPose.CROUCHING;
 import static net.minecraft.entity.EntityPose.STANDING;
 
@@ -31,7 +29,7 @@ public abstract class MinecraftClientMixin {
 	private void vigorem$doAttack(CallbackInfoReturnable<Boolean> info) {
 		MinecraftClient client = (MinecraftClient)((Object)this);
 		if (client.player.getMainHandStack().getItem() instanceof AnimatingWeaponItem anim && (player.getPose().equals(STANDING) || player.getPose().equals(CROUCHING))) {
-			Identifier id = anim.getAnimId(client.player, client.player.isSneaking() ? NORMAL : SHIFT, false, client.player.getMainArm());
+			Identifier id = anim.getAnimId(client.player, false, client.player.getMainArm(), client.player.getComponent(VigoremComponents.ANIMATION).current);
 			if(id != null) {
 				AnimationPacket.send(id);
 				info.setReturnValue(false);
@@ -44,7 +42,7 @@ public abstract class MinecraftClientMixin {
 			method = "handleInputEvents",
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayNetworkHandler;sendPacket(Lnet/minecraft/network/Packet;)V")
 	)
-	private boolean charter$hand(ClientPlayNetworkHandler instance, Packet packet) {
+	private boolean vigorem$hand(ClientPlayNetworkHandler instance, Packet packet) {
 		return player != null && !(player.getComponent(VigoremComponents.ANIMATION).current != null && player.getComponent(VigoremComponents.ANIMATION).current.lockHeldItem());
 	}
 
