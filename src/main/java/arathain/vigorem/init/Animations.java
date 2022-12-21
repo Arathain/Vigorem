@@ -41,10 +41,10 @@ public class Animations {
 		cache.clear();
 		cache.add(new Keyframe(Easing.QUAD_IN_OUT, Vec3f.ZERO, Vec3f.ZERO, Vec3f.ZERO,  new Vec3f(0, -12, 0), 0));
 		cache.add(new Keyframe(Easing.QUAD_IN_OUT, Vec3f.ZERO, new Vec3f(-0.1f, 0, 0), Vec3f.ZERO, new Vec3f(0, -12, 0), 10));
-		cache.add(new Keyframe(Easing.QUAD_IN_OUT, Vec3f.ZERO, new Vec3f(-0.1f, 0, 0), Vec3f.ZERO, new Vec3f(0, -12, 0), 30));
+		cache.add(new Keyframe(Easing.QUAD_IN_OUT, new Vec3f(0, 0, 0), new Vec3f(-0.1f, 0, 0), Vec3f.ZERO, new Vec3f(0, -12, 0), 30));
 		TPOSE_START.put("body", new ArrayList<>(cache));
 		cache.clear();
-		cache.add(new Keyframe(Easing.QUAD_IN_OUT, Vec3f.ZERO, new Vec3f(-0.1f, 0, 0), Vec3f.ZERO, new Vec3f(0, -12, 0), 0));
+		cache.add(new Keyframe(Easing.QUAD_IN_OUT, new Vec3f(0, 0, 0), new Vec3f(-0.1f, 0, 0), Vec3f.ZERO, new Vec3f(0, -12, 0), 0));
 		cache.add(new Keyframe(Easing.QUAD_IN_OUT, Vec3f.ZERO, Vec3f.ZERO, Vec3f.ZERO, new Vec3f(0, -12, 0), 20));
 		TPOSE_END.put("body", new ArrayList<>(cache));
 		cache.clear();
