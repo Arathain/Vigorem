@@ -175,7 +175,6 @@ public abstract class ExtendableAnimation extends Animation {
 	protected abstract Vec3f getCodeOffset(String query, float tickDelta);
 
 	protected void setModelAnglesSuper(PlayerEntityModel<AbstractClientPlayerEntity> model, PlayerEntity player, float tickDelta) {
-		System.out.println(this.frame + tickDelta);
 		super.setModelAngles(model, player, tickDelta);
 	}
 
