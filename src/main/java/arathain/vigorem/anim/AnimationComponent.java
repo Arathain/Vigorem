@@ -1,7 +1,7 @@
 package arathain.vigorem.anim;
 
 import arathain.vigorem.VigoremComponents;
-import arathain.vigorem.api.ContinuousAnimation;
+import arathain.vigorem.api.ExtendableAnimation;
 import arathain.vigorem.init.Animations;
 import dev.onyxstudios.cca.api.v3.component.sync.AutoSyncedComponent;
 import net.minecraft.entity.player.PlayerEntity;
@@ -25,7 +25,7 @@ public class AnimationComponent implements AutoSyncedComponent {
 		if(current != null) {
 			this.current.tick();
 			this.current.serverTick(obj);
-			if(this.current instanceof ContinuousAnimation c && c.shouldEnd(obj)) {
+			if(this.current instanceof ExtendableAnimation c && c.shouldEnd(obj)) {
 				c.update();
 			}
 			if(this.current.shouldRemove() || this.current.canCancel()) {
@@ -46,7 +46,7 @@ public class AnimationComponent implements AutoSyncedComponent {
 		if(current != null) {
 			this.current.tick();
 			this.current.clientTick(obj);
-			if(this.current instanceof ContinuousAnimation c && c.shouldEnd(obj)) {
+			if(this.current instanceof ExtendableAnimation c && c.shouldEnd(obj)) {
 				c.update();
 			}
 			if(this.current.shouldRemove()  || this.current.canCancel()) {

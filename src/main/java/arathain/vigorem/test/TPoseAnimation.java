@@ -1,17 +1,11 @@
 package arathain.vigorem.test;
 
 import arathain.vigorem.Vigorem;
-import arathain.vigorem.anim.Animation;
-import arathain.vigorem.anim.Easing;
 import arathain.vigorem.anim.Keyframe;
-import arathain.vigorem.api.ContinuousAnimation;
-import net.minecraft.client.MinecraftClient;
+import arathain.vigorem.api.ExtendableAnimation;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
-import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
-import net.minecraft.client.render.entity.model.TridentEntityModel;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3f;
@@ -19,7 +13,7 @@ import net.minecraft.util.math.Vec3f;
 import java.util.List;
 import java.util.Map;
 
-public class TPoseAnimation extends ContinuousAnimation {
+public class TPoseAnimation extends ExtendableAnimation {
 	public TPoseAnimation(int length, Map<String, List<Keyframe>> keyframes, int endLength, Map<String, List<Keyframe>> endKeyframes) {
 		super(length, keyframes, endLength, endKeyframes);
 	}
@@ -56,7 +50,7 @@ public class TPoseAnimation extends ContinuousAnimation {
 
 	@Override
 	protected void setCodeModelAngles(PlayerEntityModel<AbstractClientPlayerEntity> model, PlayerEntity player, float tickDelta) {
-		this.setModelAnglesSuper(model, player, 0);
+		this.setModelAnglesSuper(model, player, -2);
 	}
 
 	@Override

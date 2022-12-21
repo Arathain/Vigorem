@@ -11,11 +11,11 @@ import net.minecraft.util.math.Vec3f;
 import java.util.List;
 import java.util.Map;
 
-public abstract class ContinuousAnimation extends Animation {
+public abstract class ExtendableAnimation extends Animation {
 	public final Map<String, List<Keyframe>> endKeyframes;
 	private final int endLength;
 	protected int stage;
-	public ContinuousAnimation(int initLength, Map<String, List<Keyframe>> initKeyframes, int endLength, Map<String, List<Keyframe>> endKeyframes) {
+	public ExtendableAnimation(int initLength, Map<String, List<Keyframe>> initKeyframes, int endLength, Map<String, List<Keyframe>> endKeyframes) {
 		super(initLength, initKeyframes);
 		this.endKeyframes = endKeyframes;
 		this.endLength = endLength;
@@ -28,7 +28,7 @@ public abstract class ContinuousAnimation extends Animation {
 		if(stage == 2 || stage == 0) {
 			super.tick();
 		}
-		if(frame >= getLength()) {
+		if(frame >= getLength() && stage == 0) {
 			stage = 1;
 		}
 		if(stage == 1) {
@@ -175,6 +175,7 @@ public abstract class ContinuousAnimation extends Animation {
 	protected abstract Vec3f getCodeOffset(String query, float tickDelta);
 
 	protected void setModelAnglesSuper(PlayerEntityModel<AbstractClientPlayerEntity> model, PlayerEntity player, float tickDelta) {
+		System.out.println(this.frame + tickDelta);
 		super.setModelAngles(model, player, tickDelta);
 	}
 
