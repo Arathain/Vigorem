@@ -51,9 +51,9 @@ public class Animations {
 		cache.add(new Keyframe(Easing.CUBIC_IN, Vec3f.ZERO, Vec3f.ZERO, Vec3f.ZERO,  new Vec3f(0, -12, 0), 0));
 		cache.add(new Keyframe(Easing.EXPO_OUT, Vec3f.ZERO, new Vec3f(-0.15585f, 0, 0), Vec3f.ZERO,  new Vec3f(0, -12, 0), 3));
 		cache.add(new Keyframe(Easing.QUINTIC_IN, Vec3f.ZERO, new Vec3f(-0.305f, 0, 0), Vec3f.ZERO,  new Vec3f(0, -12, 0), 6));
-		cache.add(new Keyframe(Easing.SINE_OUT, Vec3f.ZERO, new Vec3f(1.09f, 0, 0), Vec3f.ZERO,  new Vec3f(0, -12, 0), 15));
-		cache.add(new Keyframe(Easing.LINEAR, Vec3f.ZERO, new Vec3f(0.9354f, 0, 0), Vec3f.ZERO,  new Vec3f(0, -12, 0), 20));
-		cache.add(new Keyframe(Easing.QUAD_IN_OUT, Vec3f.ZERO, new Vec3f(0.9354f, 0, 0), Vec3f.ZERO,  new Vec3f(0, -12, 0), 25));
+		cache.add(new Keyframe(Easing.SINE_OUT, Vec3f.ZERO, new Vec3f(1.09f, 0, 0.1f), Vec3f.ZERO,  new Vec3f(0, -12, 0), 15));
+		cache.add(new Keyframe(Easing.LINEAR, Vec3f.ZERO, new Vec3f(0.9354f, 0, 0.1f), Vec3f.ZERO,  new Vec3f(0, -12, 0), 20));
+		cache.add(new Keyframe(Easing.QUAD_IN_OUT, Vec3f.ZERO, new Vec3f(0.9354f, 0, 0.1f), Vec3f.ZERO,  new Vec3f(0, -12, 0), 25));
 		cache.add(new Keyframe(Easing.QUAD_IN_OUT, Vec3f.ZERO, new Vec3f(0f, 0, 0), Vec3f.ZERO,  new Vec3f(0, -12, 0), 33));
 		SMASH_R.put("body", new ArrayList<>(cache));
 		cache.clear();

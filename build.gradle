@@ -14,6 +14,7 @@ repositories {
 			includeGroup 'maven.modrinth'
 		}
 	}
+	maven { url 'https://masa.dy.fi/maven' }
 	maven { url "https://jitpack.io" }
 	maven {
 		name = 'Ladysnake Mods'
@@ -39,6 +40,7 @@ dependencies {
 		exclude(group: "net.fabricmc")
 		exclude(group: "net.fabricmc.fabric-api")
 	}
+	modRuntimeOnly "carpet:fabric-carpet:${project.minecraft_version}-${project.carpet_core_version}"
 	modRuntimeOnly("maven.modrinth:ears:1.4.6+fabric-1.19")
 	modCompileOnly("maven.modrinth:ears:1.4.6+fabric-1.19")
 
