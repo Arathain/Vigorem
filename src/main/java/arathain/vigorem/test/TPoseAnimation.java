@@ -35,17 +35,17 @@ public class TPoseAnimation extends ExtendableAnimation {
 
 	@Override
 	protected Vec3f getCodeRot(String query, float tickDelta) {
-		return getRotSuper(query, tickDelta);
+		return getRotSuper(query, -2);
 	}
 
 	@Override
 	protected Vec3f getCodePivot(String query, float tickDelta) {
-		return getPivotSuper(query, tickDelta);
+		return getPivotSuper(query, 0);
 	}
 
 	@Override
 	protected Vec3f getCodeOffset(String query, float tickDelta) {
-		return getOffsetSuper(query, tickDelta);
+		return getOffsetSuper(query,0);
 	}
 
 	@Override

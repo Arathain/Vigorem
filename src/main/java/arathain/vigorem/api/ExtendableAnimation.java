@@ -6,6 +6,7 @@ import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3f;
 
 import java.util.List;
@@ -129,6 +130,11 @@ public abstract class ExtendableAnimation extends Animation {
 	}
 	public Vec3f getRotSuper(String query, float tickDelta) {
 		return super.getRot(query, tickDelta);
+	}
+
+	@Override
+	public Vec3d getCameraOffset(float yaw, float tickDelta) {
+		return Vec3d.ZERO;
 	}
 
 	@Override

@@ -23,6 +23,7 @@
     "ClientPlayerEntityMixin",
     "DebugRendererMixin",
     "EntityRenderDispatcherMixin",
+    "GameRendererMixin",
     "HeldItemFeatureRendererMixin",
     "HeldItemRendererMixin",
     "MinecraftClientMixin",

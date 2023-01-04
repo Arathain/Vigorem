@@ -10,10 +10,12 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3f;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 public abstract class Animation {
 	public final Map<String, List<Keyframe>> keyframes;
@@ -206,24 +208,12 @@ public abstract class Animation {
 				nextFrame = lastFrame;
 			}
 			switch(part) {
-				case "head" -> {
-					setPartAngles(model.head, lastFrame, nextFrame, tickDelta, bl);
-				}
-				case "body" -> {
-					setPartAngles(model.body, lastFrame, nextFrame, tickDelta, bl);
-				}
-				case "right_arm" -> {
-					setPartAngles(model.rightArm, lastFrame, nextFrame, tickDelta, bl);
-				}
-				case "left_arm" -> {
-					setPartAngles(model.leftArm, lastFrame, nextFrame, tickDelta, bl);
-				}
-				case "left_leg" -> {
-					setPartAngles(model.leftLeg, lastFrame, nextFrame, tickDelta, bl);
-				}
-				case "right_leg" -> {
-					setPartAngles(model.rightLeg, lastFrame, nextFrame, tickDelta, bl);
-				}
+				case "head" -> setPartAngles(model.head, lastFrame, nextFrame, tickDelta, bl);
+				case "body" -> setPartAngles(model.body, lastFrame, nextFrame, tickDelta, bl);
+				case "right_arm" -> setPartAngles(model.rightArm, lastFrame, nextFrame, tickDelta, bl);
+				case "left_arm" -> setPartAngles(model.leftArm, lastFrame, nextFrame, tickDelta, bl);
+				case "left_leg" -> setPartAngles(model.leftLeg, lastFrame, nextFrame, tickDelta, bl);
+				case "right_leg" -> setPartAngles(model.rightLeg, lastFrame, nextFrame, tickDelta, bl);
 				default -> {}
 			}
 		}
@@ -271,4 +261,14 @@ public abstract class Animation {
 		}
 	}
 
+	public Vec3d getCameraOffset(float yaw, float tickDelta) {
+		Vec3f bodyRot = this.getRot("body", tickDelta);
+		Vec3f headRot = this.getRot("head", tickDelta);
+		headRot.add(bodyRot);
+		Vec3d yeag = new Vec3d(0, -1, 0).add(new Vec3d(0, (12d / 16d), 0).rotateY(-bodyRot.getY()).rotateX(-bodyRot.getX()).rotateZ(bodyRot.getZ())).add(new Vec3d(0, 4/16f, 0).rotateY(-headRot.getY()).rotateX(-headRot.getX()).rotateZ(-headRot.getZ())).rotateY((float) (yaw * -Math.PI / 180f));
+		System.out.println(headRot);
+		System.out.println(bodyRot);
+		System.out.println("-----------------");
+		return yeag;
+	}
 }
