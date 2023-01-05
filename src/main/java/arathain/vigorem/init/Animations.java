@@ -122,4 +122,7 @@ public class Animations {
 	public static Animation getAnimation(Identifier id) {
 		return ANIMATIONS.get(id) != null ? ANIMATIONS.get(id).get() : null;
 	}
+	public static Vec3f deg(float x, float y, float z) {
+		return new Vec3f((float) (x * Math.PI/180), (float) (y * Math.PI/180), (float) (z * Math.PI/180));
+	}
 }
