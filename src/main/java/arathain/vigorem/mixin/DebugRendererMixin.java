@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 /**
- * Shamelessly stolen from <a href="https://github.com/ZsoltMolnarrr/BetterCombat/blob/1.19.X/common/src/main/java/net/bettercombat/mixin/client/ColliderDebugRenderer.java">BetterCombat</a>
+ * Shamelessly stolen from <a href="https://github.com/ZsoltMolnarrr/BetterCombat/blob/1.19.X/common/src/main/java/net/bettercombat/mixin/client/ColliderDebugRenderer.java">BetterCombat, (pre-license change, thus licensed as CC0)</a>
  * Praise the god code \o/
  * @author ZsoltMolnarrr
  */

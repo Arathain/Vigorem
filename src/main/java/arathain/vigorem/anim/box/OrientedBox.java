@@ -6,7 +6,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3f;
 
 /**
- * Literally just <a href="https://github.com/ZsoltMolnarrr/BetterCombat/blob/1.19.X/common/src/main/java/net/bettercombat/client/collision/OrientedBoundingBox.java">this code from BetterCombat</a>
+ * Literally just <a href="https://github.com/ZsoltMolnarrr/BetterCombat/blob/1.19.2/common/src/main/java/net/bettercombat/client/collision/OrientedBoundingBox.java">this code from BetterCombat (pre-license change, thus licensed as CC0)</a>
  * Praise the god code \o/
  * @author ZsoltMolnarrr
  */
