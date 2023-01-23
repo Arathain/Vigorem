@@ -265,10 +265,6 @@ public abstract class Animation {
 		Vec3f bodyRot = this.getRot("body", tickDelta);
 		Vec3f headRot = this.getRot("head", tickDelta);
 		headRot.add(bodyRot);
-		Vec3d yeag = new Vec3d(0, -1, 0).add(new Vec3d(0, (12d / 16d), 0).rotateY(-bodyRot.getY()).rotateX(-bodyRot.getX()).rotateZ(bodyRot.getZ())).add(new Vec3d(0, 4/16f, 0).rotateY(-headRot.getY()).rotateX(-headRot.getX()).rotateZ(-headRot.getZ())).rotateY((float) (yaw * -Math.PI / 180f));
-		System.out.println(headRot);
-		System.out.println(bodyRot);
-		System.out.println("-----------------");
-		return yeag;
+		return new Vec3d(0, -1, 0).add(new Vec3d(0, (12d / 16d), 0).rotateY(-bodyRot.getY()).rotateX(-bodyRot.getX()).rotateZ(bodyRot.getZ())).add(new Vec3d(0, 4/16f, 0).rotateY(-headRot.getY()).rotateX(-headRot.getX()).rotateZ(-headRot.getZ())).rotateY((float) (yaw * -Math.PI / 180f));
 	}
 }

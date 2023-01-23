@@ -39,12 +39,12 @@ public abstract class ExtendableAnimation extends Animation {
 
 	@Override
 	public Vec3f getRot(String query, float tickDelta) {
+		if(!keyframes.containsKey(query)) {
+			return Vec3f.ZERO;
+		}
 		if(stage == 1) {
 			return this.getCodeRot(query, tickDelta);
 		} else if(stage == 2) {
-			if(!endKeyframes.containsKey(query)) {
-				return Vec3f.ZERO;
-			}
 			Keyframe lastFrame = null;
 			Keyframe nextFrame = null;
 			boolean bl = false;
@@ -81,12 +81,12 @@ public abstract class ExtendableAnimation extends Animation {
 
 	@Override
 	public Vec3f getPivot(String query, float tickDelta) {
+		if(!keyframes.containsKey(query)) {
+			return Vec3f.ZERO;
+		}
 		if(stage == 1) {
 			return this.getCodePivot(query, tickDelta);
 		} else if(stage == 2) {
-			if(!endKeyframes.containsKey(query)) {
-				return Vec3f.ZERO;
-			}
 			Keyframe lastFrame = null;
 			Keyframe nextFrame = null;
 			boolean bl = false;
@@ -134,17 +134,19 @@ public abstract class ExtendableAnimation extends Animation {
 
 	@Override
 	public Vec3d getCameraOffset(float yaw, float tickDelta) {
-		return Vec3d.ZERO;
+		Vec3f bodyRot = this.getRot("body", tickDelta);
+		Vec3f headRot = this.getRot("head", tickDelta);
+		return new Vec3d(0, -1, 0).add(new Vec3d(0, (12d / 16d), 0).rotateY(-bodyRot.getY()).rotateX(-bodyRot.getX()).rotateZ(bodyRot.getZ())).add(new Vec3d(0, 4/16f, 0).rotateY(-headRot.getY()).rotateX(-headRot.getX()).rotateZ(-headRot.getZ())).rotateY((float) (yaw * -Math.PI / 180f));
 	}
 
 	@Override
 	public Vec3f getOffset(String query, float tickDelta) {
+		if(!endKeyframes.containsKey(query)) {
+			return Vec3f.ZERO;
+		}
 		if(stage == 1) {
 			return this.getCodeOffset(query, tickDelta);
 		} else if(stage == 2) {
-			if(!endKeyframes.containsKey(query)) {
-				return Vec3f.ZERO;
-			}
 			Keyframe lastFrame = null;
 			Keyframe nextFrame = null;
 			boolean bl = false;

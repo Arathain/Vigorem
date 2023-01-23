@@ -4,7 +4,6 @@ import arathain.vigorem.Vigorem;
 import arathain.vigorem.VigoremComponents;
 import arathain.vigorem.api.AnimatingWeaponItem;
 import arathain.vigorem.init.Animations;
-import net.minecraft.entity.Entity;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
@@ -14,9 +13,6 @@ import net.minecraft.util.Identifier;
 import org.quiltmc.qsl.networking.api.PacketByteBufs;
 import org.quiltmc.qsl.networking.api.PacketSender;
 import org.quiltmc.qsl.networking.api.client.ClientPlayNetworking;
-import org.quiltmc.qsl.networking.impl.client.ClientNetworkingImpl;
-
-import javax.annotation.Nullable;
 
 import static net.minecraft.entity.EntityPose.CROUCHING;
 import static net.minecraft.entity.EntityPose.STANDING;

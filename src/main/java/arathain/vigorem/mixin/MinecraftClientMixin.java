@@ -9,20 +9,22 @@ import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.network.Packet;
 import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import javax.annotation.Nullable;
 
 import static net.minecraft.entity.EntityPose.CROUCHING;
 import static net.minecraft.entity.EntityPose.STANDING;
 
 @Mixin(MinecraftClient.class)
 public abstract class MinecraftClientMixin {
-	@Shadow @Nullable
+
+	@Shadow
+	@Nullable
 	public ClientPlayerEntity player;
 
 	@Inject(method = "doAttack", at = @At("HEAD"), cancellable = true)
