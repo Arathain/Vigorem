@@ -40,7 +40,7 @@ public class BipedEntityModelMixin<T extends LivingEntity> {
 	private boolean vigorem$cancelSneak(boolean original) {
 		if(original) {
 			this.body.pitch += 0.5f;
-			this.head.pitch -= 0.5f;
+			this.head.pitch -= 0.25f;
 			this.body.pivotX = 3.2F;
 		}
 		return false;
@@ -49,7 +49,7 @@ public class BipedEntityModelMixin<T extends LivingEntity> {
 	private void vigorem$sneaktwo(T livingEntity, float f, float g, float h, float i, float j, CallbackInfo ci) {
 		if(this.sneaking) {
 			this.body.pitch += 0.5f;
-			this.head.pitch -= 0.5f;
+			this.head.pitch -= 0.25f;
 			this.body.pivotX = 3.2F;
 		}
 	}

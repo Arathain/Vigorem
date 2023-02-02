@@ -6,7 +6,8 @@ f = open('anim_to_read.json')
 # returns JSON object as 
 # a dictionary
 data = json.load(f)
-conversion = {"Body" : "body", "RightArm" : "right_arm", "LeftArm" : "left_arm", "Head" : "head", "RightLeg" : "right_leg", "LeftLeg" : "left_leg",}
+conversion = {"Body" : "body", "RightArm" : "right_arm", "LeftArm" : "left_arm", "RightHand" : "right_hand", "LeftHand" : "left_hand", "Head" : "head", "RightLeg" : "right_leg", "LeftLeg" : "left_leg",}
+convertEasing = {"linear" : "LINEAR", "easeInSine" : "SINE_IN", "easeOutSine" : "SINE_OUT", "easeInOutSine" : "SINE_IN_OUT", "easeInQuad" : "QUAD_IN", "easeOutQuad" : "QUAD_OUT", "easeInOutQuad" : "QUAD_IN_OUT", "easeInQuint" : "QUINTIC_IN", "easeOutQuint" : "QUINTIC_OUT", "easeInOutQuint" : "QUINTIC_IN_OUT", "easeInBack" : "BACK_IN", "easeOutBack" : "BACK_OUT", "easeInOutBack" : "BACK_IN_OUT", "easeInExpo" : "EXPO_IN", "easeOutExpo" : "EXPO_OUT", "easeInOutExpo" : "EXPO_IN_OUT"}
 uberlist = []
 # Iterating through the json
 # list
@@ -22,7 +23,10 @@ for i in data['animations']:
                 frameTimes.append(float(keyframe))
                 if 'easing' in data['animations'][i]['bones'][k]['rotation'][keyframe]:
                     easings.append(data['animations'][i]['bones'][k]['rotation'][keyframe]['easing'])
+                else:
+                    easings.append("linear")
                 vecs.append(data['animations'][i]['bones'][k]['rotation'][keyframe]['vector'])
+            easings.pop(0)
             easings.append("linear")
             for soup in range(len(easings)):
                 frames[frameTimes[soup]] = [("rot", easings[soup], vecs[soup])]
@@ -35,7 +39,10 @@ for i in data['animations']:
                 frameTimes.append(float(keyframe))
                 if 'easing' in data['animations'][i]['bones'][k]['position'][keyframe]:
                     easings.append(data['animations'][i]['bones'][k]['position'][keyframe]['easing'])
+                else:
+                    easings.append("linear")
                 vecs.append(data['animations'][i]['bones'][k]['position'][keyframe]['vector'])
+            easings.pop(0)
             easings.append("linear")
             for soup in range(len(easings)):
                 if frameTimes[soup] in frames.keys():
@@ -51,7 +58,10 @@ for i in data['animations']:
                 frameTimes.append(float(keyframe))
                 if 'easing' in data['animations'][i]['bones'][k]['scale'][keyframe]:
                     easings.append(data['animations'][i]['bones'][k]['scale'][keyframe]['easing'])
+                else:
+                    easings.append("linear")
                 vecs.append(data['animations'][i]['bones'][k]['scale'][keyframe]['vector'])
+            easings.pop(0)
             easings.append("linear")
             for soup in range(len(easings)):
                 if frameTimes[soup] in frames.keys():
@@ -77,20 +87,20 @@ with open('export.txt', 'a') as f:
                 rot = "Vec3f.ZERO"
                 pos = "Vec3f.ZERO"
                 scale = "Vec3f.ZERO"
-                easing = "Easing.LINEAR"
+                easing = "LINEAR"
                 for val in value:
                     match val[0]:
                         case "pos":
-                            pos = "new Vec3f(" + str(val[2][0]) +", " + str(val[2][1]) +", " + str(val[2][2]) + ")"
-                            easing = "Easing." + val[1]
+                            pos = "new Vec3f(" + str(val[2][0]) +"f, " + str(val[2][1]) +"f, " + str(val[2][2]) + "f)"
+                            easing = val[1]
                         case "scale":
-                            scale = "new Vec3f(" + str(val[2][0]) +", " + str(val[2][1]) +", " + str(val[2][2]) + ")"
-                            easing = "Easing." + val[1]
+                            scale = "new Vec3f(" + str(val[2][0]) +"f, " + str(val[2][1]) +"f, " + str(val[2][2]) + "f)"
+                            easing = val[1]
                         case "rot":
-                            rot = "deg(" + str(val[2][0]) +", " + str(val[2][1]) +", " + str(val[2][2]) + ")"
-                            easing = "Easing." + val[1]
-                f.write("cache.add(new Keyframe(" + easing + ", " + scale + ", " + pos + ", " + rot + ", " + "" + ("new Vec3f(0, -12, 0), " if jointAnim[0] == "body" else "Vec3f.ZERO, ") + str(key) + "));\n")
+                            rot = "deg(" + str(val[2][0]) +"f, " + str(val[2][1]) +"f, " + str(val[2][2]) + "f)"
+                            easing = val[1]
+                f.write("cache.add(new Keyframe(Easing." + (convertEasing[easing] if easing in convertEasing else easing) + ", " + pos + ", " + rot + ", " + scale + ", " + "" + ("new Vec3f(0, -12, 0), " if jointAnim[0] == "body" else "Vec3f.ZERO, ") + str(key*20)+ "f));\n")
             f.write(anim[2].upper() + ".put(\"" + jointAnim[0] + "\", new ArrayList<>(cache));\n")
             f.write("cache.clear();\n")
-        f.write("Animations.put(id(\"" + anim[2] + "\"), () -> new Animation(" + str(anim[1]) + ", " + anim[2].upper() +");")
+        f.write("Animations.put(id(\"" + anim[2] + "\"), () -> new Animation(" + str(anim[1]) + ", " + anim[2].upper() +"));")
     f.close()
