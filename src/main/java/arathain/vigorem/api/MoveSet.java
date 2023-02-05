@@ -22,7 +22,7 @@ public class MoveSet {
 	}
 
 	public Identifier getAnimId(Animation current) {
-		if(!anims.contains(current.getId()) || anims.size() == 1 || (anims.contains(current.getId()) && anims.indexOf(current.getId()) == anims.size() - 1)) {
+		if(current == null || !anims.contains(current.getId()) || anims.size() == 1 || (anims.contains(current.getId()) && anims.indexOf(current.getId()) == anims.size() - 1)) {
 			return anims.get(0);
 		} else {
 			return anims.get(anims.indexOf(current.getId()) + 1);

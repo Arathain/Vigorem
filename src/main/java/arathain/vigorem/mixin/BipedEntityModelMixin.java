@@ -8,6 +8,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Arm;
+import net.minecraft.util.math.MathHelper;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -39,9 +40,11 @@ public class BipedEntityModelMixin<T extends LivingEntity> {
 	@ModifyExpressionValue(method = "setAngles(Lnet/minecraft/entity/LivingEntity;FFFFF)V", at = @At(value = "FIELD", target = "Lnet/minecraft/client/render/entity/model/BipedEntityModel;sneaking:Z"))
 	private boolean vigorem$cancelSneak(boolean original) {
 		if(original) {
-			this.body.pitch += 0.5f;
-			this.head.pitch -= 0.25f;
-			this.body.pivotX = 3.2F;
+//			this.body.pitch += 0.5f;
+//			this.head.yaw *= (MathHelper.PI/2-MathHelper.abs(this.head.pitch))/MathHelper.PI/2;
+//			this.head.pitch -= 0.25f+ MathHelper.abs(this.head.yaw);
+//			this.head.roll = -this.head.yaw;
+//			this.body.pivotX = 3.2F;
 		}
 		return false;
 	}
@@ -49,7 +52,7 @@ public class BipedEntityModelMixin<T extends LivingEntity> {
 	private void vigorem$sneaktwo(T livingEntity, float f, float g, float h, float i, float j, CallbackInfo ci) {
 		if(this.sneaking) {
 			this.body.pitch += 0.5f;
-			this.head.pitch -= 0.25f;
+			this.head.pitch -= 0.5f/2f;
 			this.body.pivotX = 3.2F;
 		}
 	}
