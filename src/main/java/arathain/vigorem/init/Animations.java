@@ -86,9 +86,9 @@ public class Animations {
 		cache.clear();
 		cache.add(new Keyframe(Easing.CUBIC_IN, Vec3f.ZERO, Vec3f.ZERO, Vec3f.ZERO, Vec3f.ZERO, 0));
 		cache.add(new Keyframe(Easing.EXPO_IN, Vec3f.ZERO, Vec3f.ZERO, Vec3f.ZERO, Vec3f.ZERO, 8));
-		cache.add(new Keyframe(Easing.SINE_OUT, Vec3f.ZERO, new Vec3f(-0.95f, 0, 0), Vec3f.ZERO,  Vec3f.ZERO, 15));
-		cache.add(new Keyframe(Easing.LINEAR, Vec3f.ZERO, new Vec3f(-0.9f, 0, 0), Vec3f.ZERO,  Vec3f.ZERO, 20));
-		cache.add(new Keyframe(Easing.QUAD_IN_OUT, Vec3f.ZERO, new Vec3f(-0.9f, 0, 0), Vec3f.ZERO, Vec3f.ZERO, 25));
+		cache.add(new Keyframe(Easing.SINE_OUT, Vec3f.ZERO, new Vec3f(0.95f, 0, 0), Vec3f.ZERO,  Vec3f.ZERO, 15));
+		cache.add(new Keyframe(Easing.LINEAR, Vec3f.ZERO, new Vec3f(0.9f, 0, 0), Vec3f.ZERO,  Vec3f.ZERO, 20));
+		cache.add(new Keyframe(Easing.QUAD_IN_OUT, Vec3f.ZERO, new Vec3f(0.9f, 0, 0), Vec3f.ZERO, Vec3f.ZERO, 25));
 		cache.add(new Keyframe(Easing.QUAD_IN_OUT, Vec3f.ZERO, Vec3f.ZERO, Vec3f.ZERO, Vec3f.ZERO, 33));
 		SMASH_R.put("right_hand", new ArrayList<>(cache));
 		cache.clear();

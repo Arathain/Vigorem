@@ -16,6 +16,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Arm;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3f;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -29,20 +30,25 @@ public abstract class HeldItemFeatureRendererMixin<T extends LivingEntity, M ext
 		super(featureRendererContext);
 	}
 
-	@Inject(method = "renderItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/item/HeldItemRenderer;renderItem(Lnet/minecraft/entity/LivingEntity;Lnet/minecraft/item/ItemStack;Lnet/minecraft/client/render/model/json/ModelTransformation$Mode;ZLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V", shift = At.Shift.BEFORE))
+	@Inject(method = "renderItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/util/math/MatrixStack;translate(DDD)V",  shift = At.Shift.AFTER))
 	private void vigorem$rotateItem(LivingEntity entity, ItemStack stack, ModelTransformation.Mode transformationMode, Arm arm, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, CallbackInfo ci) {
 		if(entity instanceof PlayerEntity player) {
 			if (player.getComponent(VigoremComponents.ANIMATION).current != null) {
 				Animation anim = player.getComponent(VigoremComponents.ANIMATION).current;
+				float tickDelta = MinecraftClient.getInstance().getTickDelta();
 
-				Vec3f rot = anim.getRot(arm == Arm.LEFT ? "left_hand" : "right_hand", MinecraftClient.getInstance().getTickDelta());
-				Vec3f offset = anim.getOffset(arm == Arm.LEFT ? "left_hand" : "right_hand", MinecraftClient.getInstance().getTickDelta());
-				Vec3f pivot = anim.getPivot(arm == Arm.RIGHT ? "right_hand" : "left_hand", MinecraftClient.getInstance().getTickDelta());
+				Vec3f rot = anim.getRot(arm == Arm.LEFT ? "left_hand" : "right_hand", tickDelta);
+				Vec3f offset = anim.getOffset(arm == Arm.LEFT ? "left_hand" : "right_hand", tickDelta);
+				Vec3f pivot = anim.getPivot(arm == Arm.RIGHT ? "right_hand" : "left_hand", tickDelta);
 
 				matrices.translate(pivot.getX()/16f, pivot.getY()/16f, pivot.getZ()/16f);
-				matrices.multiply(Vec3f.POSITIVE_Z.getRadialQuaternion(rot.getZ()));
+				matrices.multiply(Vec3f.POSITIVE_Y.getRadialQuaternion(MathHelper.PI));
+				matrices.translate(0, 0, -0.1);
+				matrices.multiply(Vec3f.POSITIVE_Z.getRadialQuaternion(-rot.getZ()));
 				matrices.multiply(Vec3f.POSITIVE_Y.getRadialQuaternion(rot.getY()));
 				matrices.multiply(Vec3f.POSITIVE_X.getRadialQuaternion(rot.getX()));
+				matrices.translate(0, 0, 0.1);
+				matrices.multiply(Vec3f.POSITIVE_Y.getRadialQuaternion(-MathHelper.PI));
 				matrices.translate(offset.getX()/16f, offset.getY()/16f, offset.getZ()/16f);
 			}
 		}
