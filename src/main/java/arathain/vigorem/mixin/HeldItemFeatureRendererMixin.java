@@ -40,12 +40,14 @@ public abstract class HeldItemFeatureRendererMixin<T extends LivingEntity, M ext
 				Vec3f pivot = anim.getPivot(arm == Arm.RIGHT ? "right_hand" : "left_hand", tickDelta);
 
 				matrices.multiply(Vec3f.POSITIVE_Y.getRadialQuaternion(MathHelper.PI));
+				matrices.multiply(Vec3f.POSITIVE_X.getRadialQuaternion(-MathHelper.PI/2));
 				matrices.translate(0, 0, -0.1);
 				matrices.translate(pivot.getX()/16f, pivot.getY()/16f, pivot.getZ()/16f);
-				matrices.multiply(Vec3f.POSITIVE_Z.getRadialQuaternion(-rot.getZ()));
+				matrices.multiply(Vec3f.POSITIVE_Z.getRadialQuaternion(rot.getZ()));
 				matrices.multiply(Vec3f.POSITIVE_Y.getRadialQuaternion(rot.getY()));
 				matrices.multiply(Vec3f.POSITIVE_X.getRadialQuaternion(rot.getX()));
 				matrices.translate(0, 0, 0.1);
+				matrices.multiply(Vec3f.POSITIVE_X.getRadialQuaternion(MathHelper.PI/2));
 				matrices.multiply(Vec3f.POSITIVE_Y.getRadialQuaternion(-MathHelper.PI));
 				matrices.translate(offset.getX()/16f, offset.getY()/16f, offset.getZ()/16f);
 			}
