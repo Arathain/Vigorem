@@ -1,11 +1,11 @@
-package arathain.vigorem.anim;
+package arathain.vigorem.api.anim;
 
 import arathain.vigorem.Vigorem;
+import arathain.vigorem.anim.OffsetModelPart;
+import arathain.vigorem.api.Keyframe;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
-import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
@@ -15,7 +15,6 @@ import net.minecraft.util.math.Vec3f;
 
 import java.util.List;
 import java.util.Map;
-import java.util.function.Supplier;
 
 public abstract class Animation {
 	public final Map<String, List<Keyframe>> keyframes;

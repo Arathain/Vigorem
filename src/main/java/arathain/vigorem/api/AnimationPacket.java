@@ -1,9 +1,8 @@
-package arathain.vigorem.anim;
+package arathain.vigorem.api;
 
 import arathain.vigorem.Vigorem;
 import arathain.vigorem.VigoremComponents;
-import arathain.vigorem.api.AnimatingWeaponItem;
-import arathain.vigorem.init.Animations;
+import arathain.vigorem.api.init.Animations;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayNetworkHandler;

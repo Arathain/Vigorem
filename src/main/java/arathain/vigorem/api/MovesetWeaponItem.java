@@ -1,6 +1,6 @@
 package arathain.vigorem.api;
 
-import arathain.vigorem.anim.Animation;
+import arathain.vigorem.api.anim.Animation;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Arm;
 import net.minecraft.util.Identifier;

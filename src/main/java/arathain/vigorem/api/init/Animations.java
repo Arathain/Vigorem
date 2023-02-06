@@ -1,9 +1,9 @@
-package arathain.vigorem.init;
+package arathain.vigorem.api.init;
 
 import arathain.vigorem.Vigorem;
-import arathain.vigorem.anim.Animation;
-import arathain.vigorem.anim.Easing;
-import arathain.vigorem.anim.Keyframe;
+import arathain.vigorem.api.anim.Animation;
+import arathain.vigorem.api.Easing;
+import arathain.vigorem.api.Keyframe;
 import arathain.vigorem.test.SmashAnimation;
 import arathain.vigorem.test.TPoseAnimation;
 import net.minecraft.util.Identifier;

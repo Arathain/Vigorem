@@ -20,6 +20,7 @@
 		"access_widener": "vigorem.accesswidener",
 		"entrypoints": {
 			"init": "arathain.vigorem.Vigorem",
+			"client_init": "arathain.vigorem.VigoremClient",
 			"cardinal-components-entity": "arathain.vigorem.VigoremComponents",
 			"pre_launch": "arathain.vigorem.VigoremPreLaunch"
 		},

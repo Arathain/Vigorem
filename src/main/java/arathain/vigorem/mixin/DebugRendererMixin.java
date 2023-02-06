@@ -1,7 +1,7 @@
 package arathain.vigorem.mixin;
 
 import arathain.vigorem.VigoremComponents;
-import arathain.vigorem.api.ColliderAnimation;
+import arathain.vigorem.api.anim.ColliderAnimation;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.VertexConsumerProvider;

@@ -1,4 +1,4 @@
-package arathain.vigorem.anim.box;
+package arathain.vigorem.api.box;
 
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Matrix3f;

@@ -1,8 +1,8 @@
 package arathain.vigorem.test;
 
 import arathain.vigorem.Vigorem;
-import arathain.vigorem.anim.Keyframe;
-import arathain.vigorem.api.ExtendableAnimation;
+import arathain.vigorem.api.Keyframe;
+import arathain.vigorem.api.anim.ExtendableAnimation;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
 import net.minecraft.entity.player.PlayerEntity;

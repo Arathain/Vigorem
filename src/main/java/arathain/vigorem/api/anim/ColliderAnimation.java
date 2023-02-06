@@ -1,17 +1,11 @@
-package arathain.vigorem.api;
+package arathain.vigorem.api.anim;
 
-import arathain.vigorem.anim.Animation;
-import arathain.vigorem.anim.Keyframe;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.Vec3f;
-
-import java.util.List;
-import java.util.Map;
 
 public interface ColliderAnimation {
 

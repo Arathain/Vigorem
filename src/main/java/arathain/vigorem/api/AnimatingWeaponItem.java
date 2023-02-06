@@ -1,8 +1,8 @@
 package arathain.vigorem.api;
 
 import arathain.vigorem.VigoremComponents;
-import arathain.vigorem.anim.Animation;
-import arathain.vigorem.init.Animations;
+import arathain.vigorem.api.anim.Animation;
+import arathain.vigorem.api.init.Animations;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;

@@ -1,7 +1,7 @@
-package arathain.vigorem.api;
+package arathain.vigorem.api.anim;
 
-import arathain.vigorem.anim.Animation;
-import arathain.vigorem.anim.Keyframe;
+import arathain.vigorem.api.Keyframe;
+import arathain.vigorem.api.anim.Animation;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
 import net.minecraft.entity.player.PlayerEntity;

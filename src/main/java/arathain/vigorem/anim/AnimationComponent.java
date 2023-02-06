@@ -1,8 +1,10 @@
 package arathain.vigorem.anim;
 
 import arathain.vigorem.VigoremComponents;
-import arathain.vigorem.api.ExtendableAnimation;
-import arathain.vigorem.init.Animations;
+import arathain.vigorem.api.AnimationCycle;
+import arathain.vigorem.api.anim.Animation;
+import arathain.vigorem.api.anim.ExtendableAnimation;
+import arathain.vigorem.api.init.Animations;
 import dev.onyxstudios.cca.api.v3.component.sync.AutoSyncedComponent;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
@@ -16,6 +18,9 @@ public class AnimationComponent implements AutoSyncedComponent {
 	public Animation current;
 	@Nullable
 	public Animation queued;
+
+	@Nullable
+	public AnimationCycle currentCycle;
 	private final PlayerEntity obj;
 
 	public AnimationComponent(PlayerEntity player) {

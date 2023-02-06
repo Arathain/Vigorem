@@ -1,7 +1,7 @@
 package arathain.vigorem;
 
-import arathain.vigorem.anim.AnimationPacket;
-import arathain.vigorem.init.Animations;
+import arathain.vigorem.api.AnimationPacket;
+import arathain.vigorem.api.init.Animations;
 import arathain.vigorem.test.BrickShithouseHammerItem;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.minecraft.item.Items;

@@ -1,7 +1,7 @@
 package arathain.vigorem.mixin;
 
 import arathain.vigorem.VigoremComponents;
-import arathain.vigorem.anim.AnimationPacket;
+import arathain.vigorem.api.AnimationPacket;
 import arathain.vigorem.api.AnimatingWeaponItem;
 import com.llamalad7.mixinextras.injector.WrapWithCondition;
 import net.minecraft.client.MinecraftClient;

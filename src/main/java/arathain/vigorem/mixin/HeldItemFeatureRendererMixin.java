@@ -1,9 +1,8 @@
 package arathain.vigorem.mixin;
 
 import arathain.vigorem.VigoremComponents;
-import arathain.vigorem.anim.Animation;
+import arathain.vigorem.api.anim.Animation;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRendererContext;
@@ -19,7 +18,6 @@ import net.minecraft.util.Arm;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3f;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;

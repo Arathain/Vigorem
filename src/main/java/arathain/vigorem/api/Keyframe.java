@@ -1,6 +1,5 @@
-package arathain.vigorem.anim;
+package arathain.vigorem.api;
 
-import net.minecraft.client.model.ModelPart;
 import net.minecraft.util.math.Vec3f;
 
 public final class Keyframe {

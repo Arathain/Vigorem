@@ -1,4 +1,4 @@
-package arathain.vigorem.anim;
+package arathain.vigorem.api;
 
 
 import java.util.HashMap;

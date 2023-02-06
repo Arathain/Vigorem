@@ -1,7 +1,7 @@
 package arathain.vigorem.mixin;
 
 import arathain.vigorem.VigoremComponents;
-import arathain.vigorem.anim.Animation;
+import arathain.vigorem.api.anim.Animation;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.GameRenderer;

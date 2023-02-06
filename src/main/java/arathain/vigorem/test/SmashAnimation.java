@@ -1,14 +1,8 @@
 package arathain.vigorem.test;
 
 import arathain.vigorem.Vigorem;
-import arathain.vigorem.anim.Keyframe;
-import arathain.vigorem.api.ColliderAnimation;
-import arathain.vigorem.api.MirrorableAnimation;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.render.Camera;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.Entity;
+import arathain.vigorem.api.Keyframe;
+import arathain.vigorem.api.anim.MirrorableAnimation;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
