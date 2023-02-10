@@ -1,16 +1,21 @@
 package arathain.vigorem.anim;
 
+import arathain.vigorem.VigoremClient;
 import arathain.vigorem.VigoremComponents;
 import arathain.vigorem.api.AnimationCycle;
 import arathain.vigorem.api.anim.Animation;
 import arathain.vigorem.api.anim.ExtendableAnimation;
 import arathain.vigorem.api.init.Animations;
+import arathain.vigorem.test.SneakCycle;
 import dev.onyxstudios.cca.api.v3.component.sync.AutoSyncedComponent;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.quiltmc.loader.api.minecraft.ClientOnly;
 
 
 public class AnimationComponent implements AutoSyncedComponent {
@@ -19,6 +24,7 @@ public class AnimationComponent implements AutoSyncedComponent {
 	@Nullable
 	public Animation queued;
 
+	@ClientOnly
 	@Nullable
 	public AnimationCycle currentCycle;
 	private final PlayerEntity obj;
@@ -48,6 +54,17 @@ public class AnimationComponent implements AutoSyncedComponent {
 		}
 	}
 	public void clientTick() {
+		if (VigoremClient.fancySneak && obj.isSneaking()) {
+			if(!(currentCycle instanceof SneakCycle)) {
+				currentCycle = new SneakCycle();
+			}
+		}
+		if(currentCycle != null) {
+			currentCycle.tick(this.obj, MinecraftClient.getInstance());
+			if(currentCycle.shouldRemove(this.obj)) {
+				currentCycle = null;
+			}
+		}
 		if(current != null) {
 			this.current.tick();
 			this.current.clientTick(obj);

@@ -30,6 +30,7 @@ public class ModelPartMixin implements OffsetModelPart, CrackCocaine {
 	public float offsetY = 0;
 	@Unique
 	public float offsetZ = 0;
+	private boolean vigorem$headHijinks;
 	@Unique
 	private Supplier<ModelPart> parent = () -> null;
 
@@ -92,9 +93,15 @@ public class ModelPartMixin implements OffsetModelPart, CrackCocaine {
 	public void setParent(Supplier<ModelPart> parent) {
 		this.parent = parent;
 	}
+
+	@Override
+	public void setHead(boolean yea) {
+		this.vigorem$headHijinks = yea;
+	}
+
 	@Unique
 	private void act(ModelPart part, MatrixStack matrix) {
-		matrix.translate((double)(part.pivotX / 16.0F), (double)(part.pivotY / 16.0F), (double)(part.pivotZ / 16.0F));
+		matrix.translate((double) (part.pivotX / 16.0F), (double) (part.pivotY / 16.0F), (double) (part.pivotZ / 16.0F));
 		if (part.roll != 0.0F) {
 			matrix.multiply(Vec3f.POSITIVE_Z.getRadialQuaternion(part.roll));
 		}
@@ -111,8 +118,21 @@ public class ModelPartMixin implements OffsetModelPart, CrackCocaine {
 			matrix.scale(part.scaleX, part.scaleY, part.scaleZ);
 		}
 
-		if (((OffsetModelPart)(Object)part).getOffsetX() != 0F || ((OffsetModelPart)(Object)part).getOffsetY() != 0F || ((OffsetModelPart)(Object)part).getOffsetZ() != 0F) {
-			matrix.translate((((OffsetModelPart)(Object)part).getOffsetX() / 16F), (((OffsetModelPart)(Object)part).getOffsetY() / 16F), (((OffsetModelPart)(Object)part).getOffsetZ() / 16F));
+		if (((OffsetModelPart) (Object) part).getOffsetX() != 0F || ((OffsetModelPart) (Object) part).getOffsetY() != 0F || ((OffsetModelPart) (Object) part).getOffsetZ() != 0F) {
+			matrix.translate((((OffsetModelPart) (Object) part).getOffsetX() / 16F), (((OffsetModelPart) (Object) part).getOffsetY() / 16F), (((OffsetModelPart) (Object) part).getOffsetZ() / 16F));
 		}
+
+		if (this.vigorem$headHijinks) {
+			if (part.pitch != 0.0F) {
+				matrix.multiply(Vec3f.NEGATIVE_X.getRadialQuaternion(part.pitch));
+			}
+			if (part.yaw != 0.0F) {
+				matrix.multiply(Vec3f.NEGATIVE_Y.getRadialQuaternion(part.yaw));
+			}
+			if (part.roll != 0.0F) {
+				matrix.multiply(Vec3f.NEGATIVE_Z.getRadialQuaternion(part.roll));
+			}
+		}
+
 	}
 }

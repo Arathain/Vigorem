@@ -26,6 +26,10 @@ public abstract class Animation {
 		this.keyframes = keyframes;
 	}
 
+	public boolean shouldTransformHead() {
+		return true;
+	};
+
 	public boolean shouldRemove() {
 		return frame >= length;
 	}

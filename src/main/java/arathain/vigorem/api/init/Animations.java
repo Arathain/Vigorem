@@ -19,6 +19,7 @@ public class Animations {
 	private static final Map<Identifier, Supplier<Animation>> ANIMATIONS = new HashMap<>();
 	private static final Map<String, List<Keyframe>> TPOSE_START = new HashMap<>(), TPOSE_END = new HashMap<>();
 	private static final Map<String, List<Keyframe>> SMASH_R = new HashMap<>();
+	public static final Map<String, List<Keyframe>> SNEAK = new HashMap<>();
 	public static void init() {
 		List<Keyframe> cache = new ArrayList<>();
 		cache.add(new Keyframe(Easing.QUAD_IN_OUT, Vec3f.ZERO, Vec3f.ZERO, Vec3f.ZERO, Vec3f.ZERO, 0));
@@ -115,6 +116,48 @@ public class Animations {
 		put(Vigorem.id("smash_left"), () -> new SmashAnimation(33, SMASH_R, true));
 		put(Vigorem.id("smash_right"), () -> new SmashAnimation(33, SMASH_R, false));
 		put(Vigorem.id("t_pose"), () -> new TPoseAnimation(30, TPOSE_START, 20, TPOSE_END));
+
+		cache.add(new Keyframe(Easing.QUAD_IN, new Vec3f(0f, 2f, 4f), deg(30f, 0f, 0f), Vec3f.ZERO, new Vec3f(0, -12, 0), 0.0f));
+		cache.add(new Keyframe(Easing.QUAD_OUT, new Vec3f(0f, 1.5f, 4f), deg(29f, 0f, 0f), Vec3f.ZERO, new Vec3f(0, -12, 0), 5.0f));
+		cache.add(new Keyframe(Easing.QUAD_IN, new Vec3f(0f, 2f, 4f), deg(30f, 0f, 0f), Vec3f.ZERO, new Vec3f(0, -12, 0), 10.0f));
+		cache.add(new Keyframe(Easing.QUAD_OUT, new Vec3f(0f, 1.5f, 4f), deg(29f, 0f, 0f), Vec3f.ZERO, new Vec3f(0, -12, 0), 15.0f));
+		cache.add(new Keyframe(Easing.LINEAR, new Vec3f(0f, 2f, 4f), deg(30f, 0f, 0f), Vec3f.ZERO, new Vec3f(0, -12, 0), 20));
+		SNEAK.put("body", new ArrayList<>(cache));
+		cache.clear();
+		cache.add(new Keyframe(Easing.SINE_IN, Vec3f.ZERO, deg(-20f, 0f, 10f), Vec3f.ZERO, Vec3f.ZERO, 0.0f));
+		cache.add(new Keyframe(Easing.SINE_OUT, Vec3f.ZERO, deg(-20f, 0f, 8f), Vec3f.ZERO, Vec3f.ZERO, 2.5f));
+		cache.add(new Keyframe(Easing.SINE_IN, Vec3f.ZERO, deg(-20f, 0f, 10f), Vec3f.ZERO, Vec3f.ZERO, 5.0f));
+		cache.add(new Keyframe(Easing.SINE_OUT, Vec3f.ZERO, deg(-20f, 0f, 12f), Vec3f.ZERO, Vec3f.ZERO, 7.5f));
+		cache.add(new Keyframe(Easing.SINE_IN, Vec3f.ZERO, deg(-20f, 0f, 10f), Vec3f.ZERO, Vec3f.ZERO, 10.0f));
+		cache.add(new Keyframe(Easing.SINE_OUT, Vec3f.ZERO, deg(-20f, 0f, 8f), Vec3f.ZERO, Vec3f.ZERO, 12.5f));
+		cache.add(new Keyframe(Easing.SINE_IN, Vec3f.ZERO, deg(-20f, 0f, 10f), Vec3f.ZERO, Vec3f.ZERO, 15.0f));
+		cache.add(new Keyframe(Easing.SINE_OUT, Vec3f.ZERO, deg(-20f, 0f, 12f), Vec3f.ZERO, Vec3f.ZERO, 17.5f));
+		cache.add(new Keyframe(Easing.LINEAR, Vec3f.ZERO, deg(-20f, 0f, 10f), Vec3f.ZERO, Vec3f.ZERO, 20));
+		SNEAK.put("right_arm", new ArrayList<>(cache));
+		cache.clear();
+		cache.add(new Keyframe(Easing.SINE_IN, Vec3f.ZERO, deg(-20f, 0f, -10f), Vec3f.ZERO, Vec3f.ZERO, 0.0f));
+		cache.add(new Keyframe(Easing.SINE_OUT, Vec3f.ZERO, deg(-20f, 0f, -8f), Vec3f.ZERO, Vec3f.ZERO, 2.5f));
+		cache.add(new Keyframe(Easing.SINE_IN, Vec3f.ZERO, deg(-20f, 0f, -10f), Vec3f.ZERO, Vec3f.ZERO, 5.0f));
+		cache.add(new Keyframe(Easing.SINE_OUT, Vec3f.ZERO, deg(-20f, 0f, -12f), Vec3f.ZERO, Vec3f.ZERO, 7.5f));
+		cache.add(new Keyframe(Easing.SINE_IN, Vec3f.ZERO, deg(-20f, 0f, -10f), Vec3f.ZERO, Vec3f.ZERO, 10.0f));
+		cache.add(new Keyframe(Easing.SINE_OUT, Vec3f.ZERO, deg(-20f, 0f, -8f), Vec3f.ZERO, Vec3f.ZERO, 12.5f));
+		cache.add(new Keyframe(Easing.SINE_IN, Vec3f.ZERO, deg(-20f, 0f, -10f), Vec3f.ZERO, Vec3f.ZERO, 15.0f));
+		cache.add(new Keyframe(Easing.SINE_OUT, Vec3f.ZERO, deg(-20f, 0f, -12f), Vec3f.ZERO, Vec3f.ZERO, 17.5f));
+		cache.add(new Keyframe(Easing.LINEAR, Vec3f.ZERO, deg(-20f, 0f, -10f), Vec3f.ZERO, Vec3f.ZERO, 20));
+		SNEAK.put("left_arm", new ArrayList<>(cache));
+		cache.clear();
+		cache.add(new Keyframe(Easing.CUBIC_IN, new Vec3f(0f, 0f, 1f), deg(30f, 0f, -2f), Vec3f.ZERO, Vec3f.ZERO, 0.0f));
+		cache.add(new Keyframe(Easing.CUBIC_OUT, new Vec3f(0f, 1f, 0.5f), deg(15f, 0f, -2f), Vec3f.ZERO, Vec3f.ZERO, 5.0f));
+		cache.add(new Keyframe(Easing.SINE_IN, new Vec3f(0f, 0f, -2f), deg(0f, 0f, -2f), Vec3f.ZERO, Vec3f.ZERO, 10.0f));
+		cache.add(new Keyframe(Easing.LINEAR, new Vec3f(0f, 0f, 1f), deg(30f, 0f, -2f), Vec3f.ZERO, Vec3f.ZERO, 20));
+		SNEAK.put("right_leg", new ArrayList<>(cache));
+		cache.clear();
+		cache.add(new Keyframe(Easing.SINE_IN, new Vec3f(0f, 0f, -2f), deg(0f, 0f, 2f), Vec3f.ZERO, Vec3f.ZERO, 0.0f));
+		cache.add(new Keyframe(Easing.CUBIC_IN, new Vec3f(0f, 0f, 1f), deg(30f, 0f, 2f), Vec3f.ZERO, Vec3f.ZERO, 10.0f));
+		cache.add(new Keyframe(Easing.CUBIC_OUT, new Vec3f(0f, 1f, 0.5f), deg(15f, 0f, 2f), Vec3f.ZERO, Vec3f.ZERO, 15.0f));
+		cache.add(new Keyframe(Easing.LINEAR, new Vec3f(0f, 0f, -2f), deg(0f, 0f, 2f), Vec3f.ZERO, Vec3f.ZERO, 20));
+		SNEAK.put("left_leg", new ArrayList<>(cache));
+		cache.clear();
 	}
 	public static void put(Identifier id, Supplier<Animation> anim) {
 		ANIMATIONS.put(id, anim);

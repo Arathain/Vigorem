@@ -1,6 +1,7 @@
 package arathain.vigorem.api;
 
 import arathain.vigorem.anim.OffsetModelPart;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
@@ -8,18 +9,30 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3f;
+import org.quiltmc.loader.api.minecraft.ClientOnly;
 
 import java.util.List;
 import java.util.Map;
 
-public class AnimationCycle {
+public abstract class AnimationCycle {
 	public final Map<String, List<Keyframe>> keyframes;
 	private final int length;
-	private float progress, prevProgress;
+	protected float progress, prevProgress;
 
 	public AnimationCycle(Map<String, List<Keyframe>> keyframes, int length) {
 		this.keyframes = keyframes;
 		this.length = length;
+	}
+
+	public boolean shouldTransformHead() {
+		return true;
+	}
+	public boolean shouldRemove(PlayerEntity p) {
+		return false;
+	}
+
+	public void tick(PlayerEntity entity, MinecraftClient cli) {
+		this.prevProgress = progress;
 	}
 
 	public void writeNbt(NbtCompound nbt) {
@@ -31,12 +44,8 @@ public class AnimationCycle {
 
 	public float getProgress(float tickDelta) {
 		if(progress > length) {
-			progress -= length;
-			prevProgress -= length;
-		}
-		if(progress < 0) {
-			progress += length;
-			prevProgress += length;
+			progress = 0;
+			prevProgress = 0;
 		}
 		return MathHelper.lerp(tickDelta, prevProgress, progress);
 	}
@@ -92,7 +101,7 @@ public class AnimationCycle {
 		if(same) {
 			return new Vec3f(prev.rotation.getX(),prev.rotation.getY(), prev.rotation.getZ());
 		} else {
-			float percentage = (getProgress(tickDelta) - prev.frame) / ((float) next.frame - prev.frame);
+			float percentage = (getProgress(tickDelta) - prev.frame) / (next.frame - prev.frame);
 			return new Vec3f(MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.rotation.getX(), next.rotation.getX()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.rotation.getY(), next.rotation.getY()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.rotation.getZ(), next.rotation.getZ()));
 		}
 	}
@@ -100,7 +109,7 @@ public class AnimationCycle {
 		if(same) {
 			return new Vec3f(prev.translation.getX(), prev.translation.getY(), prev.translation.getZ());
 		} else {
-			float percentage = (getProgress(tickDelta) - prev.frame) / ((float) next.frame - prev.frame);
+			float percentage = (getProgress(tickDelta) - prev.frame) / (next.frame - prev.frame);
 			return new Vec3f(MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.translation.getX(), next.translation.getX()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.translation.getY(), next.translation.getY()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.translation.getZ(), next.translation.getZ()));
 		}
 	}
@@ -108,7 +117,7 @@ public class AnimationCycle {
 		if(same) {
 			return new Vec3f(prev.offset.getX(), prev.offset.getY(), prev.offset.getZ());
 		} else {
-			float percentage = (getProgress(tickDelta) - prev.frame) / ((float) next.frame - prev.frame);
+			float percentage = (getProgress(tickDelta) - prev.frame) / (next.frame - prev.frame);
 			return new Vec3f(MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.offset.getX(), next.offset.getX()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.offset.getY(), next.offset.getY()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.offset.getZ(), next.offset.getZ()));
 		}
 	}

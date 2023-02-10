@@ -1,6 +1,8 @@
 package arathain.vigorem.mixin;
 
 import arathain.vigorem.VigoremComponents;
+import arathain.vigorem.anim.AnimationComponent;
+import arathain.vigorem.anim.Methylenedioxymethamphetamine;
 import arathain.vigorem.anim.OffsetModelPart;
 import net.minecraft.client.model.*;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
@@ -26,14 +28,24 @@ public abstract class PlayerEntityModelMixin<T extends LivingEntity> extends Bip
 	}
 	@Inject(method = "setAngles(Lnet/minecraft/entity/LivingEntity;FFFFF)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/model/ModelPart;copyTransform(Lnet/minecraft/client/model/ModelPart;)V", ordinal = 0))
 	private void vigorem$angles(T livingEntity, float f, float g, float h, float i, float j, CallbackInfo ci) {
-		if (livingEntity instanceof PlayerEntity plr && plr.getComponent(VigoremComponents.ANIMATION).current != null) {
-			this.rightLeg.pivotX = -1.9f;
-			this.leftLeg.pivotX = 1.9f;
-			plr.getComponent(VigoremComponents.ANIMATION).current.setModelAngles(((PlayerEntityModel<AbstractClientPlayerEntity>) (Object) this), plr, g);
-			this.hat.copyTransform(this.head);
-			if (plr.getComponent(VigoremComponents.ANIMATION).current.shouldRemove()) {
-				this.getBodyParts().forEach(part -> ((OffsetModelPart) (Object) part).setOffset(0, 0, 0));
-				this.getHeadParts().forEach(part -> ((OffsetModelPart) (Object) part).setOffset(0, 0, 0));
+		if (livingEntity instanceof PlayerEntity plr) {
+			AnimationComponent comp = plr.getComponent(VigoremComponents.ANIMATION);
+			if(comp.currentCycle != null) {
+				comp.currentCycle.setModelAngles(((PlayerEntityModel<AbstractClientPlayerEntity>) (Object) this), plr, g);
+				if(((Methylenedioxymethamphetamine) this).shouldTransformHead() != comp.currentCycle.shouldTransformHead()) {
+					((Methylenedioxymethamphetamine) this).setHead(comp.currentCycle.shouldTransformHead());
+				}
+			}
+			if(comp.current != null) {
+				comp.current.setModelAngles(((PlayerEntityModel<AbstractClientPlayerEntity>) (Object) this), plr, g);
+				if(((Methylenedioxymethamphetamine) this).shouldTransformHead() != comp.current.shouldTransformHead()) {
+					((Methylenedioxymethamphetamine) this).setHead(comp.current.shouldTransformHead());
+				}
+				this.hat.copyTransform(this.head);
+				if (comp.current.shouldRemove()) {
+					this.getBodyParts().forEach(part -> ((OffsetModelPart) (Object) part).setOffset(0, 0, 0));
+					this.getHeadParts().forEach(part -> ((OffsetModelPart) (Object) part).setOffset(0, 0, 0));
+				}
 			}
 		}
 	}

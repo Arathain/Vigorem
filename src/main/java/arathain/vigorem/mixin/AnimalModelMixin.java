@@ -1,6 +1,7 @@
 package arathain.vigorem.mixin;
 
 import arathain.vigorem.anim.CrackCocaine;
+import arathain.vigorem.anim.Methylenedioxymethamphetamine;
 import arathain.vigorem.anim.OffsetModelPart;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.ModelPart;
@@ -21,13 +22,15 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 @Mixin(AnimalModel.class)
-public class AnimalModelMixin {
+public class AnimalModelMixin implements Methylenedioxymethamphetamine {
 	@Unique
 	Supplier<MatrixStack> matrices;
 	@Unique
 	VertexConsumer vertices;
 	@Unique
 	int light;
+	@Unique
+	boolean vigorem$head = false;
 	@Unique
 	int overlay;
 	@Unique
@@ -56,12 +59,19 @@ public class AnimalModelMixin {
 			args.set(0, ((Consumer<ModelPart>)(headPart) -> {
 				MatrixStack temp = matrices.get();
 				temp.push();
+				boolean c = headPart.equals(biped.head) || headPart.equals(biped.hat);
 				boolean b = headPart.equals(biped.leftArm) || headPart.equals(biped.head) || headPart.equals(biped.rightArm) || headPart.equals(biped.hat) || ((OffsetModelPart)(Object)biped.rightArm).isChild(headPart) || ((OffsetModelPart)(Object)biped.head).isChild(headPart) || ((OffsetModelPart)(Object)biped.leftArm).isChild(headPart);
 				if(biped instanceof PlayerEntityModel<?> p && !b) {
 					b = headPart.equals(p.leftSleeve) || headPart.equals(p.rightSleeve);
 				}
 				if(b && ((CrackCocaine)(Object)headPart).getParent().get() == null) {
 					((CrackCocaine)(Object)headPart).setParent(() -> biped.body);
+					System.out.println("h");
+					System.out.println(c);
+					System.out.println(shouldTransformHead());
+					if(c) {
+						((CrackCocaine) (Object) headPart).setHead(!shouldTransformHead());
+					}
 				}
 				headPart.render(temp, vertices, light, overlay, red, green, blue, alpha);
 				temp.pop();
@@ -69,4 +79,13 @@ public class AnimalModelMixin {
 		}
 	}
 
+	@Override
+	public boolean shouldTransformHead() {
+		return vigorem$head;
+	}
+
+	@Override
+	public void setHead(boolean head) {
+		this.vigorem$head = head;
+	}
 }

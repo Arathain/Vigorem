@@ -9,7 +9,6 @@
     "BipedEntityModelMixin",
     "ClientPlayerEntityMixin",
     "EntityMixin",
-    "LivingEntityMixin",
     "ModelPartMixin",
     "PlayerEntityMixin",
     "PlayerEntityModelMixin",
