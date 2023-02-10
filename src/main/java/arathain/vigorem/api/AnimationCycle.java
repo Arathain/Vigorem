@@ -47,6 +47,10 @@ public abstract class AnimationCycle {
 			progress = 0;
 			prevProgress = 0;
 		}
+		if(progress < 0) {
+			progress = length;
+			prevProgress = length;
+		}
 		return MathHelper.lerp(tickDelta, prevProgress, progress);
 	}
 	public void tick() {

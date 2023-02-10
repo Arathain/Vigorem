@@ -66,9 +66,6 @@ public class AnimalModelMixin implements Methylenedioxymethamphetamine {
 				}
 				if(b && ((CrackCocaine)(Object)headPart).getParent().get() == null) {
 					((CrackCocaine)(Object)headPart).setParent(() -> biped.body);
-					System.out.println("h");
-					System.out.println(c);
-					System.out.println(shouldTransformHead());
 					if(c) {
 						((CrackCocaine) (Object) headPart).setHead(!shouldTransformHead());
 					}
