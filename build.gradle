@@ -1,6 +1,6 @@
 plugins {
 	id 'maven-publish'
-	id 'org.quiltmc.loom' version '1.+'
+	id 'org.quiltmc.loom' version '1.0+'
 }
 
 archivesBaseName = project.archives_base_name
@@ -15,7 +15,7 @@ repositories {
 		}
 	}
 	maven {
-		name = 'Quilt Snapshots'
+		name = 'Quilt Snapshot'
 		url = 'https://maven.quiltmc.org/repository/snapshot'
 	}
 	maven { url 'https://masa.dy.fi/maven' }
