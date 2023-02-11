@@ -1,9 +1,13 @@
 package arathain.vigorem.mixin;
 
 import arathain.vigorem.VigoremClient;
+import arathain.vigorem.anim.CrackCocaine;
+import arathain.vigorem.anim.Methylenedioxymethamphetamine;
 import arathain.vigorem.anim.OffsetModelPart;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import net.minecraft.client.model.ModelPart;
+import net.minecraft.client.network.AbstractClientPlayerEntity;
+import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
@@ -20,7 +24,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
 @Mixin(BipedEntityModel.class)
-public class BipedEntityModelMixin<T extends LivingEntity> {
+public class BipedEntityModelMixin<T extends LivingEntity> implements Methylenedioxymethamphetamine {
 	@Shadow
 	@Final
 	public ModelPart head;
@@ -64,4 +68,13 @@ public class BipedEntityModelMixin<T extends LivingEntity> {
 		this.body.rotate(matrices);
 	}
 
+	@Override
+	public boolean shouldTransformHead() {
+		return !((CrackCocaine)(Object)this.head).getHead();
+	}
+
+	@Override
+	public void setHead(boolean yea) {
+		((CrackCocaine)(Object)this.head).setHead(!yea);
+	}
 }

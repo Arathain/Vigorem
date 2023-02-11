@@ -11,6 +11,7 @@ import net.minecraft.client.render.entity.model.EndermanEntityModel;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
 import net.minecraft.client.util.math.MatrixStack;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -22,15 +23,16 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 @Mixin(AnimalModel.class)
-public class AnimalModelMixin implements Methylenedioxymethamphetamine {
+public abstract class AnimalModelMixin implements Methylenedioxymethamphetamine {
+	@Shadow
+	protected abstract Iterable<ModelPart> getHeadParts();
+
 	@Unique
 	Supplier<MatrixStack> matrices;
 	@Unique
 	VertexConsumer vertices;
 	@Unique
 	int light;
-	@Unique
-	boolean vigorem$head = false;
 	@Unique
 	int overlay;
 	@Unique
@@ -59,15 +61,13 @@ public class AnimalModelMixin implements Methylenedioxymethamphetamine {
 			args.set(0, ((Consumer<ModelPart>)(headPart) -> {
 				MatrixStack temp = matrices.get();
 				temp.push();
-				boolean c = headPart.equals(biped.head) || headPart.equals(biped.hat);
 				boolean b = headPart.equals(biped.leftArm) || headPart.equals(biped.head) || headPart.equals(biped.rightArm) || headPart.equals(biped.hat) || ((OffsetModelPart)(Object)biped.rightArm).isChild(headPart) || ((OffsetModelPart)(Object)biped.head).isChild(headPart) || ((OffsetModelPart)(Object)biped.leftArm).isChild(headPart);
 				if(biped instanceof PlayerEntityModel<?> p && !b) {
 					b = headPart.equals(p.leftSleeve) || headPart.equals(p.rightSleeve);
 				}
-				if(b && ((CrackCocaine)(Object)headPart).getParent().get() == null) {
-					((CrackCocaine)(Object)headPart).setParent(() -> biped.body);
-					if(c) {
-						((CrackCocaine) (Object) headPart).setHead(!shouldTransformHead());
+				if(b) {
+					if(((CrackCocaine)(Object)headPart).getParent().get() == null) {
+						((CrackCocaine) (Object) headPart).setParent(() -> biped.body);
 					}
 				}
 				headPart.render(temp, vertices, light, overlay, red, green, blue, alpha);
@@ -78,11 +78,15 @@ public class AnimalModelMixin implements Methylenedioxymethamphetamine {
 
 	@Override
 	public boolean shouldTransformHead() {
-		return vigorem$head;
+		boolean[] bl = new boolean[1];
+		this.getHeadParts().forEach(h -> {if(((CrackCocaine) (Object) h).getHead()) {
+			bl[0] = true;
+		}});
+		return !bl[0];
 	}
 
 	@Override
 	public void setHead(boolean head) {
-		this.vigorem$head = head;
+		this.getHeadParts().forEach(h -> ((CrackCocaine) (Object) h).setHead(!head));
 	}
 }

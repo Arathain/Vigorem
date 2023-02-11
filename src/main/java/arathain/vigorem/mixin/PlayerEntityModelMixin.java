@@ -41,11 +41,13 @@ public abstract class PlayerEntityModelMixin<T extends LivingEntity> extends Bip
 				if(((Methylenedioxymethamphetamine) this).shouldTransformHead() != comp.current.shouldTransformHead()) {
 					((Methylenedioxymethamphetamine) this).setHead(comp.current.shouldTransformHead());
 				}
-				this.hat.copyTransform(this.head);
 				if (comp.current.shouldRemove()) {
 					this.getBodyParts().forEach(part -> ((OffsetModelPart) (Object) part).setOffset(0, 0, 0));
 					this.getHeadParts().forEach(part -> ((OffsetModelPart) (Object) part).setOffset(0, 0, 0));
 				}
+			}
+			if(comp.current != null || comp.currentCycle != null) {
+				this.hat.copyTransform(this.head);
 			}
 		}
 	}

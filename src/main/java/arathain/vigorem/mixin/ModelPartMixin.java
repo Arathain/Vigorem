@@ -79,6 +79,7 @@ public class ModelPartMixin implements OffsetModelPart, CrackCocaine {
 	}
 	@Inject(method = "copyTransform", at = @At("TAIL"))
 	public void vigorem$copyTrans(ModelPart part, CallbackInfo ci) {
+		this.vigorem$headHijinks = ((ModelPartMixin)(Object)part).vigorem$headHijinks;
 		this.offsetX = ((OffsetModelPart)(Object)part).getOffsetX();
 		this.offsetY = ((OffsetModelPart)(Object)part).getOffsetY();
 		this.offsetZ = ((OffsetModelPart)(Object)part).getOffsetZ();
@@ -97,6 +98,11 @@ public class ModelPartMixin implements OffsetModelPart, CrackCocaine {
 	@Override
 	public void setHead(boolean yea) {
 		this.vigorem$headHijinks = yea;
+	}
+
+	@Override
+	public boolean getHead() {
+		return this.vigorem$headHijinks;
 	}
 
 	@Unique
@@ -122,7 +128,7 @@ public class ModelPartMixin implements OffsetModelPart, CrackCocaine {
 			matrix.translate((((OffsetModelPart) (Object) part).getOffsetX() / 16F), (((OffsetModelPart) (Object) part).getOffsetY() / 16F), (((OffsetModelPart) (Object) part).getOffsetZ() / 16F));
 		}
 
-		if (this.vigorem$headHijinks) {
+		if (getHead()) {
 			if (part.pitch != 0.0F) {
 				matrix.multiply(Vec3f.NEGATIVE_X.getRadialQuaternion(part.pitch));
 			}
