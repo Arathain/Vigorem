@@ -45,17 +45,20 @@ public abstract class HeldItemFeatureRendererMixin<T extends LivingEntity, M ext
 
 				Vec3f rot = anim.getRot(arm == Arm.LEFT ? "left_hand" : "right_hand", tickDelta);
 				Vec3f offset = anim.getOffset(arm == Arm.LEFT ? "left_hand" : "right_hand", tickDelta);
-				Vec3f pivot = anim.getPivot(arm == Arm.RIGHT ? "right_hand" : "left_hand", tickDelta);
+				Vec3f pivot = anim.getPivot(arm == Arm.LEFT ? "left_hand" : "right_hand", tickDelta);
 
 				boolean bl = arm == Arm.LEFT;
 				matrices.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(-90.0F));
 				matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(180.0F));
-				matrices.translate(pivot.getX()/16f + ((bl ? -1 : 1) / 16.0F), pivot.getY()/16f+0.125, pivot.getZ()/16f-0.625);
+				matrices.translate(((bl ? -1 : 1) / 16.0F), 0.125, -0.625);
+				matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(-180.0F));
 				matrices.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(90.0F));
+				matrices.translate(pivot.getX()/16f, -pivot.getY()/16f, pivot.getZ()/16f);
 				matrices.multiply(Vec3f.POSITIVE_Z.getRadialQuaternion(rot.getZ()));
-				matrices.multiply(Vec3f.POSITIVE_Y.getRadialQuaternion(-rot.getY()));
-				matrices.multiply(Vec3f.POSITIVE_X.getRadialQuaternion(-rot.getX()));
+				matrices.multiply(Vec3f.POSITIVE_Y.getRadialQuaternion(rot.getY()));
+				matrices.multiply(Vec3f.POSITIVE_X.getRadialQuaternion(rot.getX()));
 				matrices.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(-90.0F));
+				matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(180.0F));
 				matrices.translate(offset.getX()/16f, offset.getY()/16f, offset.getZ()/16f);
 				this.heldItemRenderer.renderItem(entity, stack, transformationMode, bl, matrices, vertexConsumers, light);
 				matrices.pop();
