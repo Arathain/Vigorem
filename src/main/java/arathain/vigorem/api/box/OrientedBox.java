@@ -43,22 +43,22 @@ public class OrientedBox {
 
 	// 1. CONSTRUCT
 
-	public OrientedBox(Vec3d center, double width, double height, double depth, float yaw, float pitch) {
+	public OrientedBox(Vec3d center, double width, double height, double depth, float pitch, float yaw) {
 		this.center = center;
 		this.extent = new Vec3d(width/2.0, height/2.0, depth/2.0);
-		this.axisZ = Vec3d.fromPolar(yaw, pitch).normalize();
-		this.axisY = Vec3d.fromPolar(yaw + 90, pitch).negate().normalize();
+		this.axisZ = Vec3d.fromPolar(pitch, yaw).normalize();
+		this.axisY = Vec3d.fromPolar(pitch + 90, yaw).negate().normalize();
 		this.axisX = axisZ.crossProduct(axisY);
 	}
 
-	public OrientedBox(Vec3d center, Vec3d size, float yaw, float pitch) {
-		this(center,size.x, size.y, size.z, yaw, pitch);
+	public OrientedBox(Vec3d center, Vec3d size, float pitch, float yaw) {
+		this(center,size.x, size.y, size.z, pitch, yaw);
 	}
-	public OrientedBox(Vec3d center, Vec3d size, float yaw, float pitch, float roll) {
+	public OrientedBox(Vec3d center, Vec3d size, float pitch, float yaw, float roll) {
 		this.center = center;
 		this.extent = new Vec3d(size.x/2.0, size.y/2.0, size.z/2.0);
-		this.axisZ = Vec3d.fromPolar(yaw, pitch).rotateZ(roll * (float) (Math.PI / 180.0)).normalize();
-		this.axisY = Vec3d.fromPolar(yaw + 90, pitch).negate().rotateZ(roll * (float) (Math.PI / 180.0)).normalize();
+		this.axisZ = Vec3d.fromPolar(pitch, yaw).rotateZ(roll * (float) (Math.PI / 180.0)).normalize();
+		this.axisY = Vec3d.fromPolar(pitch + 90, yaw).negate().rotateZ(roll * (float) (Math.PI / 180.0)).normalize();
 		this.axisX = axisZ.crossProduct(axisY);
 	}
 

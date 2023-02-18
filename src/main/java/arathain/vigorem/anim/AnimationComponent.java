@@ -39,7 +39,7 @@ public class AnimationComponent implements AutoSyncedComponent {
 			if(this.current instanceof ExtendableAnimation c && c.shouldEnd(obj)) {
 				c.update();
 			}
-			if(this.current.shouldRemove() || this.current.canCancel()) {
+			if(this.current.shouldRemove() || (this.queued != null && this.current.canCancel(this.queued))) {
 				this.current = this.queued;
 				this.queued = null;
 			}
@@ -71,7 +71,7 @@ public class AnimationComponent implements AutoSyncedComponent {
 			if(this.current instanceof ExtendableAnimation c && c.shouldEnd(obj)) {
 				c.update();
 			}
-			if(this.current.shouldRemove()  || this.current.canCancel()) {
+			if(this.current.shouldRemove()  || (this.queued != null && this.current.canCancel(this.queued))) {
 				this.current = this.queued;
 				this.queued = null;
 			}

@@ -51,7 +51,7 @@ public abstract class Animation {
 	public boolean canInterrupt() {
 		return false;
 	}
-	public boolean canCancel() {
+	public boolean canCancel(Animation queued) {
 		return false;
 	}
 	public Identifier getId() {
