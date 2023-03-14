@@ -84,22 +84,22 @@ with open('export.txt', 'a') as f:
             for frame in range(len(jointAnim[1])):
                 key = list(jointAnim[1].keys())[frame]
                 value = list(jointAnim[1].values())[frame]
-                rot = "Vec3f.ZERO"
-                pos = "Vec3f.ZERO"
-                scale = "Vec3f.ZERO"
+                rot = "Vigorem.ZERO"
+                pos = "Vigorem.ZERO"
+                scale = "Vigorem.ZERO"
                 easing = "LINEAR"
                 for val in value:
                     match val[0]:
                         case "pos":
-                            pos = "new Vec3f(" + str(val[2][0]) +"f, " + str(val[2][1]) +"f, " + str(val[2][2]) + "f)"
+                            pos = "new Vector3f(" + str(val[2][0]) +"f, " + str(val[2][1]) +"f, " + str(val[2][2]) + "f)"
                             easing = val[1]
                         case "scale":
-                            scale = "new Vec3f(" + str(val[2][0]) +"f, " + str(val[2][1]) +"f, " + str(val[2][2]) + "f)"
+                            scale = "new Vector3f(" + str(val[2][0]) +"f, " + str(val[2][1]) +"f, " + str(val[2][2]) + "f)"
                             easing = val[1]
                         case "rot":
                             rot = "deg(" + str(round(val[2][0], 2)) +"f, " + str(round(val[2][1], 2)) +"f, " + str(round(val[2][2], 2)) + "f)"
                             easing = val[1]
-                f.write("cache.add(new Keyframe(Easing." + (convertEasing[easing] if easing in convertEasing else easing) + ", " + pos + ", " + rot + ", " + scale + ", " + "" + ("new Vec3f(0, -12, 0), " if jointAnim[0] == "body" else "Vec3f.ZERO, ") + str(round(key*20, 2 if frame != len(jointAnim[1])-1 else 0))+ "f));\n")
+                f.write("cache.add(new Keyframe(Easing." + (convertEasing[easing] if easing in convertEasing else easing) + ", " + pos + ", " + rot + ", " + scale + ", " + "" + ("new Vector3f(0, -12, 0), " if jointAnim[0] == "body" else "Vigorem.ZERO, ") + str(round(key*20, 2 if frame != len(jointAnim[1])-1 else 0))+ "f));\n")
             f.write(anim[2].upper() + ".put(\"" + jointAnim[0] + "\", new ArrayList<>(cache));\n")
             f.write("cache.clear();\n")
         f.write("Animations.put(id(\"" + anim[2] + "\"), () -> new Animation(" + str(anim[1]) + ", " + anim[2].upper() +"));\n")

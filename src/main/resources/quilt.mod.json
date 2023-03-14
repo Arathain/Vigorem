@@ -17,7 +17,6 @@
 			"icon": "assets/vigorem/icon.png"
 		},
 		"intermediate_mappings": "net.fabricmc:intermediary",
-		"access_widener": "vigorem.accesswidener",
 		"entrypoints": {
 			"init": "arathain.vigorem.Vigorem",
 			"client_init": "arathain.vigorem.VigoremClient",
@@ -31,15 +30,16 @@
 			},
 			{
 				"id": "quilted_fabric_api",
-				"versions": ">=4.0.0-"
+				"versions": ">=5.0.0-"
 			},
 			{
 				"id": "minecraft",
-				"versions": ">=1.19.2"
+				"versions": ">=1.19.3"
 			}
 		]
 	},
 	"mixin": "vigorem.mixins.json",
+	"access_widener": "vigorem.accesswidener",
 	"cardinal-components": [
 		"vigorem:animation"
 	]

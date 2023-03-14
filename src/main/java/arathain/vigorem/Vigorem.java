@@ -5,10 +5,12 @@ import arathain.vigorem.api.init.Animations;
 import arathain.vigorem.test.BrickShithouseHammerItem;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.minecraft.item.Items;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Rarity;
 import net.minecraft.util.TypedActionResult;
-import net.minecraft.util.registry.Registry;
+import org.joml.Vector3f;
 import org.quiltmc.loader.api.ModContainer;
 import org.quiltmc.loader.api.QuiltLoader;
 import org.quiltmc.qsl.base.api.entrypoint.ModInitializer;
@@ -23,6 +25,7 @@ public class Vigorem implements ModInitializer {
 	public static boolean firstPersonLoaded = QuiltLoader.isModLoaded("firstperson");
 	public static boolean renderingFirstPerson = false;
 	public static boolean pehkuiLoaded = QuiltLoader.isModLoaded("pehkui");
+	public static final Vector3f ZERO = new Vector3f(0,0,0);
 
 	@Override
 	public void onInitialize(ModContainer mod) {
@@ -34,7 +37,7 @@ public class Vigorem implements ModInitializer {
 				}
 				return TypedActionResult.pass(player.getStackInHand(hand));
 			});
-			Registry.register(Registry.ITEM, Vigorem.id("hammah"), new BrickShithouseHammerItem(new QuiltItemSettings().rarity(Rarity.EPIC).maxDamage(2000)));
+			Registry.register(Registries.ITEM, Vigorem.id("hammah"), new BrickShithouseHammerItem(new QuiltItemSettings().rarity(Rarity.EPIC).maxDamage(2000)));
 		}
 		ServerPlayNetworking.registerGlobalReceiver(AnimationPacket.ID, AnimationPacket::handle);
 	}

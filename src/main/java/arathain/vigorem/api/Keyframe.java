@@ -1,17 +1,17 @@
 package arathain.vigorem.api;
 
-import net.minecraft.util.math.Vec3f;
+import org.joml.Vector3f;
 
 public final class Keyframe {
 	public final Easing easing;
-	public final Vec3f translation;
-	public final Vec3f rotation;
-	public final Vec3f offset;
-	public final Vec3f scale;
+	public final Vector3f translation;
+	public final Vector3f rotation;
+	public final Vector3f offset;
+	public final Vector3f scale;
 	public final boolean override;
 
 	public final float frame;
-	public Keyframe(Easing easing, Vec3f translation, Vec3f rot, Vec3f scale, Vec3f offset, float frame) {
+	public Keyframe(Easing easing, Vector3f translation, Vector3f rot, Vector3f scale, Vector3f offset, float frame) {
 		this.override = true;
 		this.easing = easing;
 		this.translation = translation;
@@ -20,7 +20,7 @@ public final class Keyframe {
 		this.frame = frame;
 		this.offset = offset;
 	}
-	public Keyframe(Easing easing, Vec3f translation, Vec3f rot, Vec3f scale, Vec3f offset, float frame, boolean override) {
+	public Keyframe(Easing easing, Vector3f translation, Vector3f rot, Vector3f scale, Vector3f offset, float frame, boolean override) {
 		this.override = override;
 		this.easing = easing;
 		this.translation = translation;
