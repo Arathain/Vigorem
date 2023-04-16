@@ -17,7 +17,6 @@
 			"icon": "assets/vigorem/icon.png"
 		},
 		"intermediate_mappings": "net.fabricmc:intermediary",
-		"access_widener": "vigorem.accesswidener",
 		"entrypoints": {
 			"init": "arathain.vigorem.Vigorem",
 			"client_init": "arathain.vigorem.VigoremClient",
@@ -39,6 +38,7 @@
 			}
 		]
 	},
+	"access_widener": "vigorem.accesswidener",
 	"mixin": "vigorem.mixins.json",
 	"cardinal-components": [
 		"vigorem:animation"

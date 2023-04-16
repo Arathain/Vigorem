@@ -22,6 +22,7 @@ import net.minecraft.util.math.Vec3f;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -32,8 +33,16 @@ public abstract class HeldItemFeatureRendererMixin<T extends LivingEntity, M ext
 	@Final
 	private HeldItemRenderer heldItemRenderer;
 
+	@Unique
+	private float tickDelta;
+
 	public HeldItemFeatureRendererMixin(FeatureRendererContext<T, M> featureRendererContext) {
 		super(featureRendererContext);
+	}
+
+	@Inject(method = "render(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;ILnet/minecraft/entity/LivingEntity;FFFFFF)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/entity/feature/HeldItemFeatureRenderer;renderItem(Lnet/minecraft/entity/LivingEntity;Lnet/minecraft/item/ItemStack;Lnet/minecraft/client/render/model/json/ModelTransformation$Mode;Lnet/minecraft/util/Arm;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V",  shift = At.Shift.AFTER))
+	private void vigorem$catchDelta(MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, T livingEntity, float f, float g, float h, float j, float k, float l, CallbackInfo ci) {
+		this.tickDelta = h;
 	}
 
 	@Inject(method = "renderItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/entity/model/ModelWithArms;setArmAngle(Lnet/minecraft/util/Arm;Lnet/minecraft/client/util/math/MatrixStack;)V",  shift = At.Shift.AFTER), cancellable = true)
@@ -41,7 +50,6 @@ public abstract class HeldItemFeatureRendererMixin<T extends LivingEntity, M ext
 		if(entity instanceof PlayerEntity player) {
 			if (player.getComponent(VigoremComponents.ANIMATION).current != null) {
 				Animation anim = player.getComponent(VigoremComponents.ANIMATION).current;
-				float tickDelta = MinecraftClient.getInstance().getTickDelta();
 
 				Vec3f rot = anim.getRot(arm == Arm.LEFT ? "left_hand" : "right_hand", tickDelta);
 				Vec3f offset = anim.getOffset(arm == Arm.LEFT ? "left_hand" : "right_hand", tickDelta);

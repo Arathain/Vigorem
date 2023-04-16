@@ -71,6 +71,8 @@ public abstract class Animation {
 		return false;
 	}
 
+	public boolean isIFrame() {return false;}
+
 	public Vec3f getRot(String query, float tickDelta) {
 		if(!keyframes.containsKey(query)) {
 			return Vec3f.ZERO;
