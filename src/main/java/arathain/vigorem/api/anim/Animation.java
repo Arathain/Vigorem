@@ -227,7 +227,7 @@ public abstract class Animation {
 		if(same) {
 			return new Vec3f(prev.rotation.getX(),prev.rotation.getY(), prev.rotation.getZ());
 		} else {
-			float percentage = (this.frame + tickDelta - prev.frame) / ((float) next.frame - prev.frame);
+			float percentage = (this.frame + tickDelta - prev.frame) / (next.frame - prev.frame);
 			return new Vec3f(MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.rotation.getX(), next.rotation.getX()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.rotation.getY(), next.rotation.getY()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.rotation.getZ(), next.rotation.getZ()));
 		}
 	}
@@ -235,7 +235,7 @@ public abstract class Animation {
 		if(same) {
 			return new Vec3f(prev.translation.getX(), prev.translation.getY(), prev.translation.getZ());
 		} else {
-			float percentage = (this.frame + tickDelta - prev.frame) / ((float) next.frame - prev.frame);
+			float percentage = (this.frame + tickDelta - prev.frame) / (next.frame - prev.frame);
 			return new Vec3f(MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.translation.getX(), next.translation.getX()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.translation.getY(), next.translation.getY()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.translation.getZ(), next.translation.getZ()));
 		}
 	}
@@ -243,7 +243,7 @@ public abstract class Animation {
 		if(same) {
 			return new Vec3f(prev.offset.getX(), prev.offset.getY(), prev.offset.getZ());
 		} else {
-			float percentage = (this.frame + tickDelta - prev.frame) / ((float) next.frame - prev.frame);
+			float percentage = (this.frame + tickDelta - prev.frame) / (next.frame - prev.frame);
 			return new Vec3f(MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.offset.getX(), next.offset.getX()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.offset.getY(), next.offset.getY()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.offset.getZ(), next.offset.getZ()));
 		}
 	}
