@@ -1,5 +1,6 @@
 package arathain.vigorem.api;
 
+import arathain.vigorem.anim.EntityQuery;
 import arathain.vigorem.anim.OffsetModelPart;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.model.ModelPart;
@@ -18,6 +19,7 @@ public abstract class AnimationCycle {
 	public final Map<String, List<Keyframe>> keyframes;
 	private final int length;
 	protected float progress, prevProgress;
+	protected final EntityQuery entityQuery = new EntityQuery();
 
 	public AnimationCycle(Map<String, List<Keyframe>> keyframes, int length) {
 		this.keyframes = keyframes;
@@ -61,35 +63,41 @@ public abstract class AnimationCycle {
 	}
 
 	public void setModelAngles(PlayerEntityModel<AbstractClientPlayerEntity> model, PlayerEntity player, float tickDelta) {
+		float progress = getProgress(tickDelta);
+		entityQuery.updateTime(progress);
 		for(String part : keyframes.keySet()) {
 			Keyframe lastFrame = null;
 			Keyframe nextFrame = null;
 			boolean bl = false;
 			for(Keyframe frame : keyframes.get(part)) {
-				if(frame.frame == (getProgress(tickDelta))) {
+				if(frame.frame == (progress)) {
 					lastFrame = frame;
 					nextFrame = frame;
 					bl = true;
 				}
-				if(lastFrame == null && frame.frame < (getProgress(tickDelta))) {
+				if(lastFrame == null && frame.frame < (progress)) {
 					lastFrame = frame;
 				} else {
-					if(lastFrame != null && frame.frame > lastFrame.frame && frame.frame < (getProgress(tickDelta))) {
+					if(lastFrame != null && frame.frame > lastFrame.frame && frame.frame < (progress)) {
 						lastFrame = frame;
 					}
 				}
-				if(nextFrame == null && frame.frame > (getProgress(tickDelta))) {
+				if(nextFrame == null && frame.frame > (progress)) {
 					nextFrame = frame;
 				} else {
-					if(nextFrame != null && frame.frame < nextFrame.frame && frame.frame > (getProgress(tickDelta))) {
+					if(nextFrame != null && frame.frame < nextFrame.frame && frame.frame > (progress)) {
 						nextFrame = frame;
 					}
 				}
 			}
-			assert lastFrame != null;
 			if(nextFrame == null) {
 				nextFrame = lastFrame;
 			}
+			if(lastFrame == null) {
+				lastFrame = nextFrame;
+			}
+			lastFrame.update(entityQuery);
+			nextFrame.update(entityQuery);
 			switch(part) {
 				case "head" -> setPartAngles(model.head, lastFrame, nextFrame, tickDelta, bl);
 				case "body" -> setPartAngles(model.body, lastFrame, nextFrame, tickDelta, bl);
@@ -134,7 +142,7 @@ public abstract class AnimationCycle {
 			part.scaleZ = 1 + prev.scale.getZ();
 			((OffsetModelPart)(Object)part).setOffset(prev.offset.getX(), prev.offset.getY(), prev.offset.getZ());
 		} else {
-			float percentage = (getProgress(tickDelta) - prev.frame) / ((float) next.frame - prev.frame);
+			float percentage = (getProgress(tickDelta) - prev.frame) / (next.frame - prev.frame);
 			part.setAngles(MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.rotation.getX() + (!prev.override ? part.pitch : 0), next.rotation.getX() + (!next.override ? part.pitch : 0)), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.rotation.getY() + (!prev.override ? part.yaw : 0), next.rotation.getY() + (!next.override ? part.yaw : 0)), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.rotation.getZ() + (!prev.override ? part.roll : 0), next.rotation.getZ() + (!next.override ? part.roll : 0)));
 			part.translate(new Vec3f(MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.translation.getX(), next.translation.getX()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.translation.getY(), next.translation.getY()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.translation.getZ(), next.translation.getZ())));
 			part.scaleX = 1 + MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.scale.getX(), next.scale.getX());

@@ -5,10 +5,11 @@ import net.minecraft.util.math.Vec3f;
 import sun.misc.Unsafe;
 
 public class ProperVec3fSupplier extends Vec3fSupplier {
+	public static ProperVec3fSupplier ZERO = new ProperVec3fSupplier(0, 0, 0);
 	private final float x, y, z;
 	public ProperVec3fSupplier(Vec3f contain) {
 		this.x = contain.getX();
-		this.y = contain.getZ();
+		this.y = contain.getY();
 		this.z = contain.getZ();
 	}
 	public ProperVec3fSupplier(float x, float y, float z) {

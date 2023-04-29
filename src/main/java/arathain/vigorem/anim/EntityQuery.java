@@ -37,6 +37,6 @@ public class EntityQuery {
 		max_health = e.getMaxHealth();
 	}
 	public void updateTime(float animtime) {
-		anim_time = animtime;
+		anim_time = animtime/20f;
 	}
 }

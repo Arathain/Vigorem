@@ -56,13 +56,6 @@ public class BipedEntityModelMixin<T extends LivingEntity> implements Methylened
 			this.body.pivotX = 0;
 		}
 	}
-	@Inject(method = "setAngles(Lnet/minecraft/entity/LivingEntity;FFFFF)V", at = @At("TAIL"))
-	private void vigorem$e(T livingEntity, float f, float g, float h, float i, float j, CallbackInfo ci) {
-		if(livingEntity instanceof PlayerEntity) {
-			this.body.pivotY += 12;
-			((OffsetModelPart) (Object) this.body).setOffset(0, -12, 0);
-		}
-	}
 	@Inject(method = "setArmAngle", at = @At("TAIL"))
 	private void vigorem$setArmAngle(Arm arm, MatrixStack matrices, CallbackInfo ci) {
 		this.body.rotate(matrices);

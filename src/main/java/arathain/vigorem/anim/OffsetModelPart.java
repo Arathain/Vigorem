@@ -7,5 +7,6 @@ public interface OffsetModelPart {
 	float getOffsetY();
 	float getOffsetZ();
 	void setOffset(float x, float y, float z);
+	void addOffset(float x, float y, float z);
 	boolean isChild(ModelPart part);
 }

@@ -69,10 +69,14 @@ public abstract class ExtendableAnimation extends Animation {
 					}
 				}
 			}
-			assert lastFrame != null;
 			if(nextFrame == null) {
 				nextFrame = lastFrame;
 			}
+			if(lastFrame == null) {
+				lastFrame = nextFrame;
+			}
+			lastFrame.update(entityQuery);
+			nextFrame.update(entityQuery);
 			return getRot(lastFrame, nextFrame, tickDelta, bl);
 		}
 		return super.getRot(query, tickDelta);
@@ -111,10 +115,14 @@ public abstract class ExtendableAnimation extends Animation {
 					}
 				}
 			}
-			assert lastFrame != null;
 			if(nextFrame == null) {
 				nextFrame = lastFrame;
 			}
+			if(lastFrame == null) {
+				lastFrame = nextFrame;
+			}
+			lastFrame.update(entityQuery);
+			nextFrame.update(entityQuery);
 			return getPivot(lastFrame, nextFrame, tickDelta, bl);
 		}
 		return super.getPivot(query, tickDelta);
@@ -171,10 +179,14 @@ public abstract class ExtendableAnimation extends Animation {
 					}
 				}
 			}
-			assert lastFrame != null;
 			if(nextFrame == null) {
 				nextFrame = lastFrame;
 			}
+			if(lastFrame == null) {
+				lastFrame = nextFrame;
+			}
+			lastFrame.update(entityQuery);
+			nextFrame.update(entityQuery);
 			return getOffset(lastFrame, nextFrame, tickDelta, bl);
 		}
 		return super.getOffset(query, tickDelta);
@@ -200,6 +212,7 @@ public abstract class ExtendableAnimation extends Animation {
 
 	@Override
 	public void setModelAngles(PlayerEntityModel<AbstractClientPlayerEntity> model, PlayerEntity player, float tickDelta) {
+		entityQuery.updateTime(this.frame+tickDelta);
 		switch(this.stage) {
 			case 0 -> super.setModelAngles(model, player, tickDelta);
 			case 1 -> this.setCodeModelAngles(model, player, tickDelta);
@@ -229,10 +242,14 @@ public abstract class ExtendableAnimation extends Animation {
 							}
 						}
 					}
-					assert lastFrame != null;
 					if(nextFrame == null) {
 						nextFrame = lastFrame;
 					}
+					if(lastFrame == null) {
+						lastFrame = nextFrame;
+					}
+					lastFrame.update(entityQuery);
+					nextFrame.update(entityQuery);
 					switch(part) {
 						case "head" -> {
 							setPartAngles(model.head, lastFrame, nextFrame, tickDelta, bl);

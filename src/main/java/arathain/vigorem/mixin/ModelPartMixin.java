@@ -61,6 +61,13 @@ public class ModelPartMixin implements OffsetModelPart, CrackCocaine {
 	}
 
 	@Override
+	public void addOffset(float x, float y, float z) {
+		this.offsetX += x;
+		this.offsetY += y;
+		this.offsetZ += z;
+	}
+
+	@Override
 	public boolean isChild(ModelPart part) {
 		return this.children.containsValue(part);
 	}
