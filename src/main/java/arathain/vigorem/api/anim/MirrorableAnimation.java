@@ -1,6 +1,7 @@
 package arathain.vigorem.api.anim;
 
 import arathain.vigorem.anim.OffsetModelPart;
+import arathain.vigorem.anim.ProperVec3fSupplier;
 import arathain.vigorem.api.Keyframe;
 import arathain.vigorem.api.anim.Animation;
 import net.minecraft.client.model.ModelPart;
@@ -21,6 +22,7 @@ public class MirrorableAnimation extends Animation {
 	}
 	@Override
 	public void setModelAngles(PlayerEntityModel<AbstractClientPlayerEntity> model, PlayerEntity player, float tickDelta) {
+		entityQuery.updateTime(this.frame+tickDelta);
 		for(String part : keyframes.keySet()) {
 			Keyframe lastFrame = null;
 			Keyframe nextFrame = null;
@@ -46,10 +48,14 @@ public class MirrorableAnimation extends Animation {
 					}
 				}
 			}
-			assert lastFrame != null;
 			if(nextFrame == null) {
 				nextFrame = lastFrame;
 			}
+			if(lastFrame == null) {
+				lastFrame = nextFrame;
+			}
+			lastFrame.update(entityQuery);
+			nextFrame.update(entityQuery);
 			switch(part) {
 				case "head" -> {
 					setPartAngles(model.head, lastFrame, nextFrame, tickDelta, bl);
@@ -119,8 +125,8 @@ public class MirrorableAnimation extends Animation {
 	@Override
 	protected void setPartAngles(ModelPart part, Keyframe prev, Keyframe next, float tickDelta, boolean same) {
 		if(this.mirrored) {
-			prev = new Keyframe(prev.easing, prev.translation, new Vec3f(prev.rotation.getX(), -prev.rotation.getY(), -prev.rotation.getZ()), prev.scale, prev.offset, prev.frame, prev.override);
-			next = new Keyframe(next.easing, next.translation, new Vec3f(next.rotation.getX(), -next.rotation.getY(), -next.rotation.getZ()), next.scale, next.offset, next.frame, next.override);
+			prev = new Keyframe(prev.easing, prev.translation, new ProperVec3fSupplier(prev.rotation.getX(), -prev.rotation.getY(), -prev.rotation.getZ()), prev.scale, prev.offset, prev.frame, prev.override);
+			next = new Keyframe(next.easing, next.translation, new ProperVec3fSupplier(next.rotation.getX(), -next.rotation.getY(), -next.rotation.getZ()), next.scale, next.offset, next.frame, next.override);
 		}
 		if(same) {
 			part.setAngles(prev.rotation.getX() + (!prev.override ? part.pitch : 0),prev.rotation.getY() + (!prev.override ? part.yaw : 0), prev.rotation.getZ() + (!prev.override ? part.roll : 0));

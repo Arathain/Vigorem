@@ -1,6 +1,7 @@
 package arathain.vigorem.api.anim;
 
 import arathain.vigorem.Vigorem;
+import arathain.vigorem.anim.EntityQuery;
 import arathain.vigorem.anim.OffsetModelPart;
 import arathain.vigorem.api.Keyframe;
 import net.minecraft.client.model.ModelPart;
@@ -20,6 +21,7 @@ public abstract class Animation {
 	public final Map<String, List<Keyframe>> keyframes;
 	private final int length;
 	public int frame = 0;
+	protected final EntityQuery entityQuery = new EntityQuery();
 
 	public Animation(int length, Map<String, List<Keyframe>> keyframes) {
 		this.length = length;
@@ -33,8 +35,12 @@ public abstract class Animation {
 	public boolean shouldRemove() {
 		return frame >= length;
 	}
-	public void serverTick(PlayerEntity player) {}
-	public void clientTick(PlayerEntity player) {}
+	public void serverTick(PlayerEntity player) {
+		entityQuery.update(player, this.frame, player.getWorld());
+	}
+	public void clientTick(PlayerEntity player) {
+		entityQuery.update(player, this.frame, player.getWorld());
+	}
 
 	public void tick() {
 		this.frame++;
@@ -101,10 +107,14 @@ public abstract class Animation {
 				}
 			}
 		}
-		assert lastFrame != null;
 		if(nextFrame == null) {
 			nextFrame = lastFrame;
 		}
+		if(lastFrame == null) {
+			lastFrame = nextFrame;
+		}
+		lastFrame.update(entityQuery);
+		nextFrame.update(entityQuery);
 		return getRot(lastFrame, nextFrame, tickDelta, bl);
 	}
 	public Vec3f getOffset(String query, float tickDelta) {
@@ -135,10 +145,14 @@ public abstract class Animation {
 				}
 			}
 		}
-		assert lastFrame != null;
 		if(nextFrame == null) {
 			nextFrame = lastFrame;
 		}
+		if(lastFrame == null) {
+			lastFrame = nextFrame;
+		}
+		lastFrame.update(entityQuery);
+		nextFrame.update(entityQuery);
 		return getOffset(lastFrame, nextFrame, tickDelta, bl);
 	}
 	public Vec3f getPivot(String query, float tickDelta) {
@@ -169,10 +183,14 @@ public abstract class Animation {
 				}
 			}
 		}
-		assert lastFrame != null;
 		if(nextFrame == null) {
 			nextFrame = lastFrame;
 		}
+		if(lastFrame == null) {
+			lastFrame = nextFrame;
+		}
+		lastFrame.update(entityQuery);
+		nextFrame.update(entityQuery);
 		return getPivot(lastFrame, nextFrame, tickDelta, bl);
 	}
 	public void writeNbt(NbtCompound nbt) {
@@ -183,6 +201,7 @@ public abstract class Animation {
 	}
 
 	public void setModelAngles(PlayerEntityModel<AbstractClientPlayerEntity> model, PlayerEntity player, float tickDelta) {
+		entityQuery.updateTime(this.frame+tickDelta);
 		for(String part : keyframes.keySet()) {
 			Keyframe lastFrame = null;
 			Keyframe nextFrame = null;
@@ -208,10 +227,14 @@ public abstract class Animation {
 					}
 				}
 			}
-			assert lastFrame != null;
 			if(nextFrame == null) {
 				nextFrame = lastFrame;
 			}
+			if(lastFrame == null) {
+				lastFrame = nextFrame;
+			}
+			lastFrame.update(entityQuery);
+			nextFrame.update(entityQuery);
 			switch(part) {
 				case "head" -> setPartAngles(model.head, lastFrame, nextFrame, tickDelta, bl);
 				case "body" -> setPartAngles(model.body, lastFrame, nextFrame, tickDelta, bl);

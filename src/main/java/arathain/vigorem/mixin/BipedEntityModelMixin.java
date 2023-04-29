@@ -53,7 +53,7 @@ public class BipedEntityModelMixin<T extends LivingEntity> implements Methylened
 		if(this.sneaking && !VigoremClient.fancySneak) {
 			this.body.pitch += 0.5f;
 			this.head.pitch -= 0.5f/2f;
-			this.body.pivotX = 3.2F;
+			this.body.pivotX = 0;
 		}
 	}
 	@Inject(method = "setAngles(Lnet/minecraft/entity/LivingEntity;FFFFF)V", at = @At("TAIL"))
