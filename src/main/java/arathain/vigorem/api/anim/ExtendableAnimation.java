@@ -4,6 +4,7 @@ import arathain.vigorem.api.Keyframe;
 import arathain.vigorem.api.anim.Animation;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.Vec3d;
@@ -35,6 +36,53 @@ public abstract class ExtendableAnimation extends Animation {
 		if(stage == 1) {
 			codeTick();
 		}
+	}
+
+	public void rotateGlobal(MatrixStack matrices, float tickDelta) {
+		String part = "global";
+		if(stage == 1) {
+			this.rotateGlobalCode(matrices, tickDelta);
+			return;
+		} else if(stage == 2) {
+			Keyframe lastFrame = null;
+			Keyframe nextFrame = null;
+			boolean bl = false;
+			for(Keyframe frame : endKeyframes.get(part)) {
+				if(frame.frame == (this.frame + tickDelta)) {
+					lastFrame = frame;
+					nextFrame = frame;
+					bl = true;
+				}
+				if(lastFrame == null && frame.frame < (this.frame + tickDelta)) {
+					lastFrame = frame;
+				} else {
+					if(lastFrame != null && frame.frame > lastFrame.frame && frame.frame < (this.frame + tickDelta)) {
+						lastFrame = frame;
+					}
+				}
+				if(nextFrame == null && frame.frame > (this.frame + tickDelta)) {
+					nextFrame = frame;
+				} else {
+					if(nextFrame != null && frame.frame < nextFrame.frame && frame.frame > (this.frame + tickDelta)) {
+						nextFrame = frame;
+					}
+				}
+			}
+			if(nextFrame == null) {
+				nextFrame = lastFrame;
+			}
+			if(lastFrame == null) {
+				lastFrame = nextFrame;
+			}
+			lastFrame.update(entityQuery);
+			nextFrame.update(entityQuery);
+			setMatrixTransform(matrices, lastFrame, nextFrame, tickDelta, bl);
+			return;
+		}
+		super.rotateGlobal(matrices, tickDelta);
+	}
+	public void rotateGlobalCode(MatrixStack matrices, float tickDelta) {
+		super.rotateGlobal(matrices, -1);
 	}
 
 	@Override
@@ -196,6 +244,10 @@ public abstract class ExtendableAnimation extends Animation {
 
 	protected void setModelAnglesSuper(PlayerEntityModel<AbstractClientPlayerEntity> model, PlayerEntity player, float tickDelta) {
 		super.setModelAngles(model, player, tickDelta);
+	}
+
+	protected void rotateGlobalSuper(MatrixStack matrices, float tickDelta) {
+		super.rotateGlobal(matrices, tickDelta);
 	}
 
 	@Override

@@ -35,7 +35,7 @@ public class TPoseAnimation extends ExtendableAnimation {
 
 	@Override
 	protected Vec3f getCodeRot(String query, float tickDelta) {
-		return getRotSuper(query, -2);
+		return getRotSuper(query, 0);
 	}
 
 	@Override

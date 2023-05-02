@@ -7,6 +7,7 @@ import arathain.vigorem.api.anim.Animation;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3f;
@@ -148,6 +149,15 @@ public class MirrorableAnimation extends Animation {
 			((OffsetModelPart)(Object)part).setOffset(-((OffsetModelPart)(Object)part).getOffsetX(), ((OffsetModelPart)(Object)part).getOffsetY(), -((OffsetModelPart)(Object)part).getOffsetZ());
 		}
 	}
+
+	protected void setMatrixTransform(MatrixStack s, Keyframe prev, Keyframe next, float tickDelta, boolean same) {
+		if(this.mirrored) {
+			prev = new Keyframe(prev.easing, prev.translation, new ProperVec3fSupplier(prev.rotation.getX(), -prev.rotation.getY(), -prev.rotation.getZ()), prev.scale, prev.offset, prev.frame, prev.override);
+			next = new Keyframe(next.easing, next.translation, new ProperVec3fSupplier(next.rotation.getX(), -next.rotation.getY(), -next.rotation.getZ()), next.scale, next.offset, next.frame, next.override);
+		}
+		super.setMatrixTransform(s, prev, next, tickDelta, same);
+	}
+
 	protected Vec3f getRot(Keyframe prev, Keyframe next, float tickDelta, boolean same) {
 		Vec3f soup = super.getRot(prev, next, tickDelta, same);
 		if(mirrored) {
