@@ -6,8 +6,8 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3f;
 
 /**
- * Literally just <a href="https://github.com/ZsoltMolnarrr/BetterCombat/blob/1.19.2/common/src/main/java/net/bettercombat/client/collision/OrientedBoundingBox.java">this code from BetterCombat (pre-license change, thus licensed as CC0)</a>
- * Praise the god code \o/
+ * Literally just <a href="https://github.com/ZsoltMolnarrr/BetterCombat/blob/1.19.2/common/src/main/java/net/bettercombat/client/collision/OrientedBoundingBox.java">this code from BetterCombat (pre-license change, thus licensed as MIT)</a>
+ * Praise the code \o/
  * @author ZsoltMolnarrr
  */
 public class OrientedBox {
@@ -97,6 +97,17 @@ public class OrientedBox {
 
 	public OrientedBox offsetZ(double offset) {
 		this.center = this.center.add(axisZ.multiply(offset));
+		return this;
+	}
+	public OrientedBox resetOffset() {
+		this.center = Vec3d.ZERO;
+		return this;
+	}
+
+	public OrientedBox setRotation(float pitch, float yaw, float roll) {
+		this.axisZ = Vec3d.fromPolar(pitch, yaw).rotateZ(roll * (float) (Math.PI / 180.0)).normalize();
+		this.axisY = Vec3d.fromPolar(pitch + 90, yaw).negate().rotateZ(roll * (float) (Math.PI / 180.0)).normalize();
+		this.axisX = axisZ.crossProduct(axisY);
 		return this;
 	}
 
