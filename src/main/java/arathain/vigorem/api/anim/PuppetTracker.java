@@ -1,12 +1,16 @@
 package arathain.vigorem.api.anim;
 
 import arathain.vigorem.Vigorem;
+import arathain.vigorem.api.box.OrientedBox;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.Quaternion;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3f;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 public class PuppetTracker {
 	public PuppetTracker() {
@@ -33,6 +37,34 @@ public class PuppetTracker {
 			initialOffset = initialOffset.add(rotatoProper(pivots[i], rot));
 		}
 		return initialOffset;
+	}
+	/**
+	 * This one's a bit of a mess -
+	 * @param box the size of the box in question
+	 * @param player the player we're using this on
+	 * @param initialOffset the offset (normally 0.75 y, where the body starts)
+	 * @param yaw player yaw
+	 * @param precision how many tries should the method go through
+	 * @param precisionOffset a value between 0 and 1, limiting the scope of the animation. May be useful when movement only happens at a specific point between two ticks
+	 * @param rotationProviders the providers for rotation - should take in a single float value as the delta parameter, and return all of your rotations.
+	 * **/
+	@SafeVarargs
+	public final List<Entity> getCollided(Vec3d box, PlayerEntity player, Vec3d initialOffset, float yaw, int precision, float precisionOffset, Function<Float, Vec3f>... rotationProviders) {
+		List<Entity> entities = new ArrayList<>();
+		OrientedBox OBB = new OrientedBox(Vec3d.ZERO, box, 0, 0, 0);
+		for(int i = 1; i <= precision; i++) {
+			Vec3f[] rot = new Vec3f[rotationProviders.length];
+			for(int l = 0; l < rotationProviders.length; l++) {
+				rot[l] = rotationProviders[l].apply((i/precision) * (1-precisionOffset) + precisionOffset);
+			}
+			setRotations(rot);
+			Vec3d offset = getPlayerOffset(player, initialOffset, yaw);
+			Vec3f rotation = rotatoProper(rot);
+			OBB.offset(offset).setRotation(rotation.getX(), rotation.getY(), rotation.getZ()).updateVertex();
+			entities.addAll(player.getWorld().getOtherEntities(player, player.getBoundingBox().expand(160, 160, 160), entity -> OBB.intersects(entity.getBoundingBox()) && !entities.contains(entity)));
+			OBB.resetOffset();
+		}
+		return entities;
 	}
 	public Vec3d getPlayerOffset(PlayerEntity player, Vec3d initialOffset, float yaw) {
 		Vec3d offset = this.getOffset(initialOffset);

@@ -9,6 +9,7 @@ import arathain.vigorem.api.Keyframe;
 import arathain.vigorem.test.SmashAnimation;
 import arathain.vigorem.test.TPoseAnimation;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3f;
 
 import java.util.ArrayList;
@@ -50,6 +51,15 @@ public class Animations {
 		cache.add(new Keyframe(Easing.QUAD_IN_OUT, Vec3f.ZERO, new Vec3f(-0.1f, 0, 0), Vec3f.ZERO, new Vec3f(0, -12, 0), 0));
 		cache.add(new Keyframe(Easing.QUAD_IN_OUT, Vec3f.ZERO, Vec3f.ZERO, Vec3f.ZERO, new Vec3f(0, -12, 0), 20));
 		TPOSE_END.put("body", new ArrayList<>(cache));
+//		cache.clear();
+//		cache.add(new Keyframe(Easing.LINEAR, Vec3f.ZERO, Vec3f.ZERO, Vec3f.ZERO,  Vec3f.ZERO, 0));
+//		cache.add(new Keyframe(Easing.QUAD_IN_OUT, Vec3f.ZERO, new Vec3f(MathHelper.TAU, 0, 0), Vec3f.ZERO, Vec3f.ZERO, 10));
+//		cache.add(new Keyframe(Easing.QUAD_IN_OUT, Vec3f.ZERO, new Vec3f(MathHelper.TAU, 0, 0), Vec3f.ZERO, Vec3f.ZERO, 30));
+//		TPOSE_START.put("global", new ArrayList<>(cache));
+//		cache.clear();
+//		cache.add(new Keyframe(Easing.LINEAR, Vec3f.ZERO, new Vec3f(MathHelper.TAU, 0, 0), Vec3f.ZERO, Vec3f.ZERO, 0));
+//		cache.add(new Keyframe(Easing.QUAD_IN_OUT, Vec3f.ZERO, Vec3f.ZERO, Vec3f.ZERO, Vec3f.ZERO, 20));
+//		TPOSE_END.put("global", new ArrayList<>(cache));
 		cache.clear();
 		cache.add(new Keyframe(Easing.CUBIC_IN, Vec3f.ZERO, Vec3f.ZERO, Vec3f.ZERO,  new Vec3f(0, -12, 0), 0));
 		cache.add(new Keyframe(Easing.EXPO_OUT, Vec3f.ZERO, new Vec3f(-0.15585f, 0, 0), Vec3f.ZERO,  new Vec3f(0, -12, 0), 3));

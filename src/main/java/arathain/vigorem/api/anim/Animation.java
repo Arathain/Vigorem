@@ -7,6 +7,7 @@ import arathain.vigorem.api.Keyframe;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
@@ -78,6 +79,43 @@ public abstract class Animation {
 	}
 
 	public boolean isIFrame() {return false;}
+
+	public void rotateGlobal(MatrixStack matrices, float tickDelta) {
+		String part = "global";
+		if(keyframes.containsKey(part)) {
+			Keyframe lastFrame = null;
+			Keyframe nextFrame = null;
+			boolean bl = false;
+			for(Keyframe frame : keyframes.get(part)) {
+				if(frame.frame == this.frame + tickDelta) {
+					lastFrame = frame;
+					nextFrame = frame;
+					bl = true;
+				}
+				if(lastFrame == null && frame.frame < (this.frame + tickDelta)) {
+					lastFrame = frame;
+				} else {
+					if(lastFrame != null && frame.frame > lastFrame.frame && frame.frame < (this.frame + tickDelta)) {
+						lastFrame = frame;
+					}
+				}
+				if(nextFrame == null && frame.frame > (this.frame + tickDelta)) {
+					nextFrame = frame;
+				} else {
+					if(nextFrame != null && frame.frame < nextFrame.frame && frame.frame > (this.frame + tickDelta)) {
+						nextFrame = frame;
+					}
+				}
+			}
+			if(nextFrame == null) {
+				nextFrame = lastFrame;
+			}
+			if(lastFrame == null) {
+				lastFrame = nextFrame;
+			}
+			setMatrixTransform(matrices, lastFrame, nextFrame, tickDelta, bl);
+		}
+	}
 
 	public Vec3f getRot(String query, float tickDelta) {
 		if(!keyframes.containsKey(query)) {
@@ -291,6 +329,26 @@ public abstract class Animation {
 				((OffsetModelPart) (Object) part).addOffset(MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.offset.getX(), next.offset.getX()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.offset.getY(), next.offset.getY()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.offset.getZ(), next.offset.getZ()));
 			}
 
+		}
+	}
+	protected void setMatrixTransform(MatrixStack s, Keyframe prev, Keyframe next, float tickDelta, boolean same) {
+		if(same) {
+			s.translate(prev.translation.getX(), prev.translation.getY(), prev.translation.getZ());
+			s.multiply(Vec3f.POSITIVE_X.getRadialQuaternion(prev.rotation.getX()));
+			s.multiply(Vec3f.POSITIVE_Y.getRadialQuaternion(prev.rotation.getY()));
+			s.multiply(Vec3f.POSITIVE_Z.getRadialQuaternion(prev.rotation.getZ()));
+			s.scale(1 + prev.scale.getX(), 1 + prev.scale.getY(), 1 + prev.scale.getZ());
+			s.translate(prev.offset.getX(), prev.offset.getY(), prev.offset.getZ());
+		} else {
+			float percentage = (this.frame + tickDelta - prev.frame) / ((float) next.frame - prev.frame);
+			s.translate(MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.translation.getX(), next.translation.getX()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.translation.getY(), next.translation.getY()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.translation.getZ(), next.translation.getZ()));
+			s.multiply(Vec3f.POSITIVE_X.getRadialQuaternion(MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.rotation.getX(), next.rotation.getX())));
+			s.multiply(Vec3f.POSITIVE_Y.getRadialQuaternion(MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.rotation.getY(), next.rotation.getY())));
+			s.multiply(Vec3f.POSITIVE_Z.getRadialQuaternion(MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.rotation.getZ(), next.rotation.getZ())));
+			s.scale(1 + MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.scale.getX(), next.scale.getX()),
+					1 + MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.scale.getY(), next.scale.getY()),
+					1 + MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.scale.getZ(), next.scale.getZ()));
+			s.translate(MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.offset.getX(), next.offset.getX()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.offset.getY(), next.offset.getY()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.offset.getZ(), next.offset.getZ()));
 		}
 	}
 

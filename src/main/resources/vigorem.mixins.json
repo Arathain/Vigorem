@@ -25,6 +25,7 @@
     "GameRendererMixin",
     "HeldItemFeatureRendererMixin",
     "HeldItemRendererMixin",
+    "LivingEntityRendererMixin",
     "MinecraftClientMixin",
     "WorldRendererMixin"
   ],

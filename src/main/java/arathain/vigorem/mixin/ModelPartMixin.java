@@ -9,6 +9,7 @@ import net.minecraft.client.model.ModelPartData;
 import net.minecraft.client.model.ModelTransform;
 import net.minecraft.client.render.entity.feature.ArmorFeatureRenderer;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3f;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -37,6 +38,15 @@ public class ModelPartMixin implements OffsetModelPart, CrackCocaine {
 	@Shadow
 	@Final
 	private Map<String, ModelPart> children;
+
+	@Shadow
+	public float pitch;
+
+	@Shadow
+	public float yaw;
+
+	@Shadow
+	public float roll;
 
 	@Override
 	public float getOffsetX() {
@@ -77,6 +87,12 @@ public class ModelPartMixin implements OffsetModelPart, CrackCocaine {
 		if (this.offsetX != 0F || this.offsetY != 0F || this.offsetZ != 0F) {
 			matrix.translate(this.offsetX/16F, this.offsetY/16F, this.offsetZ/16F);
 		}
+	}
+	@Inject(method = "setAngles", at = @At("TAIL"))
+	public void vigorem$modulus(float pitch, float yaw, float roll, CallbackInfo ci) {
+		this.pitch = pitch % MathHelper.TAU;
+		this.yaw = yaw % MathHelper.TAU;
+		this.roll = roll % MathHelper.TAU;
 	}
 	@Inject(method = "rotate(Lnet/minecraft/client/util/math/MatrixStack;)V", at = @At("HEAD"))
 	public void vigorem$protato(MatrixStack matrix, CallbackInfo ci) {
