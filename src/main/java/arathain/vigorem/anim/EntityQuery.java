@@ -15,6 +15,7 @@ public class EntityQuery {
 	public boolean is_in_water_or_rain;
 	public float health;
 	public float yaw_speed;
+	public float pitch;
 	public float ground_speed;
 	public float max_health;
 
@@ -22,6 +23,7 @@ public class EntityQuery {
 		updateTime(animtime);
 		time_of_day = w.getTimeOfDay();
 		moon_phase = w.getMoonPhase();
+		pitch = e.getPitch(animtime % 1);
 		health = 0;
 		max_health = 0;
 		yaw_speed = e.getYaw()-e.prevYaw;
