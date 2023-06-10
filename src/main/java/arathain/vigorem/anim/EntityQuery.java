@@ -23,7 +23,7 @@ public class EntityQuery {
 		updateTime(animtime);
 		time_of_day = w.getTimeOfDay();
 		moon_phase = w.getMoonPhase();
-		pitch = e.getPitch(animtime % 1);
+		pitch = e.getPitch();
 		health = 0;
 		max_health = 0;
 		yaw_speed = e.getYaw()-e.prevYaw;
