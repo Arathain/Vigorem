@@ -7,6 +7,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -29,7 +30,7 @@ public class GameRendererMixin {
 		if(client.player != null && !camera.isThirdPerson()) {
 			Animation a = client.player.getComponent(VigoremComponents.ANIMATION).current;
 			if(a != null) {
-				Vec3d offset = a.getCameraOffset(client.player.getYaw(tickDelta), tickDelta);
+				Vec3d offset = a.getCameraOffset(client.player.getYaw(tickDelta), MathHelper.lerp(tickDelta, client.player.prevPitch, client.player.getPitch()), tickDelta);
 				matrix.translate(-offset.x, -offset.y, -offset.z);
 			}
 		}

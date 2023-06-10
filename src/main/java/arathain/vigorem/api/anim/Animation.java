@@ -240,6 +240,7 @@ public abstract class Animation {
 
 	public void setModelAngles(PlayerEntityModel<AbstractClientPlayerEntity> model, PlayerEntity player, float tickDelta) {
 		entityQuery.updateTime(this.frame+tickDelta);
+		entityQuery.pitch = MathHelper.lerp(tickDelta, player.prevPitch, player.getPitch());
 		for(String part : keyframes.keySet()) {
 			Keyframe lastFrame = null;
 			Keyframe nextFrame = null;
@@ -317,7 +318,7 @@ public abstract class Animation {
 			part.scaleZ = 1 + prev.scale.getZ();
 			((OffsetModelPart)(Object)part).setOffset(prev.offset.getX(), prev.offset.getY(), prev.offset.getZ());
 		} else {
-			float percentage = (this.frame + tickDelta - prev.frame) / ((float) next.frame - prev.frame);
+			float percentage = (this.frame + tickDelta - prev.frame) / (next.frame - prev.frame);
 			part.setAngles(MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.rotation.getX() + (!prev.override ? part.pitch : 0), next.rotation.getX() + (!next.override ? part.pitch : 0)), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.rotation.getY() + (!prev.override ? part.yaw : 0), next.rotation.getY() + (!next.override ? part.yaw : 0)), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.rotation.getZ() + (!prev.override ? part.roll : 0), next.rotation.getZ() + (!next.override ? part.roll : 0)));
 			part.translate(new Vec3f(MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.translation.getX(), next.translation.getX()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.translation.getY(), next.translation.getY()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.translation.getZ(), next.translation.getZ())));
 			part.scaleX = 1 + MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.scale.getX(), next.scale.getX());
@@ -352,7 +353,8 @@ public abstract class Animation {
 		}
 	}
 
-	public Vec3d getCameraOffset(float yaw, float tickDelta) {
+	public Vec3d getCameraOffset(float yaw, float pitch, float tickDelta) {
+		entityQuery.pitch = pitch;
 		Vec3f bodyRot = this.getRot("body", tickDelta);
 		Vec3f headRot = this.getRot("head", tickDelta);
 		headRot.add(bodyRot);
