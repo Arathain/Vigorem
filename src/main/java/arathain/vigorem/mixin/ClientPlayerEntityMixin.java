@@ -17,8 +17,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ClientPlayerEntity.class)
 public class ClientPlayerEntityMixin extends AbstractClientPlayerEntity {
-	public ClientPlayerEntityMixin(ClientWorld world, GameProfile gameProfile, @Nullable PlayerPublicKey playerPublicKey) {
-		super(world, gameProfile, playerPublicKey);
+	public ClientPlayerEntityMixin(ClientWorld world, GameProfile gameProfile) {
+		super(world, gameProfile);
 	}
 
 	@Inject(method = "isSneaking", at = @At("HEAD"), cancellable = true)

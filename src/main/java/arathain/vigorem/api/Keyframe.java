@@ -3,7 +3,7 @@ package arathain.vigorem.api;
 import arathain.vigorem.anim.EntityQuery;
 import arathain.vigorem.anim.MoLangVec3fSupplier;
 import arathain.vigorem.anim.ProperVec3fSupplier;
-import net.minecraft.util.math.Vec3f;
+import org.joml.Vector3f;
 
 public class Keyframe {
 	public final Easing easing;
@@ -14,7 +14,7 @@ public class Keyframe {
 	public final boolean override;
 
 	public final float frame;
-	public Keyframe(Easing easing, Vec3f translation, Vec3f rot, Vec3f scale, Vec3f offset, float frame) {
+	public Keyframe(Easing easing, Vector3f translation, Vector3f rot, Vector3f scale, Vector3f offset, float frame) {
 		this.override = true;
 		this.easing = easing;
 		this.translation = new ProperVec3fSupplier(translation);
@@ -23,7 +23,7 @@ public class Keyframe {
 		this.frame = frame;
 		this.offset = new ProperVec3fSupplier(offset);
 	}
-	public Keyframe(Easing easing, Vec3f translation, Vec3f rot, Vec3f scale, Vec3f offset, float frame, boolean override) {
+	public Keyframe(Easing easing, Vector3f translation, Vector3f rot, Vector3f scale, Vector3f offset, float frame, boolean override) {
 		this.override = override;
 		this.easing = easing;
 		this.translation = new ProperVec3fSupplier(translation);

@@ -1,9 +1,9 @@
 package arathain.vigorem.api.box;
 
 import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Matrix3f;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3f;
+import org.joml.Matrix3f;
+import org.joml.Vector3f;
 
 /**
  * Literally just <a href="https://github.com/ZsoltMolnarrr/BetterCombat/blob/1.19.2/common/src/main/java/net/bettercombat/client/collision/OrientedBoundingBox.java">this code from BetterCombat (pre-license change, thus licensed as MIT)</a>
@@ -155,11 +155,11 @@ public class OrientedBox {
 	// 4. CHECK INTERSECTIONS
 
 	public boolean contains(Vec3d point) {
-		Vec3f distance = new Vec3f(point.subtract(center));
-		distance.transform(rotation);
-		return Math.abs(distance.getX()) < extent.x &&
-				Math.abs(distance.getY()) < extent.y &&
-				Math.abs(distance.getZ()) < extent.z;
+		Vector3f distance = point.subtract(center).toVector3f();
+		distance.mul(rotation);
+		return Math.abs(distance.x()) < extent.x &&
+				Math.abs(distance.y()) < extent.y &&
+				Math.abs(distance.z()) < extent.z;
 	}
 
 	public boolean intersects(Box boundingBox) {

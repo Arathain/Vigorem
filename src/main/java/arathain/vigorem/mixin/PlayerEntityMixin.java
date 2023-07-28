@@ -1,7 +1,6 @@
 package arathain.vigorem.mixin;
 
 import arathain.vigorem.VigoremComponents;
-import arathain.vigorem.anim.AnimationComponent;
 import arathain.vigorem.api.anim.Animation;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -31,7 +30,7 @@ public abstract class PlayerEntityMixin extends LivingEntity {
 
 	@Inject(method = "tick", at = @At("TAIL"))
 	public void vigorem$tick(CallbackInfo info) {
-		if(!world.isClient) {
+		if(!getWorld().isClient) {
 			this.getComponent(VigoremComponents.ANIMATION).serverTick();
 		} else {
 			this.getComponent(VigoremComponents.ANIMATION).clientTick();

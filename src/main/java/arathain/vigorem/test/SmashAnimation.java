@@ -6,7 +6,10 @@ import arathain.vigorem.api.anim.MirrorableAnimation;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.damage.DamageSources;
+import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.projectile.ArrowEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
@@ -64,7 +67,7 @@ public class SmashAnimation extends MirrorableAnimation {
 		if(this.frame == 15) {
 			Vec3d vec = new Vec3d(player.getRotationVector().x, 0, player.getRotationVector().z).normalize().multiply(2);
 			player.getWorld().getEntitiesByClass(LivingEntity.class, player.getBoundingBox().offset(vec).expand(0.5, 0.4, 0.5), livingEntity -> livingEntity.isAlive() && !livingEntity.isInvulnerable()).forEach(entity -> {
-				entity.damage(DamageSource.mob(player), (float) (9.0f + player.getAttributeValue(EntityAttributes.GENERIC_ATTACK_DAMAGE)));
+				entity.damage(player.getWorld().getDamageSources().playerAttack(player), (float) (9.0f + player.getAttributeValue(EntityAttributes.GENERIC_ATTACK_DAMAGE)));
 				entity.addVelocity((player.getRandom().nextFloat() - 0.5f) * 0.2f, 0.3, (player.getRandom().nextFloat() - 0.5f) * 0.2f);
 				if(player.getWorld().getBlockState(player.getBlockPos().add(MathHelper.floor(vec.x), MathHelper.floor(vec.y), MathHelper.floor(vec.z))).getBlock().getHardness() == 0) {
 					player.getWorld().breakBlock(player.getBlockPos().add(MathHelper.floor(vec.x), MathHelper.floor(vec.y), MathHelper.floor(vec.z)), true, player);
