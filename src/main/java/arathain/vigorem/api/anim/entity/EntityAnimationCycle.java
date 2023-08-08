@@ -181,22 +181,22 @@ public abstract class EntityAnimationCycle<T extends Entity & AnimatedEntity> {
 	}
 	protected void setMatrixTransform(MatrixStack s, Keyframe prev, Keyframe next, float tickDelta, boolean same) {
 		if(same) {
-			s.translate(prev.translation.getX(), prev.translation.getY()+12, prev.translation.getZ());
+			s.translate(prev.translation.getX(), prev.translation.getY(), prev.translation.getZ());
 			s.multiply(Vec3f.POSITIVE_X.getRadialQuaternion(prev.rotation.getX()));
 			s.multiply(Vec3f.POSITIVE_Y.getRadialQuaternion(prev.rotation.getY()));
 			s.multiply(Vec3f.POSITIVE_Z.getRadialQuaternion(prev.rotation.getZ()));
 			s.scale(1 + prev.scale.getX(), 1 + prev.scale.getY(), 1 + prev.scale.getZ());
-			s.translate(prev.offset.getX(), prev.offset.getY()-12, prev.offset.getZ());
+			s.translate(prev.offset.getX(), prev.offset.getY(), prev.offset.getZ());
 		} else {
 			float percentage = (getProgress(tickDelta) - prev.frame) / (next.frame - prev.frame);
-			s.translate(MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.translation.getX(), next.translation.getX()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.translation.getY(), next.translation.getY())+12, MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.translation.getZ(), next.translation.getZ()));
+			s.translate(MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.translation.getX(), next.translation.getX()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.translation.getY(), next.translation.getY()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.translation.getZ(), next.translation.getZ()));
 			s.multiply(Vec3f.POSITIVE_X.getRadialQuaternion(MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.rotation.getX(), next.rotation.getX())));
 			s.multiply(Vec3f.POSITIVE_Y.getRadialQuaternion(MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.rotation.getY(), next.rotation.getY())));
 			s.multiply(Vec3f.POSITIVE_Z.getRadialQuaternion(MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.rotation.getZ(), next.rotation.getZ())));
 			s.scale(1 + MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.scale.getX(), next.scale.getX()),
 					1 + MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.scale.getY(), next.scale.getY()),
 					1 + MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.scale.getZ(), next.scale.getZ()));
-			s.translate(MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.offset.getX(), next.offset.getX()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.offset.getY(), next.offset.getY())-12, MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.offset.getZ(), next.offset.getZ()));
+			s.translate(MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.offset.getX(), next.offset.getX()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.offset.getY(), next.offset.getY()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.offset.getZ(), next.offset.getZ()));
 		}
 	}
 }
