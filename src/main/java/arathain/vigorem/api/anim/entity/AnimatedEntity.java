@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 public interface AnimatedEntity {
-	<T extends Entity & AnimatedEntity> Map<Identifier, Supplier<EntityAnimation<T>>> getAnimations();
+	<T extends Entity & AnimatedEntity> Map<Identifier, Supplier<? extends EntityAnimation<T>>> getAnimations();
 	<T extends Entity & AnimatedEntity> ModelPart getPart(String string, EntityModel<T> model);
 
 	NbtCompound writeAnimNbt(NbtCompound nbt);
