@@ -7,6 +7,7 @@ import net.minecraft.client.render.entity.model.PlayerEntityModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3f;
 
@@ -44,6 +45,9 @@ public abstract class ExtendableAnimation extends Animation {
 			this.rotateGlobalCode(matrices, tickDelta);
 			return;
 		} else if(stage == 2) {
+			if(!endKeyframes.containsKey("global")) {
+				return;
+			}
 			Keyframe lastFrame = null;
 			Keyframe nextFrame = null;
 			boolean bl = false;
@@ -189,7 +193,8 @@ public abstract class ExtendableAnimation extends Animation {
 	}
 
 	@Override
-	public Vec3d getCameraOffset(float yaw, float tickDelta) {
+	public Vec3d getCameraOffset(float yaw, float pitch, float tickDelta) {
+		entityQuery.pitch = pitch;
 		Vec3f bodyRot = this.getRot("body", tickDelta);
 		Vec3f headRot = this.getRot("head", tickDelta);
 		return new Vec3d(0, -1, 0).add(new Vec3d(0, (12d / 16d), 0).rotateY(-bodyRot.getY()).rotateX(-bodyRot.getX()).rotateZ(bodyRot.getZ())).add(new Vec3d(0, 4/16f, 0).rotateY(-headRot.getY()).rotateX(-headRot.getX()).rotateZ(-headRot.getZ())).rotateY((float) (yaw * -Math.PI / 180f));
@@ -265,6 +270,7 @@ public abstract class ExtendableAnimation extends Animation {
 	@Override
 	public void setModelAngles(PlayerEntityModel<AbstractClientPlayerEntity> model, PlayerEntity player, float tickDelta) {
 		entityQuery.updateTime(this.frame+tickDelta);
+		entityQuery.pitch = MathHelper.lerp(tickDelta, player.prevPitch, player.getPitch());
 		switch(this.stage) {
 			case 0 -> super.setModelAngles(model, player, tickDelta);
 			case 1 -> this.setCodeModelAngles(model, player, tickDelta);
