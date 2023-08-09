@@ -1,6 +1,7 @@
 package arathain.vigorem.api.anim.entity;
 
 import arathain.vigorem.Vigorem;
+import arathain.vigorem.anim.EntityQuery;
 import arathain.vigorem.anim.OffsetModelPart;
 import arathain.vigorem.api.Keyframe;
 import net.minecraft.client.model.ModelPart;
@@ -19,6 +20,8 @@ public class EntityAnimation<T extends Entity & AnimatedEntity> {
 	private final int length;
 	public int frame = 0;
 
+	protected final EntityQuery entityQuery = new EntityQuery();
+
 	public EntityAnimation(int length, Map<String, List<Keyframe>> keyframes) {
 		this.length = length;
 		this.keyframes = keyframes;
@@ -27,8 +30,8 @@ public class EntityAnimation<T extends Entity & AnimatedEntity> {
 	public boolean shouldRemove() {
 		return frame >= length;
 	}
-	public void serverTick(T entity) {}
-	public void clientTick(T entity) {}
+	public void serverTick(T entity) {entityQuery.update(entity, this.frame, entity.getWorld());}
+	public void clientTick(T entity) {entityQuery.update(entity, this.frame, entity.getWorld());}
 
 	public void tick() {
 		this.frame++;
@@ -175,6 +178,7 @@ public class EntityAnimation<T extends Entity & AnimatedEntity> {
 	}
 
 	public void setModelAngles(EntityModel<T> model, T entity, float tickDelta) {
+		entityQuery.updateTime(this.frame + tickDelta);
 		for(String part : keyframes.keySet()) {
 			Keyframe lastFrame = null;
 			Keyframe nextFrame = null;
@@ -204,6 +208,8 @@ public class EntityAnimation<T extends Entity & AnimatedEntity> {
 			if(nextFrame == null) {
 				nextFrame = lastFrame;
 			}
+			lastFrame.update(entityQuery);
+			nextFrame.update(entityQuery);
 			setPartAngles(entity.getPart(part, model), lastFrame, nextFrame, tickDelta, bl);
 		}
 	}
