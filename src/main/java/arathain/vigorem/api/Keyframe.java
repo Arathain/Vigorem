@@ -15,6 +15,9 @@ public class Keyframe {
 
 	public final float frame;
 	public Keyframe(Easing easing, Vec3f translation, Vec3f rot, Vec3f scale, Vec3f offset, float frame) {
+		if(scale == Vec3f.ZERO) {
+			scale = new Vec3f(1, 1, 1);
+		}
 		this.override = true;
 		this.easing = easing;
 		this.translation = new ProperVec3fSupplier(translation);
@@ -24,6 +27,9 @@ public class Keyframe {
 		this.offset = new ProperVec3fSupplier(offset);
 	}
 	public Keyframe(Easing easing, Vec3f translation, Vec3f rot, Vec3f scale, Vec3f offset, float frame, boolean override) {
+		if(scale == Vec3f.ZERO) {
+			scale = new Vec3f(1, 1, 1);
+		}
 		this.override = override;
 		this.easing = easing;
 		this.translation = new ProperVec3fSupplier(translation);
@@ -33,6 +39,9 @@ public class Keyframe {
 		this.offset = new ProperVec3fSupplier(offset);
 	}
 	public Keyframe(Easing easing, Vec3fSupplier translation, Vec3fSupplier rot, Vec3fSupplier scale, Vec3fSupplier offset, float frame) {
+		if(scale == ProperVec3fSupplier.ZERO) {
+			scale = ProperVec3fSupplier.ONE;
+		}
 		this.override = true;
 		this.easing = easing;
 		this.translation = translation;
@@ -42,6 +51,9 @@ public class Keyframe {
 		this.offset = offset;
 	}
 	public Keyframe(Easing easing, Vec3fSupplier translation, Vec3fSupplier rot, Vec3fSupplier scale, Vec3fSupplier offset, float frame, boolean override) {
+		if(scale == ProperVec3fSupplier.ZERO) {
+			scale = ProperVec3fSupplier.ONE;
+		}
 		this.override = override;
 		this.easing = easing;
 		this.translation = translation;

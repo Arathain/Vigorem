@@ -313,17 +313,17 @@ public abstract class Animation {
 		if(same) {
 			part.setAngles(prev.rotation.getX() + (!prev.override ? part.pitch : 0),prev.rotation.getY() + (!prev.override ? part.yaw : 0), prev.rotation.getZ() + (!prev.override ? part.roll : 0));
 			part.translate(new Vec3f(prev.translation.getX(), prev.translation.getY(), prev.translation.getZ()));
-			part.scaleX = 1 + prev.scale.getX();
-			part.scaleY = 1 + prev.scale.getY();
-			part.scaleZ = 1 + prev.scale.getZ();
+			part.scaleX = prev.scale.getX();
+			part.scaleY = prev.scale.getY();
+			part.scaleZ = prev.scale.getZ();
 			((OffsetModelPart)(Object)part).setOffset(prev.offset.getX(), prev.offset.getY(), prev.offset.getZ());
 		} else {
 			float percentage = (this.frame + tickDelta - prev.frame) / (next.frame - prev.frame);
 			part.setAngles(MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.rotation.getX() + (!prev.override ? part.pitch : 0), next.rotation.getX() + (!next.override ? part.pitch : 0)), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.rotation.getY() + (!prev.override ? part.yaw : 0), next.rotation.getY() + (!next.override ? part.yaw : 0)), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.rotation.getZ() + (!prev.override ? part.roll : 0), next.rotation.getZ() + (!next.override ? part.roll : 0)));
 			part.translate(new Vec3f(MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.translation.getX(), next.translation.getX()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.translation.getY(), next.translation.getY()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.translation.getZ(), next.translation.getZ())));
-			part.scaleX = 1 + MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.scale.getX(), next.scale.getX());
-			part.scaleY = 1 + MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.scale.getY(), next.scale.getY());
-			part.scaleZ = 1 + MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.scale.getZ(), next.scale.getZ());
+			part.scaleX = MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.scale.getX(), next.scale.getX());
+			part.scaleY = MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.scale.getY(), next.scale.getY());
+			part.scaleZ = MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.scale.getZ(), next.scale.getZ());
 			if(prev.override) {
 				((OffsetModelPart) (Object) part).setOffset(MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.offset.getX(), next.offset.getX()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.offset.getY(), next.offset.getY()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.offset.getZ(), next.offset.getZ()));
 			} else {
@@ -338,7 +338,7 @@ public abstract class Animation {
 			s.multiply(Vec3f.POSITIVE_X.getRadialQuaternion(prev.rotation.getX()));
 			s.multiply(Vec3f.POSITIVE_Y.getRadialQuaternion(prev.rotation.getY()));
 			s.multiply(Vec3f.POSITIVE_Z.getRadialQuaternion(prev.rotation.getZ()));
-			s.scale(1 + prev.scale.getX(), 1 + prev.scale.getY(), 1 + prev.scale.getZ());
+			s.scale(prev.scale.getX(), prev.scale.getY(), prev.scale.getZ());
 			s.translate(prev.offset.getX(), prev.offset.getY(), prev.offset.getZ());
 		} else {
 			float percentage = (this.frame + tickDelta - prev.frame) / ((float) next.frame - prev.frame);
@@ -346,9 +346,9 @@ public abstract class Animation {
 			s.multiply(Vec3f.POSITIVE_X.getRadialQuaternion(MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.rotation.getX(), next.rotation.getX())));
 			s.multiply(Vec3f.POSITIVE_Y.getRadialQuaternion(MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.rotation.getY(), next.rotation.getY())));
 			s.multiply(Vec3f.POSITIVE_Z.getRadialQuaternion(MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.rotation.getZ(), next.rotation.getZ())));
-			s.scale(1 + MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.scale.getX(), next.scale.getX()),
-					1 + MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.scale.getY(), next.scale.getY()),
-					1 + MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.scale.getZ(), next.scale.getZ()));
+			s.scale(MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.scale.getX(), next.scale.getX()),
+					MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.scale.getY(), next.scale.getY()),
+					MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.scale.getZ(), next.scale.getZ()));
 			s.translate(MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.offset.getX(), next.offset.getX()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.offset.getY(), next.offset.getY()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.offset.getZ(), next.offset.getZ()));
 		}
 	}
