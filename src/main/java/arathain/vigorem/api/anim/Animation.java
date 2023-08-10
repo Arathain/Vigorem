@@ -239,7 +239,7 @@ public abstract class Animation {
 	}
 
 	public void setModelAngles(PlayerEntityModel<AbstractClientPlayerEntity> model, PlayerEntity player, float tickDelta) {
-		entityQuery.updateTime(this.frame+tickDelta);
+		entityQuery.updateTime(this.frame+tickDelta, player);
 		entityQuery.pitch = MathHelper.lerp(tickDelta, player.prevPitch, player.getPitch());
 		for(String part : keyframes.keySet()) {
 			Keyframe lastFrame = null;

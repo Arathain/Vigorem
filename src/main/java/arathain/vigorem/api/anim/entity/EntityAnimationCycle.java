@@ -100,7 +100,7 @@ public abstract class EntityAnimationCycle<T extends Entity & AnimatedEntity> {
 
 	public void setModelAngles(EntityModel<T> model, T entity, float tickDelta) {
 		float progress = getProgress(tickDelta);
-		entityQuery.updateTime(progress);
+		entityQuery.updateTime(progress, entity);
 		for(String part : keyframes.keySet()) {
 			Keyframe lastFrame = null;
 			Keyframe nextFrame = null;

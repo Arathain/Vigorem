@@ -269,7 +269,7 @@ public abstract class ExtendableAnimation extends Animation {
 
 	@Override
 	public void setModelAngles(PlayerEntityModel<AbstractClientPlayerEntity> model, PlayerEntity player, float tickDelta) {
-		entityQuery.updateTime(this.frame+tickDelta);
+		entityQuery.updateTime(this.frame+tickDelta, player);
 		entityQuery.pitch = MathHelper.lerp(tickDelta, player.prevPitch, player.getPitch());
 		switch(this.stage) {
 			case 0 -> super.setModelAngles(model, player, tickDelta);

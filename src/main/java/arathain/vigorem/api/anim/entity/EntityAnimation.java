@@ -190,7 +190,7 @@ public class EntityAnimation<T extends Entity & AnimatedEntity> {
 	}
 
 	public void setModelAngles(EntityModel<T> model, T entity, float tickDelta) {
-		entityQuery.updateTime(this.frame + tickDelta);
+		entityQuery.updateTime(this.frame + tickDelta, entity);
 		for(String part : keyframes.keySet()) {
 			Keyframe lastFrame = null;
 			Keyframe nextFrame = null;

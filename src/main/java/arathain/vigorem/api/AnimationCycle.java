@@ -101,7 +101,7 @@ public abstract class AnimationCycle {
 
 	public void setModelAngles(PlayerEntityModel<AbstractClientPlayerEntity> model, PlayerEntity player, float tickDelta) {
 		float progress = getProgress(tickDelta);
-		entityQuery.updateTime(progress);
+		entityQuery.updateTime(progress, player);
 		for(String part : keyframes.keySet()) {
 			Keyframe lastFrame = null;
 			Keyframe nextFrame = null;
