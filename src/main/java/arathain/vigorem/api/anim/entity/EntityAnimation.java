@@ -96,9 +96,13 @@ public class EntityAnimation<T extends Entity & AnimatedEntity> {
 				}
 			}
 		}
-		assert lastFrame != null;
+		if(lastFrame == null) {
+			lastFrame = nextFrame;
+			bl = true;
+		}
 		if(nextFrame == null) {
 			nextFrame = lastFrame;
+			bl = true;
 		}
 		return getRot(lastFrame, nextFrame, tickDelta, bl);
 	}
@@ -130,9 +134,13 @@ public class EntityAnimation<T extends Entity & AnimatedEntity> {
 				}
 			}
 		}
-		assert lastFrame != null;
+		if(lastFrame == null) {
+			lastFrame = nextFrame;
+			bl = true;
+		}
 		if(nextFrame == null) {
 			nextFrame = lastFrame;
+			bl = true;
 		}
 		return getOffset(lastFrame, nextFrame, tickDelta, bl);
 	}
@@ -164,9 +172,13 @@ public class EntityAnimation<T extends Entity & AnimatedEntity> {
 				}
 			}
 		}
-		assert lastFrame != null;
+		if(lastFrame == null) {
+			lastFrame = nextFrame;
+			bl = true;
+		}
 		if(nextFrame == null) {
 			nextFrame = lastFrame;
+			bl = true;
 		}
 		return getPivot(lastFrame, nextFrame, tickDelta, bl);
 	}
@@ -204,9 +216,13 @@ public class EntityAnimation<T extends Entity & AnimatedEntity> {
 					}
 				}
 			}
-			assert lastFrame != null;
+			if(lastFrame == null) {
+				lastFrame = nextFrame;
+				bl = true;
+			}
 			if(nextFrame == null) {
 				nextFrame = lastFrame;
+				bl = true;
 			}
 			lastFrame.update(entityQuery);
 			nextFrame.update(entityQuery);
