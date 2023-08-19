@@ -6,6 +6,7 @@ import sun.misc.Unsafe;
 
 public class ProperVec3fSupplier extends Vec3fSupplier {
 	public static ProperVec3fSupplier ZERO = new ProperVec3fSupplier(0, 0, 0);
+	public static ProperVec3fSupplier ONE = new ProperVec3fSupplier(1, 1, 1);
 	private final float x, y, z;
 	public ProperVec3fSupplier(Vec3f contain) {
 		this.x = contain.getX();

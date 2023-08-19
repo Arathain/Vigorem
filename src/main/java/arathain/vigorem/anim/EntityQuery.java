@@ -7,6 +7,7 @@ import net.minecraft.world.World;
 
 public class EntityQuery {
 	public float anim_time;
+	public float entity_time;
 	public float time_of_day;
 	public int moon_phase;
 	public boolean is_on_ground;
@@ -20,7 +21,7 @@ public class EntityQuery {
 	public float max_health;
 
 	public void update(Entity e, float animtime, World w) {
-		updateTime(animtime);
+		updateTime(animtime, e);
 		time_of_day = w.getTimeOfDay();
 		moon_phase = w.getMoonPhase();
 		pitch = e.getPitch();
@@ -38,7 +39,8 @@ public class EntityQuery {
 		health = e.getHealth();
 		max_health = e.getMaxHealth();
 	}
-	public void updateTime(float animtime) {
+	public void updateTime(float animtime, Entity e) {
 		anim_time = animtime/20f;
+		entity_time = (e.age + animtime % 1)/20f;
 	}
 }

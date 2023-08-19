@@ -88,8 +88,6 @@ for i in data['animations']:
 f.close()
 
 with open('export.txt', 'a') as f:
-    f.write("import static arathain.vigorem.init.Animations.deg;\n\n\n")
-    f.write("List<Keyframe> cache = new ArrayList<>();\n")
     for anim in uberlist:
         for jointAnim in anim[0]:
             for frame in range(len(jointAnim[1])):

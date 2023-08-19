@@ -1,228 +1,136 @@
 package arathain.vigorem.api.anim.entity;
 
-import arathain.vigorem.Vigorem;
 import arathain.vigorem.anim.EntityQuery;
 import arathain.vigorem.anim.OffsetModelPart;
 import arathain.vigorem.api.Keyframe;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.entity.model.EntityModel;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3f;
 
 import java.util.List;
 import java.util.Map;
 
-public class EntityAnimation<T extends Entity & AnimatedEntity> {
+public abstract class EntityAnimationCycle<T extends Entity & AnimatedEntity> {
 	public final Map<String, List<Keyframe>> keyframes;
 	private final int length;
-	public int frame = 0;
-
+	protected float progress, prevProgress;
 	protected final EntityQuery entityQuery = new EntityQuery();
 
-	public EntityAnimation(int length, Map<String, List<Keyframe>> keyframes) {
-		this.length = length;
+	public EntityAnimationCycle(Map<String, List<Keyframe>> keyframes, int length) {
 		this.keyframes = keyframes;
+		this.length = length;
 	}
 
-	public boolean shouldRemove() {
-		return frame >= length;
+	public boolean shouldTransformHead() {
+		return true;
 	}
-	public void serverTick(T entity) {entityQuery.update(entity, this.frame, entity.getWorld());}
-	public void clientTick(T entity) {entityQuery.update(entity, this.frame, entity.getWorld());}
+	public boolean shouldRemove(T entity) {
+		return false;
+	}
 
+	public void tick(T entity, MinecraftClient cli) {
+		this.prevProgress = progress;
+	}
+
+	public void writeNbt(NbtCompound nbt) {
+		nbt.putFloat("time", this.progress);
+	}
+	public void readNbt(NbtCompound nbt) {
+		this.progress = nbt.getInt("time");
+	}
+
+	public float getProgress(float tickDelta) {
+		if(progress > length) {
+			progress = 0;
+			prevProgress = 0;
+		}
+		if(progress < 0) {
+			progress = length;
+			prevProgress = length;
+		}
+		return MathHelper.lerp(tickDelta, prevProgress, progress);
+	}
+	public void rotateGlobal(MatrixStack matrices, float tickDelta) {
+		String part = "global";
+		if(keyframes.containsKey(part)) {
+			Keyframe lastFrame = null;
+			Keyframe nextFrame = null;
+			boolean bl = false;
+			for(Keyframe frame : keyframes.get(part)) {
+				if(frame.frame == (progress)) {
+					lastFrame = frame;
+					nextFrame = frame;
+					bl = true;
+				}
+				if(lastFrame == null && frame.frame < (progress)) {
+					lastFrame = frame;
+				} else {
+					if(lastFrame != null && frame.frame > lastFrame.frame && frame.frame < (progress)) {
+						lastFrame = frame;
+					}
+				}
+				if(nextFrame == null && frame.frame > (progress)) {
+					nextFrame = frame;
+				} else {
+					if(nextFrame != null && frame.frame < nextFrame.frame && frame.frame > (progress)) {
+						nextFrame = frame;
+					}
+				}
+			}
+			if(nextFrame == null) {
+				nextFrame = lastFrame;
+			}
+			if(lastFrame == null) {
+				lastFrame = nextFrame;
+			}
+			setMatrixTransform(matrices, lastFrame, nextFrame, tickDelta, bl);
+		}
+	}
 	public void tick() {
-		this.frame++;
+		this.prevProgress = progress;
 	}
-
 	public int getLength() {
 		return length;
 	}
 
-	public void setFrame(int frame) {
-		this.frame = frame;
-	}
-
-	public boolean canInterrupt() {
-		return false;
-	}
-	public boolean canCancel() {
-		return false;
-	}
-	public Identifier getId() {
-		return Vigorem.id("balls");
-	}
-
-	public float getMovementMultiplier() {
-		return 1;
-	}
-	public boolean isAffectingGravity() {
-		return false;
-	}
-	public boolean isBlockingMovement() {
-		return false;
-	}
-	public boolean lockHeldItem(){
-		return false;
-	}
-
-	public Vec3f getRot(String query, float tickDelta) {
-		if(!keyframes.containsKey(query)) {
-			return Vec3f.ZERO;
-		}
-		Keyframe lastFrame = null;
-		Keyframe nextFrame = null;
-		boolean bl = false;
-		for(Keyframe frame : keyframes.get(query)) {
-			if(frame.frame == (this.frame + tickDelta)) {
-				lastFrame = frame;
-				nextFrame = frame;
-				bl = true;
-			}
-			if(lastFrame == null && frame.frame < (this.frame + tickDelta)) {
-				lastFrame = frame;
-			} else {
-				if(lastFrame != null && frame.frame > lastFrame.frame && frame.frame < (this.frame + tickDelta)) {
-					lastFrame = frame;
-				}
-			}
-			if(nextFrame == null && frame.frame > (this.frame + tickDelta)) {
-				nextFrame = frame;
-			} else {
-				if(nextFrame != null && frame.frame < nextFrame.frame && frame.frame > (this.frame + tickDelta)) {
-					nextFrame = frame;
-				}
-			}
-		}
-		if(lastFrame == null) {
-			lastFrame = nextFrame;
-			bl = true;
-		}
-		if(nextFrame == null) {
-			nextFrame = lastFrame;
-			bl = true;
-		}
-		return getRot(lastFrame, nextFrame, tickDelta, bl);
-	}
-	public Vec3f getOffset(String query, float tickDelta) {
-		if(!keyframes.containsKey(query)) {
-			return Vec3f.ZERO;
-		}
-		Keyframe lastFrame = null;
-		Keyframe nextFrame = null;
-		boolean bl = false;
-		for(Keyframe frame : keyframes.get(query)) {
-			if(frame.frame == (this.frame + tickDelta)) {
-				lastFrame = frame;
-				nextFrame = frame;
-				bl = true;
-			}
-			if(lastFrame == null && frame.frame < (this.frame + tickDelta)) {
-				lastFrame = frame;
-			} else {
-				if(lastFrame != null && frame.frame > lastFrame.frame && frame.frame < (this.frame + tickDelta)) {
-					lastFrame = frame;
-				}
-			}
-			if(nextFrame == null && frame.frame > (this.frame + tickDelta)) {
-				nextFrame = frame;
-			} else {
-				if(nextFrame != null && frame.frame < nextFrame.frame && frame.frame > (this.frame + tickDelta)) {
-					nextFrame = frame;
-				}
-			}
-		}
-		if(lastFrame == null) {
-			lastFrame = nextFrame;
-			bl = true;
-		}
-		if(nextFrame == null) {
-			nextFrame = lastFrame;
-			bl = true;
-		}
-		return getOffset(lastFrame, nextFrame, tickDelta, bl);
-	}
-	public Vec3f getPivot(String query, float tickDelta) {
-		if(!keyframes.containsKey(query)) {
-			return Vec3f.ZERO;
-		}
-		Keyframe lastFrame = null;
-		Keyframe nextFrame = null;
-		boolean bl = false;
-		for(Keyframe frame : keyframes.get(query)) {
-			if(frame.frame == (this.frame + tickDelta)) {
-				lastFrame = frame;
-				nextFrame = frame;
-				bl = true;
-			}
-			if(lastFrame == null && frame.frame < (this.frame + tickDelta)) {
-				lastFrame = frame;
-			} else {
-				if(lastFrame != null && frame.frame > lastFrame.frame && frame.frame < (this.frame + tickDelta)) {
-					lastFrame = frame;
-				}
-			}
-			if(nextFrame == null && frame.frame > (this.frame + tickDelta)) {
-				nextFrame = frame;
-			} else {
-				if(nextFrame != null && frame.frame < nextFrame.frame && frame.frame > (this.frame + tickDelta)) {
-					nextFrame = frame;
-				}
-			}
-		}
-		if(lastFrame == null) {
-			lastFrame = nextFrame;
-			bl = true;
-		}
-		if(nextFrame == null) {
-			nextFrame = lastFrame;
-			bl = true;
-		}
-		return getPivot(lastFrame, nextFrame, tickDelta, bl);
-	}
-	public void writeNbt(NbtCompound nbt) {
-		nbt.putInt("time", this.frame);
-	}
-	public void readNbt(NbtCompound nbt) {
-		this.frame = nbt.getInt("time");
-	}
-
 	public void setModelAngles(EntityModel<T> model, T entity, float tickDelta) {
-		entityQuery.updateTime(this.frame + tickDelta, entity);
+		float progress = getProgress(tickDelta);
+		entityQuery.updateTime(progress, entity);
 		for(String part : keyframes.keySet()) {
 			Keyframe lastFrame = null;
 			Keyframe nextFrame = null;
 			boolean bl = false;
 			for(Keyframe frame : keyframes.get(part)) {
-				if(frame.frame == (this.frame + tickDelta)) {
+				if(frame.frame == (progress)) {
 					lastFrame = frame;
 					nextFrame = frame;
 					bl = true;
 				}
-				if(lastFrame == null && frame.frame < (this.frame + tickDelta)) {
+				if(lastFrame == null && frame.frame < (progress)) {
 					lastFrame = frame;
 				} else {
-					if(lastFrame != null && frame.frame > lastFrame.frame && frame.frame < (this.frame + tickDelta)) {
+					if(lastFrame != null && frame.frame > lastFrame.frame && frame.frame < (progress)) {
 						lastFrame = frame;
 					}
 				}
-				if(nextFrame == null && frame.frame > (this.frame + tickDelta)) {
+				if(nextFrame == null && frame.frame > (progress)) {
 					nextFrame = frame;
 				} else {
-					if(nextFrame != null && frame.frame < nextFrame.frame && frame.frame > (this.frame + tickDelta)) {
+					if(nextFrame != null && frame.frame < nextFrame.frame && frame.frame > (progress)) {
 						nextFrame = frame;
 					}
 				}
 			}
-			if(lastFrame == null) {
-				lastFrame = nextFrame;
-				bl = true;
-			}
 			if(nextFrame == null) {
 				nextFrame = lastFrame;
-				bl = true;
+			}
+			if(lastFrame == null) {
+				lastFrame = nextFrame;
 			}
 			lastFrame.update(entityQuery);
 			nextFrame.update(entityQuery);
@@ -233,7 +141,7 @@ public class EntityAnimation<T extends Entity & AnimatedEntity> {
 		if(same) {
 			return new Vec3f(prev.rotation.getX(),prev.rotation.getY(), prev.rotation.getZ());
 		} else {
-			float percentage = (this.frame + tickDelta - prev.frame) / ((float) next.frame - prev.frame);
+			float percentage = (getProgress(tickDelta) - prev.frame) / (next.frame - prev.frame);
 			return new Vec3f(MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.rotation.getX(), next.rotation.getX()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.rotation.getY(), next.rotation.getY()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.rotation.getZ(), next.rotation.getZ()));
 		}
 	}
@@ -241,7 +149,7 @@ public class EntityAnimation<T extends Entity & AnimatedEntity> {
 		if(same) {
 			return new Vec3f(prev.translation.getX(), prev.translation.getY(), prev.translation.getZ());
 		} else {
-			float percentage = (this.frame + tickDelta - prev.frame) / ((float) next.frame - prev.frame);
+			float percentage = (getProgress(tickDelta) - prev.frame) / (next.frame - prev.frame);
 			return new Vec3f(MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.translation.getX(), next.translation.getX()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.translation.getY(), next.translation.getY()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.translation.getZ(), next.translation.getZ()));
 		}
 	}
@@ -249,7 +157,7 @@ public class EntityAnimation<T extends Entity & AnimatedEntity> {
 		if(same) {
 			return new Vec3f(prev.offset.getX(), prev.offset.getY(), prev.offset.getZ());
 		} else {
-			float percentage = (this.frame + tickDelta - prev.frame) / ((float) next.frame - prev.frame);
+			float percentage = (getProgress(tickDelta) - prev.frame) / (next.frame - prev.frame);
 			return new Vec3f(MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.offset.getX(), next.offset.getX()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.offset.getY(), next.offset.getY()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.offset.getZ(), next.offset.getZ()));
 		}
 	}
@@ -262,13 +170,33 @@ public class EntityAnimation<T extends Entity & AnimatedEntity> {
 			part.scaleZ = prev.scale.getZ();
 			((OffsetModelPart)(Object)part).setOffset(prev.offset.getX(), prev.offset.getY(), prev.offset.getZ());
 		} else {
-			float percentage = (this.frame + tickDelta - prev.frame) / ((float) next.frame - prev.frame);
+			float percentage = (getProgress(tickDelta) - prev.frame) / (next.frame - prev.frame);
 			part.setAngles(MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.rotation.getX() + (!prev.override ? part.pitch : 0), next.rotation.getX() + (!next.override ? part.pitch : 0)), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.rotation.getY() + (!prev.override ? part.yaw : 0), next.rotation.getY() + (!next.override ? part.yaw : 0)), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.rotation.getZ() + (!prev.override ? part.roll : 0), next.rotation.getZ() + (!next.override ? part.roll : 0)));
 			part.translate(new Vec3f(MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.translation.getX(), next.translation.getX()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.translation.getY(), next.translation.getY()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.translation.getZ(), next.translation.getZ())));
 			part.scaleX = MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.scale.getX(), next.scale.getX());
 			part.scaleY = MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.scale.getY(), next.scale.getY());
 			part.scaleZ = MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.scale.getZ(), next.scale.getZ());
 			((OffsetModelPart)(Object)part).setOffset(MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.offset.getX(), next.offset.getX()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.offset.getY(), next.offset.getY()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.offset.getZ(), next.offset.getZ()));
+		}
+	}
+	protected void setMatrixTransform(MatrixStack s, Keyframe prev, Keyframe next, float tickDelta, boolean same) {
+		if(same) {
+			s.translate(prev.translation.getX(), prev.translation.getY(), prev.translation.getZ());
+			s.multiply(Vec3f.POSITIVE_X.getRadialQuaternion(prev.rotation.getX()));
+			s.multiply(Vec3f.POSITIVE_Y.getRadialQuaternion(prev.rotation.getY()));
+			s.multiply(Vec3f.POSITIVE_Z.getRadialQuaternion(prev.rotation.getZ()));
+			s.scale(prev.scale.getX(), prev.scale.getY(), prev.scale.getZ());
+			s.translate(prev.offset.getX(), prev.offset.getY(), prev.offset.getZ());
+		} else {
+			float percentage = (getProgress(tickDelta) - prev.frame) / (next.frame - prev.frame);
+			s.translate(MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.translation.getX(), next.translation.getX()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.translation.getY(), next.translation.getY()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.translation.getZ(), next.translation.getZ()));
+			s.multiply(Vec3f.POSITIVE_X.getRadialQuaternion(MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.rotation.getX(), next.rotation.getX())));
+			s.multiply(Vec3f.POSITIVE_Y.getRadialQuaternion(MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.rotation.getY(), next.rotation.getY())));
+			s.multiply(Vec3f.POSITIVE_Z.getRadialQuaternion(MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.rotation.getZ(), next.rotation.getZ())));
+			s.scale(MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.scale.getX(), next.scale.getX()),
+					MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.scale.getY(), next.scale.getY()),
+					MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.scale.getZ(), next.scale.getZ()));
+			s.translate(MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.offset.getX(), next.offset.getX()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.offset.getY(), next.offset.getY()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.offset.getZ(), next.offset.getZ()));
 		}
 	}
 }
