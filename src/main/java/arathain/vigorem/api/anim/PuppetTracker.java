@@ -17,8 +17,8 @@ public class PuppetTracker {
 	public PuppetTracker() {
 
 	}
-	private Vec3d[] pivots;
-	private Vec3f[] rotations;
+	protected Vec3d[] pivots;
+	protected Vec3f[] rotations;
 
 	public PuppetTracker setPivots(Vec3d... pivots) {
 		this.pivots = pivots;

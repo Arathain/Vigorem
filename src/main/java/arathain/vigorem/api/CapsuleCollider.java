@@ -84,7 +84,7 @@ public class CapsuleCollider {
 			// Check if the corner of the original box is inside the capsule
 			double dist = distanceToInnerSegment(potentialCorner);;
 			return dist < radius;
-		} else if (in.x > 0 && in.y >= 1 || in.x <= 0 && in.y < 1) {
+		} else if ((in.x > 0 && in.y >= 1) || (in.x <= 0 && in.y < 1)) {
 			Vec3d p1;
 			if (in.x > 0 && in.y >= 1) {
 				p1 = one.add(two.subtract(one)).multiply(in.x);
