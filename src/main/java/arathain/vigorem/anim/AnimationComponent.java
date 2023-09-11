@@ -2,6 +2,7 @@ package arathain.vigorem.anim;
 
 import arathain.vigorem.VigoremClient;
 import arathain.vigorem.VigoremComponents;
+import arathain.vigorem.VigoremConfig;
 import arathain.vigorem.api.AnimationCycle;
 import arathain.vigorem.api.anim.Animation;
 import arathain.vigorem.api.anim.ExtendableAnimation;
@@ -54,7 +55,7 @@ public class AnimationComponent implements AutoSyncedComponent {
 		}
 	}
 	public void clientTick() {
-		if (VigoremClient.fancySneak && obj.isSneaking()) {
+		if (VigoremConfig.fancySneak && obj.isSneaking()) {
 			if(!(currentCycle instanceof SneakCycle)) {
 				currentCycle = new SneakCycle();
 			}

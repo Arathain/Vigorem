@@ -1,6 +1,7 @@
 package arathain.vigorem.mixin;
 
 import arathain.vigorem.VigoremClient;
+import arathain.vigorem.VigoremConfig;
 import arathain.vigorem.anim.CrackCocaine;
 import arathain.vigorem.anim.Methylenedioxymethamphetamine;
 import arathain.vigorem.anim.OffsetModelPart;
@@ -50,9 +51,9 @@ public class BipedEntityModelMixin<T extends LivingEntity> implements Methylened
 	}
 	@Inject(method = "setAngles(Lnet/minecraft/entity/LivingEntity;FFFFF)V", at = @At(value = "FIELD", target = "Lnet/minecraft/client/render/entity/model/BipedEntityModel;body:Lnet/minecraft/client/model/ModelPart;", ordinal = 4, shift = At.Shift.AFTER))
 	private void vigorem$sneaktwo(T livingEntity, float f, float g, float h, float i, float j, CallbackInfo ci) {
-		if(this.sneaking && !VigoremClient.fancySneak) {
+		if(this.sneaking && !VigoremConfig.fancySneak) {
 			this.body.pitch += 0.5f;
-			this.head.pitch -= 0.5f/2f;
+			this.head.pitch -= 0.7f/2f;
 			this.body.pivotX = 0;
 		}
 	}
