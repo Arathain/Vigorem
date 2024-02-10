@@ -120,7 +120,7 @@ public class VigoremMixinPlugin implements IMixinConfigPlugin {
 				Object paths = pathsField.get(getClass().getClassLoader());
 				Method putQuickFile = QuiltClassPath.getDeclaredMethod("putQuickFile", String.class, Path.class);
 				putQuickFile.setAccessible(true);
-				putQuickFile.invoke(paths, "arathain/vigorem/mixin/GeneratedMixin.class", generatedMixinPath);
+				putQuickFile.invoke(paths, "/arathain/vigorem/mixin/GeneratedMixin.class", generatedMixinPath);
 			} catch (Throwable t) {
 				throw rethrow(t);
 			}
