@@ -10,14 +10,9 @@ import java.util.List;
 import java.util.Set;
 
 public class VigoremMixinPlugin implements IMixinConfigPlugin {
-	Set<Class<? extends ArmorRenderer>> classes;
 	@Override
 	public void onLoad(String mixinPackage) {
-		Reflections reflections = new Reflections("arathain.vigorem.reflections");
-		classes = reflections.getSubTypesOf(ArmorRenderer.class);
-		for(Class c : classes) {
-			System.out.println(c.getPackageName());
-		}
+
 	}
 
 	@Override
