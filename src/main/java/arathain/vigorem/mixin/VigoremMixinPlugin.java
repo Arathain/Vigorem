@@ -14,6 +14,7 @@ import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.URL;
+import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.MessageDigest;
@@ -66,7 +67,7 @@ public class VigoremMixinPlugin implements IMixinConfigPlugin {
 			QuiltLoader.getAllMods().stream()
 				.filter(m -> m.getSourceType() != ModContainer.BasicSourceType.BUILTIN && m.getSourceType() != ModContainer.BasicSourceType.OTHER)
 				.map(ModContainer::rootPath)
-				.flatMap(uncatch(Files::walk))
+				.flatMap(uncatch(w -> Files.walk(w, FileVisitOption.FOLLOW_LINKS)))
 				.filter(p -> p.getFileName().toString().endsWith(".class"))
 				.forEach(p -> {
 					try {
