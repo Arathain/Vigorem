@@ -149,7 +149,7 @@ public class VigoremMixinPlugin implements IMixinConfigPlugin {
 
 	@Override
 	public List<String> getMixins() {
-		return null;
+		return List.of("GeneratedMixin");
 	}
 
 	@Override
