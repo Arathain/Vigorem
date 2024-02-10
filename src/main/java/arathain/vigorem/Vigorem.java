@@ -18,6 +18,9 @@ import org.quiltmc.qsl.item.setting.api.QuiltItemSettings;
 import org.quiltmc.qsl.networking.api.ServerPlayNetworking;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import software.bernie.geckolib3.ArmorRenderingRegistryImpl;
+import software.bernie.geckolib3.GeckoLib;
+import software.bernie.geckolib3.renderers.geo.ArmorRendererProvider;
 import virtuoel.pehkui.api.ScaleTypes;
 
 public class Vigorem implements ModInitializer {
@@ -32,6 +35,7 @@ public class Vigorem implements ModInitializer {
 	public void onInitialize(ModContainer mod) {
 		Animations.init();
 		if(QuiltLoader.isDevelopmentEnvironment()) {
+			GeckoLib.initialize();
 			UseItemCallback.EVENT.register((player, world, hand) -> {
 				if (player.getStackInHand(hand).isOf(Items.ECHO_SHARD) && !world.isClient) {
 					player.getComponent(VigoremComponents.ANIMATION).queue(Animations.getAnimation(Vigorem.id("t_pose")));

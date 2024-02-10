@@ -2,6 +2,7 @@ package arathain.vigorem.mixin;
 
 import net.fabricmc.fabric.api.client.rendering.v1.ArmorRenderer;
 import org.objectweb.asm.tree.ClassNode;
+import org.quiltmc.loader.api.QuiltLoader;
 import org.reflections.Reflections;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
@@ -22,7 +23,10 @@ public class VigoremMixinPlugin implements IMixinConfigPlugin {
 
 	@Override
 	public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
-		return false;
+		if(mixinClassName.contains("glib")) {
+			return false;//QuiltLoader.isModLoaded("geckolib3");
+		}
+		return true;
 	}
 
 	@Override

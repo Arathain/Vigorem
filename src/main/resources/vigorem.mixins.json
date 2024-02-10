@@ -15,7 +15,8 @@
     "PlayerEntityModelMixin",
     "PlayerEntityRendererMixin",
     "PlayerInventoryMixin",
-    "SlotMixin"
+    "SlotMixin",
+    "glib.GeoArmorRendererMixin"
   ],
   "client": [
     "ArmorFeatureRendererMixin",
