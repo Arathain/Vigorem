@@ -84,7 +84,7 @@ public class VigoremMixinPlugin implements IMixinConfigPlugin {
 				});
 
 			ClassNode node = new ClassNode();
-			node.visit(V17, ACC_PUBLIC, "arathain/vigorem/mixin/GeneratedMixin", null, "java/lang/Object", new String[0]);
+			node.visit(V17, ACC_PUBLIC | ACC_SUPER, "arathain/vigorem/mixin/GeneratedMixin", null, "java/lang/Object", new String[0]);
 			AnnotationVisitor av = node.visitAnnotation("Lorg/spongepowered/asm/mixin/Mixin;", false);
 			AnnotationVisitor arr = av.visitArray("value");
 			for (String name : namesWithRenderer) {
