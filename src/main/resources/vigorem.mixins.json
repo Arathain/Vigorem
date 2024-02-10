@@ -19,7 +19,6 @@
   ],
   "client": [
     "ArmorFeatureRendererMixin",
-    "ArmorRendererMixin",
     "BipedEntityModelMixin",
     "ClientPlayerEntityMixin",
     "DebugRendererMixin",

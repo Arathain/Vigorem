@@ -46,6 +46,7 @@ dependencies {
 	modRuntimeOnly "carpet:fabric-carpet:${project.minecraft_version}-${project.carpet_core_version}"
 	modRuntimeOnly("maven.modrinth:ears:1.4.6+fabric-1.19")
 	modCompileOnly("maven.modrinth:ears:1.4.6+fabric-1.19")
+	modImplementation("com.github.Chocohead:Fabric-ASM:v2.3")
 
 	modImplementation include ("com.github.LlamaLad7.MixinExtras:mixinextras-fabric:0.2.0-beta.6")
 	annotationProcessor "com.github.LlamaLad7.MixinExtras:mixinextras-fabric:0.2.0-beta.6"
