@@ -228,7 +228,7 @@ public class VigoremMixinPlugin implements IMixinConfigPlugin {
 						// short: [...], Model, Idenifier
 						List.of(
 							new InsnNode(SWAP), // [...], Identifier, Model
-							new InsnNode(DUP_X2), // [...], Model, Identifier, Model
+							new InsnNode(DUP_X1), // [...], Model, Identifier, Model
 							new VarInsnNode(ALOAD, 7), // [...], Model, Identifier, Model, BipedEntityModel
 							new MethodInsnNode(INVOKESTATIC, injectClass, injectName, injectDesc, false) // [...], Model, Identifier
 						).forEach(i -> insns.insertBefore(method, i));
