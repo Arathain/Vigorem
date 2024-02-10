@@ -24,6 +24,7 @@ def isMolang(value):
     return False
 
 # the son of the J
+# future arathain here, no fucking idea what this is supposed to mean.
 for i in data['animations']:
     animList = []
     for k in data['animations'][i]['bones']:

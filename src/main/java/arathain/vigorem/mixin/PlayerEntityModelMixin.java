@@ -28,7 +28,9 @@ public abstract class PlayerEntityModelMixin<T extends LivingEntity> extends Bip
 	private void vigorem$angles(T livingEntity, float f, float g, float h, float i, float j, CallbackInfo ci) {
 		if (livingEntity instanceof PlayerEntity plr) {
 			AnimationComponent comp = plr.getComponent(VigoremComponents.ANIMATION);
-			((OffsetModelPart) (Object) this.body).setOffset(0, -12, 0);
+			boolean b = comp.currentCycle != null || comp.current != null;
+			if(b)
+				((OffsetModelPart) (Object) this.body).setOffset(0, -12, 0);
 			if(comp.currentCycle != null) {
 				comp.currentCycle.setModelAngles(((PlayerEntityModel<AbstractClientPlayerEntity>) (Object) this), plr, g);
 				if(((Methylenedioxymethamphetamine) this).shouldTransformHead() != comp.currentCycle.shouldTransformHead()) {
@@ -41,8 +43,9 @@ public abstract class PlayerEntityModelMixin<T extends LivingEntity> extends Bip
 					((Methylenedioxymethamphetamine) this).setHead(comp.current.shouldTransformHead());
 				}
 			}
-			this.body.pivotY += 12;
-			if(comp.current != null || comp.currentCycle != null) {
+			if(b)
+				this.body.pivotY += 12;
+			if(b) {
 				this.hat.copyTransform(this.head);
 			}
 		}

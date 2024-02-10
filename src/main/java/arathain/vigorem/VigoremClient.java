@@ -13,6 +13,7 @@ public class VigoremClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient(ModContainer mod) {
 		ClientPlayNetworking.registerGlobalReceiver(EntityAnimationSyncPacket.ID, (client, handler, buf, responseSender) -> EntityAnimationSyncPacket.handle(client, buf));
-		MidnightConfig.init(MODID, VigoremConfig.class);
+		if(QuiltLoader.isDevelopmentEnvironment())
+			MidnightConfig.init(MODID, VigoremConfig.class);
 	}
 }

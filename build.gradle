@@ -23,6 +23,7 @@ repositories {
 		name = 'Ladysnake Mods'
 		url = 'https://maven.ladysnake.org/releases'
 	}
+	mavenCentral()
 }
 
 // All dependency versions are declared in the gradle.properties file
@@ -50,6 +51,7 @@ dependencies {
 	annotationProcessor "com.github.LlamaLad7.MixinExtras:mixinextras-fabric:0.2.0-beta.6"
 	modImplementation("maven.modrinth:pehkui:${project.pehkui_version}")
 	modImplementation("com.github.Virtuoel:KanosConfig:0.4.0")
+	implementation include ('org.reflections:reflections:0.10.2')
 }
 
 

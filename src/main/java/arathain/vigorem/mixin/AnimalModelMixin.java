@@ -62,14 +62,18 @@ public abstract class AnimalModelMixin implements Methylenedioxymethamphetamine 
 			args.set(0, ((Consumer<ModelPart>)(headPart) -> {
 				MatrixStack temp = matrices.get();
 				temp.push();
-				boolean b = headPart.equals(biped.leftArm) || headPart.equals(biped.head) || headPart.equals(biped.rightArm) || headPart.equals(biped.hat) || ((OffsetModelPart)(Object)biped.rightArm).isChild(headPart) || ((OffsetModelPart)(Object)biped.head).isChild(headPart) || ((OffsetModelPart)(Object)biped.leftArm).isChild(headPart);
-				if(biped instanceof PlayerEntityModel<?> p && !b) {
-					b = headPart.equals(p.leftSleeve) || headPart.equals(p.rightSleeve);
-				}
-				if(b) {
-					if(((CrackCocaine)(Object)headPart).getParent().get() == null) {
-						((CrackCocaine) (Object) headPart).setParent(() -> biped.body);
+				if(isAnimating()) {
+					boolean b = headPart.equals(biped.leftArm) || headPart.equals(biped.head) || headPart.equals(biped.rightArm) || headPart.equals(biped.hat) || ((OffsetModelPart)(Object)biped.rightArm).isChild(headPart) || ((OffsetModelPart)(Object)biped.head).isChild(headPart) || ((OffsetModelPart)(Object)biped.leftArm).isChild(headPart);
+					if(biped instanceof PlayerEntityModel<?> p && !b) {
+						b = headPart.equals(p.leftSleeve) || headPart.equals(p.rightSleeve);
 					}
+					if(b) {
+						if(((CrackCocaine)(Object)headPart).getParent().get() == null) {
+							((CrackCocaine) (Object) headPart).setParent(() -> biped.body);
+						}
+					}
+				} else {
+					((CrackCocaine) (Object) headPart).setParent(() -> null);
 				}
 				headPart.render(temp, vertices, light, overlay, red, green, blue, alpha);
 				temp.pop();
@@ -84,6 +88,11 @@ public abstract class AnimalModelMixin implements Methylenedioxymethamphetamine 
 			bl[0] = true;
 		}});
 		return !bl[0];
+	}
+
+	@Override
+	public boolean isAnimating() {
+		return false;
 	}
 
 	@Override

@@ -1,6 +1,7 @@
 package arathain.vigorem.mixin;
 
 import arathain.vigorem.Vigorem;
+import arathain.vigorem.anim.Methylenedioxymethamphetamine;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
@@ -68,6 +69,7 @@ public abstract class PlayerEntityRendererMixin extends LivingEntityRenderer<Abs
 	}
 	@Inject(method = "getPositionOffset(Lnet/minecraft/client/network/AbstractClientPlayerEntity;F)Lnet/minecraft/util/math/Vec3d;", at = @At("HEAD"), cancellable = true)
 	private void vigorem$getPosition(AbstractClientPlayerEntity abstractClientPlayerEntity, float f, CallbackInfoReturnable<Vec3d> cir) {
-		cir.setReturnValue(super.getPositionOffset(abstractClientPlayerEntity, f));
+		if(((Methylenedioxymethamphetamine)this.model).isAnimating())
+			cir.setReturnValue(super.getPositionOffset(abstractClientPlayerEntity, f));
 	}
 }
