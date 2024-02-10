@@ -2,6 +2,7 @@ package arathain.vigorem.mixin;
 
 import net.fabricmc.fabric.api.client.rendering.v1.ArmorRenderer;
 import org.objectweb.asm.tree.ClassNode;
+import org.quiltmc.loader.api.ModContainer;
 import org.quiltmc.loader.api.QuiltLoader;
 import org.reflections.Reflections;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
@@ -13,7 +14,9 @@ import java.util.Set;
 public class VigoremMixinPlugin implements IMixinConfigPlugin {
 	@Override
 	public void onLoad(String mixinPackage) {
+		for(ModContainer m : QuiltLoader.getAllMods()) {
 
+		}
 	}
 
 	@Override

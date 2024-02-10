@@ -49,9 +49,9 @@ dependencies {
 	modCompileOnly("maven.modrinth:ears:1.4.6+fabric-1.19")
 	modImplementation("com.github.Chocohead:Fabric-ASM:v2.3")
 
-	modCompileOnly("software.bernie.geckolib:geckolib-quilt-1.19:3.1.41") {
-		exclude group: 'org.quiltmc.qsl'
-	}
+	// modCompileOnly("software.bernie.geckolib:geckolib-quilt-1.19:3.1.41") {
+	//	exclude group: 'org.quiltmc.qsl'
+	//}
 
 	modImplementation include ("com.github.LlamaLad7.MixinExtras:mixinextras-fabric:0.2.0-beta.6")
 	annotationProcessor "com.github.LlamaLad7.MixinExtras:mixinextras-fabric:0.2.0-beta.6"
