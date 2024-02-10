@@ -18,6 +18,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
@@ -43,7 +44,7 @@ public class VigoremMixinPlugin implements IMixinConfigPlugin {
 			digest.update(s.getBytes());
 		}
 		byte[] hash = digest.digest();
-		if (Files.exists(existingCheck)) {
+		if (Files.exists(existingCheck) && !QuiltLoader.isDevelopmentEnvironment()) {
 			try {
 				byte[] existing = Files.readAllBytes(existingCheck);
 				if (MessageDigest.isEqual(existing, hash)) {
@@ -62,35 +63,36 @@ public class VigoremMixinPlugin implements IMixinConfigPlugin {
 
 		if (bytes == null) {
 			List<String> namesWithRenderer = new ArrayList<>();
-			for(List<Path> paths : QuiltLoader.getAllMods().stream().flatMap(m -> m.getSourcePaths().stream()).toList()) {
+			QuiltLoader.getAllMods().stream()
+				.filter(m -> m.getSourceType() != ModContainer.BasicSourceType.BUILTIN && m.getSourceType() != ModContainer.BasicSourceType.OTHER)
+				.map(ModContainer::rootPath)
+				.flatMap(uncatch(Files::walk))
+				.filter(p -> p.getFileName().toString().endsWith(".class"))
+				.forEach(p -> {
+					try {
+						ClassNode node = new ClassNode();
+						new ClassReader(Files.readAllBytes(p)).accept(node, 0);
+						if (node.interfaces == null || node.interfaces.isEmpty() ||
+							!node.interfaces.contains("net/fabricmc/fabric/api/client/rendering/v1/ArmorRenderer"))
+							return;
 
-				paths.stream().flatMap(uncatch(Files::walk))
-					.filter(p -> p.getFileName().toString().endsWith(".class"))
-					.forEach(p -> {
-						try {
-							ClassNode node = new ClassNode();
-							new ClassReader(Files.readAllBytes(p)).accept(node, 0);
-							if (node.interfaces == null || !node.interfaces.contains("net/fabricmc/fabric/api/client/rendering/v1/ArmorRenderer"))
-								return;
+						namesWithRenderer.add(node.name);
+					} catch (Throwable e) {
+						throw rethrow(e);
+					}
+				});
 
-							namesWithRenderer.add(node.name);
-						} catch (Throwable e) {
-							throw rethrow(e);
-						}
-					});
-
-				ClassNode node = new ClassNode();
-				node.visit(V17, ACC_PUBLIC, "arathain/vigorem/mixin/GeneratedMixin", null, "java/lang/Object", new String[0]);
-				AnnotationVisitor av = node.visitAnnotation("Lorg/spongepowered/asm/mixin/Mixin;", false);
-				AnnotationVisitor arr = av.visitArray("value");
-				for (String name : namesWithRenderer) {
-					arr.visit(null, Type.getObjectType(name));
-				}
-
-				ClassWriter writer = new ClassWriter(0);
-				node.accept(writer);
-				bytes = writer.toByteArray();
+			ClassNode node = new ClassNode();
+			node.visit(V17, ACC_PUBLIC, "arathain/vigorem/mixin/GeneratedMixin", null, "java/lang/Object", new String[0]);
+			AnnotationVisitor av = node.visitAnnotation("Lorg/spongepowered/asm/mixin/Mixin;", false);
+			AnnotationVisitor arr = av.visitArray("value");
+			for (String name : namesWithRenderer) {
+				arr.visit(null, Type.getObjectType(name));
 			}
+
+			ClassWriter writer = new ClassWriter(0);
+			node.accept(writer);
+			bytes = writer.toByteArray();
 		}
 
 		try {
