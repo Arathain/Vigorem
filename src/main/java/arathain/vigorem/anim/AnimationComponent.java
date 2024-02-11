@@ -16,6 +16,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.quiltmc.loader.api.QuiltLoader;
 import org.quiltmc.loader.api.minecraft.ClientOnly;
 
 
@@ -55,7 +56,7 @@ public class AnimationComponent implements AutoSyncedComponent {
 		}
 	}
 	public void clientTick() {
-		if (VigoremConfig.fancySneak && obj.isSneaking()) {
+		if (QuiltLoader.isDevelopmentEnvironment() && VigoremConfig.fancySneak && obj.isSneaking()) {
 			if(!(currentCycle instanceof SneakCycle)) {
 				currentCycle = new SneakCycle();
 			}
