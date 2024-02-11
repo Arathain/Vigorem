@@ -68,7 +68,7 @@ public class VigoremMixinPlugin implements IMixinConfigPlugin {
 				.filter(m -> m.getSourceType() != ModContainer.BasicSourceType.BUILTIN && m.getSourceType() != ModContainer.BasicSourceType.OTHER)
 				.map(ModContainer::rootPath)
 				.flatMap(uncatch(w -> Files.walk(w, FileVisitOption.FOLLOW_LINKS)))
-				.filter(p -> p.getFileName().toString().endsWith(".class"))
+				.filter(p -> !p.startsWith("/software/bernie/geckolib3") && p.getFileName().toString().endsWith(".class"))
 				.forEach(p -> {
 					try {
 						ClassNode node = new ClassNode();
