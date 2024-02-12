@@ -1,5 +1,6 @@
 package arathain.vigorem.mixin;
 
+import arathain.vigorem.Vigorem;
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
@@ -11,16 +12,13 @@ import org.quiltmc.loader.api.QuiltLoader;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.URL;
-import java.nio.file.FileVisitOption;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.nio.file.*;
 import java.security.MessageDigest;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
@@ -31,74 +29,80 @@ import static org.objectweb.asm.Opcodes.*;
  * @author sschr15
  * */
 public class VigoremMixinPlugin implements IMixinConfigPlugin {
-	private static final Path generatedMixinPath = QuiltLoader.getConfigDir().resolve("vigorem-mixin-escrow.class");
+	private static final Path vigoremTemp = QuiltLoader.getCacheDir().resolve("vigorem");
+	private static final Path generatedMixinJarPath = vigoremTemp.resolve("vigorem-mixin-escrow.jar");
 
 	static {
+		try {
+			Files.createDirectories(vigoremTemp);
 
-		byte[] bytes = null;
+			byte[] bytes = null;
 
-		Path existingCheck = QuiltLoader.getConfigDir().resolve("current-hash");
+			Path existingCheck = QuiltLoader.getConfigDir().resolve("current-hash");
+			Path generatedMixinPath = vigoremTemp.resolve("vigorem-mixin-escrow.class");
 
-		MessageDigest digest = uncatch(ignored -> MessageDigest.getInstance("SHA-256")).apply(null);
-		for (ModContainer m : QuiltLoader.getAllMods()) {
-			String s = m.metadata().id() + '@' + m.metadata().version().raw();
-			digest.update(s.getBytes());
-		}
-		byte[] hash = digest.digest();
-		if (Files.exists(existingCheck) && !QuiltLoader.isDevelopmentEnvironment()) {
-			try {
-				byte[] existing = Files.readAllBytes(existingCheck);
-				if (MessageDigest.isEqual(existing, hash)) {
-					if (Files.exists(generatedMixinPath)) {
+			MessageDigest digest = uncatch(ignored -> MessageDigest.getInstance("SHA-256")).apply(null);
+			for (ModContainer m : QuiltLoader.getAllMods()) {
+				String s = m.metadata().id() + '@' + m.metadata().version().raw();
+				digest.update(s.getBytes());
+			}
+			byte[] hash = digest.digest();
+			if (Files.exists(existingCheck) && !QuiltLoader.isDevelopmentEnvironment()) {
+					byte[] existing = Files.readAllBytes(existingCheck);
+					if (MessageDigest.isEqual(existing, hash)) {
+						if (Files.exists(generatedMixinPath)) {
+							try {
+								bytes = Files.readAllBytes(generatedMixinPath);
+							} catch (Throwable e) {
+								throw rethrow(e);
+							}
+						}
+					}
+			}
+
+			if (bytes == null) {
+				List<String> namesWithRenderer = new ArrayList<>();
+				QuiltLoader.getAllMods().stream()
+					.filter(m -> m.getSourceType() != ModContainer.BasicSourceType.BUILTIN && m.getSourceType() != ModContainer.BasicSourceType.OTHER)
+					.map(ModContainer::rootPath)
+					.flatMap(uncatch(w -> Files.walk(w, FileVisitOption.FOLLOW_LINKS)))
+					.filter(p -> !p.startsWith("/software/bernie/geckolib3") && p.getFileName().toString().endsWith(".class"))
+					.forEach(p -> {
 						try {
-							bytes = Files.readAllBytes(generatedMixinPath);
+							ClassNode node = new ClassNode();
+							new ClassReader(Files.readAllBytes(p)).accept(node, 0);
+							if (node.interfaces == null || node.interfaces.isEmpty() ||
+								!node.interfaces.contains("net/fabricmc/fabric/api/client/rendering/v1/ArmorRenderer"))
+								return;
+
+							namesWithRenderer.add(node.name);
 						} catch (Throwable e) {
 							throw rethrow(e);
 						}
-					}
+					});
+
+				ClassNode node = new ClassNode();
+				node.visit(V17, ACC_PUBLIC | ACC_SUPER, "arathain/vigorem/mixin/GeneratedMixin", null, "java/lang/Object", new String[0]);
+				AnnotationVisitor av = node.visitAnnotation("Lorg/spongepowered/asm/mixin/Mixin;", false);
+				AnnotationVisitor arr = av.visitArray("value");
+				for (String name : namesWithRenderer) {
+					arr.visit(null, Type.getObjectType(name));
 				}
-			} catch (Throwable e) {
-				throw rethrow(e);
-			}
-		}
 
-		if (bytes == null) {
-			List<String> namesWithRenderer = new ArrayList<>();
-			QuiltLoader.getAllMods().stream()
-				.filter(m -> m.getSourceType() != ModContainer.BasicSourceType.BUILTIN && m.getSourceType() != ModContainer.BasicSourceType.OTHER)
-				.map(ModContainer::rootPath)
-				.flatMap(uncatch(w -> Files.walk(w, FileVisitOption.FOLLOW_LINKS)))
-				.filter(p -> !p.startsWith("/software/bernie/geckolib3") && p.getFileName().toString().endsWith(".class"))
-				.forEach(p -> {
-					try {
-						ClassNode node = new ClassNode();
-						new ClassReader(Files.readAllBytes(p)).accept(node, 0);
-						if (node.interfaces == null || node.interfaces.isEmpty() ||
-							!node.interfaces.contains("net/fabricmc/fabric/api/client/rendering/v1/ArmorRenderer"))
-							return;
-
-						namesWithRenderer.add(node.name);
-					} catch (Throwable e) {
-						throw rethrow(e);
-					}
-				});
-
-			ClassNode node = new ClassNode();
-			node.visit(V17, ACC_PUBLIC | ACC_SUPER, "arathain/vigorem/mixin/GeneratedMixin", null, "java/lang/Object", new String[0]);
-			AnnotationVisitor av = node.visitAnnotation("Lorg/spongepowered/asm/mixin/Mixin;", false);
-			AnnotationVisitor arr = av.visitArray("value");
-			for (String name : namesWithRenderer) {
-				arr.visit(null, Type.getObjectType(name));
+				ClassWriter writer = new ClassWriter(0);
+				node.accept(writer);
+				bytes = writer.toByteArray();
 			}
 
-			ClassWriter writer = new ClassWriter(0);
-			node.accept(writer);
-			bytes = writer.toByteArray();
-		}
-
-		try {
 			Files.write(existingCheck, hash);
 			Files.write(generatedMixinPath, bytes);
+
+			Files.deleteIfExists(generatedMixinJarPath);
+			try (var jar = FileSystems.newFileSystem(generatedMixinJarPath, Map.of("create", "true"))) {
+				Path dir = jar.getPath("/arathain/vigorem/mixin");
+				Files.createDirectories(dir);
+				Files.copy(generatedMixinPath, dir.resolve("GeneratedMixin.class"));
+			}
 		} catch (Throwable e) {
 			throw rethrow(e);
 		}
@@ -107,23 +111,10 @@ public class VigoremMixinPlugin implements IMixinConfigPlugin {
 	@Override
 	public void onLoad(String mixinPackage) {
 		try {
-			Class<?> ClassLoaderAccess = Class.forName("net.fabricmc.loader.impl.launch.knot.KnotClassDelegate.ClassLoaderAccess");
-			Method addUrlFwd = ClassLoaderAccess.getMethod("addUrlFwd", URL.class);
-			addUrlFwd.invoke(getClass().getClassLoader(), generatedMixinPath.toUri().toURL());
-		} catch (ClassNotFoundException e) {
-			// Possibly on Quilt
-			try {
-				Class<?> KnotClassLoader = Class.forName("org.quiltmc.loader.impl.launch.knot.KnotClassLoader");
-				Class<?> QuiltClassPath = Class.forName("org.quiltmc.loader.impl.filesystem.QuiltClassPath");
-				Field pathsField = KnotClassLoader.getDeclaredField("paths");
-				pathsField.setAccessible(true);
-				Object paths = pathsField.get(getClass().getClassLoader());
-				Method putQuickFile = QuiltClassPath.getDeclaredMethod("putQuickFile", String.class, Path.class);
-				putQuickFile.setAccessible(true);
-				putQuickFile.invoke(paths, "/arathain/vigorem/mixin/GeneratedMixin.class", generatedMixinPath);
-			} catch (Throwable t) {
-				throw rethrow(t);
-			}
+			Class<?> KnotClassLoaderInterface = Class.forName("org.quiltmc.loader.impl.launch.knot.KnotClassLoaderInterface");
+			Method addURL = KnotClassLoaderInterface.getMethod("addURL", URL.class);
+			addURL.setAccessible(true);
+			addURL.invoke(getClass().getClassLoader(), generatedMixinJarPath.toUri().toURL());
 		} catch (Throwable e) {
 			throw rethrow(e);
 		}
@@ -149,6 +140,11 @@ public class VigoremMixinPlugin implements IMixinConfigPlugin {
 
 	@Override
 	public List<String> getMixins() {
+		if (Files.notExists(generatedMixinJarPath)) {
+			Vigorem.LOGGER.warn("Generated mixin jar does not exist");
+			return List.of();
+		}
+
 		return List.of("GeneratedMixin");
 	}
 
