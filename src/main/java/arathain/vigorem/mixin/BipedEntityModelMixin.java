@@ -1,6 +1,5 @@
 package arathain.vigorem.mixin;
 
-import arathain.vigorem.VigoremConfig;
 import arathain.vigorem.anim.CrackCocaine;
 import arathain.vigorem.anim.Methylenedioxymethamphetamine;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
