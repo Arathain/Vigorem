@@ -3,6 +3,7 @@
   "minVersion": "0.8",
   "package": "arathain.vigorem.mixin",
   "compatibilityLevel": "JAVA_17",
+  "plugin": "arathain.vigorem.mixin.VigoremMixinPlugin",
   "mixins": [
     "AnimalModelMixin",
     "ArrayVoxelShapeInvoker",
