@@ -5,12 +5,12 @@ import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.math.Vec3f;
+import org.joml.Vector3f;
 
 public interface ColliderAnimation {
 
-	private Vec3f add(Vec3f vec1, Vec3f vec2) {
-		Vec3f vec = vec1.copy();
+	private Vector3f add(Vector3f vec1, Vector3f vec2) {
+		Vector3f vec = new Vector3f(vec1);
 		vec.add(vec2);
 		return vec;
 	}

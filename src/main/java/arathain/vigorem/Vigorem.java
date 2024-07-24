@@ -20,6 +20,7 @@ import net.minecraft.util.Rarity;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.math.Vec3d;
 
+import org.joml.Vector3f;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import virtuoel.pehkui.api.ScaleTypes;
@@ -30,7 +31,8 @@ public class Vigorem implements ModInitializer {
 	public static boolean firstPersonLoaded = FabricLoader.getInstance().isModLoaded("firstperson");
 	public static boolean renderingFirstPerson = false;
 	public static boolean pehkuiLoaded = FabricLoader.getInstance().isModLoaded("pehkui");
-	private static final Vec3d ONE = new Vec3d(1, 1,1);
+	public static final Vec3d ONE = new Vec3d(1, 1,1);
+	public static final Vector3f ZERO = new Vector3f(0, 0, 0);
 
 	@Override
 	public void onInitialize() {

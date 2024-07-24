@@ -1,19 +1,19 @@
 package arathain.vigorem.anim;
 
-import arathain.vigorem.api.Vec3fSupplier;
+import arathain.vigorem.api.Vector3fSupplier;
 import net.minecraft.util.math.MathHelper;
 
-public class MoLangVec3fSupplier extends Vec3fSupplier {
+public class MoLangVector3fSupplier extends Vector3fSupplier {
 	private final ValueSupplier x, y, z;
 	private EntityQuery q;
 	private final boolean deg;
-	public MoLangVec3fSupplier(ValueSupplier x, ValueSupplier y, ValueSupplier z) {
+	public MoLangVector3fSupplier(ValueSupplier x, ValueSupplier y, ValueSupplier z) {
 		this.x = x;
 		this.y = y;
 		this.z = z;
 		this.deg = false;
 	}
-	public MoLangVec3fSupplier(ValueSupplier x, ValueSupplier y, ValueSupplier z, boolean degrees) {
+	public MoLangVector3fSupplier(ValueSupplier x, ValueSupplier y, ValueSupplier z, boolean degrees) {
 		this.x = x;
 		this.y = y;
 		this.z = z;

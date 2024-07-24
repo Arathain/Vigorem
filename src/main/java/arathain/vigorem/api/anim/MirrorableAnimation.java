@@ -1,16 +1,15 @@
 package arathain.vigorem.api.anim;
 
 import arathain.vigorem.anim.OffsetModelPart;
-import arathain.vigorem.anim.ProperVec3fSupplier;
+import arathain.vigorem.anim.ProperVector3fSupplier;
 import arathain.vigorem.api.Keyframe;
-import arathain.vigorem.api.anim.Animation;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3f;
+import org.joml.Vector3f;
 
 import java.util.List;
 import java.util.Map;
@@ -81,7 +80,7 @@ public class MirrorableAnimation extends Animation {
 			}
 		}
 	}
-	public Vec3f getRot(String query, float tickDelta) {
+	public Vector3f getRot(String query, float tickDelta) {
 		if(mirrored) {
 			switch (query) {
 				case "left_arm" -> query = "right_arm";
@@ -95,7 +94,7 @@ public class MirrorableAnimation extends Animation {
 		}
 		return super.getRot(query, tickDelta);
 	}
-	public Vec3f getPivot(String query, float tickDelta) {
+	public Vector3f getPivot(String query, float tickDelta) {
 		if(mirrored) {
 			switch (query) {
 				case "left_arm" -> query = "right_arm";
@@ -109,7 +108,7 @@ public class MirrorableAnimation extends Animation {
 		}
 		return super.getPivot(query, tickDelta);
 	}
-	public Vec3f getOffset(String query, float tickDelta) {
+	public Vector3f getOffset(String query, float tickDelta) {
 		if(mirrored) {
 			switch (query) {
 				case "left_arm" -> query = "right_arm";
@@ -127,23 +126,23 @@ public class MirrorableAnimation extends Animation {
 	@Override
 	protected void setPartAngles(ModelPart part, Keyframe prev, Keyframe next, float tickDelta, boolean same) {
 		if(this.mirrored) {
-			prev = new Keyframe(prev.easing, prev.translation, new ProperVec3fSupplier(prev.rotation.getX(), -prev.rotation.getY(), -prev.rotation.getZ()), prev.scale, prev.offset, prev.frame, prev.override);
-			next = new Keyframe(next.easing, next.translation, new ProperVec3fSupplier(next.rotation.getX(), -next.rotation.getY(), -next.rotation.getZ()), next.scale, next.offset, next.frame, next.override);
+			prev = new Keyframe(prev.easing, prev.translation, new ProperVector3fSupplier(prev.rotation.getX(), -prev.rotation.getY(), -prev.rotation.getZ()), prev.scale, prev.offset, prev.frame, prev.override);
+			next = new Keyframe(next.easing, next.translation, new ProperVector3fSupplier(next.rotation.getX(), -next.rotation.getY(), -next.rotation.getZ()), next.scale, next.offset, next.frame, next.override);
 		}
 		if(same) {
 			part.setAngles(prev.rotation.getX() + (!prev.override ? part.pitch : 0),prev.rotation.getY() + (!prev.override ? part.yaw : 0), prev.rotation.getZ() + (!prev.override ? part.roll : 0));
 			part.setPivot(part.pivotX + prev.translation.getX(), part.pivotY + prev.translation.getY(), part.pivotZ + prev.translation.getZ());
-			part.scaleX = prev.scale.getX();
-			part.scaleY = prev.scale.getY();
-			part.scaleZ = prev.scale.getZ();
+			part.xScale = prev.scale.getX();
+			part.yScale = prev.scale.getY();
+			part.zScale = prev.scale.getZ();
 			((OffsetModelPart)(Object)part).setOffset(prev.offset.getX(), prev.offset.getY(), prev.offset.getZ());
 		} else {
 			float percentage = (this.frame + tickDelta - prev.frame) / ((float) next.frame - prev.frame);
 			part.setAngles(MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.rotation.getX() + (!prev.override ? part.pitch : 0), next.rotation.getX() + (!next.override ? part.pitch : 0)), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.rotation.getY() + (!prev.override ? part.yaw : 0), next.rotation.getY() + (!next.override ? part.yaw : 0)), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.rotation.getZ() + (!prev.override ? part.roll : 0), next.rotation.getZ() + (!next.override ? part.roll : 0)));
 			part.setPivot(part.pivotX + MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.translation.getX(), next.translation.getX()), part.pivotY + MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.translation.getY(), next.translation.getY()), part.pivotZ + MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.translation.getZ(), next.translation.getZ()));
-			part.scaleX = MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.scale.getX(), next.scale.getX());
-			part.scaleY = MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.scale.getY(), next.scale.getY());
-			part.scaleZ = MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.scale.getZ(), next.scale.getZ());
+			part.xScale = MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.scale.getX(), next.scale.getX());
+			part.yScale = MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.scale.getY(), next.scale.getY());
+			part.zScale = MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.scale.getZ(), next.scale.getZ());
 			((OffsetModelPart)(Object)part).setOffset(MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.offset.getX(), next.offset.getX()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.offset.getY(), next.offset.getY()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.offset.getZ(), next.offset.getZ()));
 		}
 		if(this.mirrored) {
@@ -153,30 +152,30 @@ public class MirrorableAnimation extends Animation {
 
 	protected void setMatrixTransform(MatrixStack s, Keyframe prev, Keyframe next, float tickDelta, boolean same) {
 		if(this.mirrored) {
-			prev = new Keyframe(prev.easing, prev.translation, new ProperVec3fSupplier(prev.rotation.getX(), -prev.rotation.getY(), -prev.rotation.getZ()), prev.scale, prev.offset, prev.frame, prev.override);
-			next = new Keyframe(next.easing, next.translation, new ProperVec3fSupplier(next.rotation.getX(), -next.rotation.getY(), -next.rotation.getZ()), next.scale, next.offset, next.frame, next.override);
+			prev = new Keyframe(prev.easing, prev.translation, new ProperVector3fSupplier(prev.rotation.getX(), -prev.rotation.getY(), -prev.rotation.getZ()), prev.scale, prev.offset, prev.frame, prev.override);
+			next = new Keyframe(next.easing, next.translation, new ProperVector3fSupplier(next.rotation.getX(), -next.rotation.getY(), -next.rotation.getZ()), next.scale, next.offset, next.frame, next.override);
 		}
 		super.setMatrixTransform(s, prev, next, tickDelta, same);
 	}
 
-	protected Vec3f getRot(Keyframe prev, Keyframe next, float tickDelta, boolean same) {
-		Vec3f soup = super.getRot(prev, next, tickDelta, same);
+	protected Vector3f getRot(Keyframe prev, Keyframe next, float tickDelta, boolean same) {
+		Vector3f soup = super.getRot(prev, next, tickDelta, same);
 		if(mirrored) {
-			soup = new Vec3f(soup.getX(), -soup.getY(), -soup.getZ());
+			soup = new Vector3f(soup.x(), -soup.y(), -soup.z());
 		}
 		return soup;
 	}
-	protected Vec3f getPivot(Keyframe prev, Keyframe next, float tickDelta, boolean same) {
-		Vec3f soup = super.getPivot(prev, next, tickDelta, same);
+	protected Vector3f getPivot(Keyframe prev, Keyframe next, float tickDelta, boolean same) {
+		Vector3f soup = super.getPivot(prev, next, tickDelta, same);
 		if(mirrored) {
-			soup = new Vec3f(-soup.getX(), soup.getY(), -soup.getZ());
+			soup = new Vector3f(-soup.x(), soup.y(), -soup.z());
 		}
 		return soup;
 	}
-	protected Vec3f getOffset(Keyframe prev, Keyframe next, float tickDelta, boolean same) {
-		Vec3f soup = super.getOffset(prev, next, tickDelta, same);
+	protected Vector3f getOffset(Keyframe prev, Keyframe next, float tickDelta, boolean same) {
+		Vector3f soup = super.getOffset(prev, next, tickDelta, same);
 		if(mirrored) {
-			soup = new Vec3f(-soup.getX(), soup.getY(), -soup.getZ());
+			soup = new Vector3f(-soup.x(), soup.y(), -soup.z());
 		}
 		return soup;
 	}

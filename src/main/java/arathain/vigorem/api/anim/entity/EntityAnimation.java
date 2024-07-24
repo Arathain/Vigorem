@@ -10,7 +10,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3f;
+import org.joml.Vector3f;
 
 import java.util.List;
 import java.util.Map;
@@ -68,9 +68,9 @@ public class EntityAnimation<T extends Entity & AnimatedEntity> {
 		return false;
 	}
 
-	public Vec3f getRot(String query, float tickDelta) {
+	public Vector3f getRot(String query, float tickDelta) {
 		if(!keyframes.containsKey(query)) {
-			return Vec3f.ZERO;
+			return Vigorem.ZERO;
 		}
 		Keyframe lastFrame = null;
 		Keyframe nextFrame = null;
@@ -106,9 +106,9 @@ public class EntityAnimation<T extends Entity & AnimatedEntity> {
 		}
 		return getRot(lastFrame, nextFrame, tickDelta, bl);
 	}
-	public Vec3f getOffset(String query, float tickDelta) {
+	public Vector3f getOffset(String query, float tickDelta) {
 		if(!keyframes.containsKey(query)) {
-			return Vec3f.ZERO;
+			return Vigorem.ZERO;
 		}
 		Keyframe lastFrame = null;
 		Keyframe nextFrame = null;
@@ -144,9 +144,9 @@ public class EntityAnimation<T extends Entity & AnimatedEntity> {
 		}
 		return getOffset(lastFrame, nextFrame, tickDelta, bl);
 	}
-	public Vec3f getPivot(String query, float tickDelta) {
+	public Vector3f getPivot(String query, float tickDelta) {
 		if(!keyframes.containsKey(query)) {
-			return Vec3f.ZERO;
+			return Vigorem.ZERO;
 		}
 		Keyframe lastFrame = null;
 		Keyframe nextFrame = null;
@@ -229,45 +229,45 @@ public class EntityAnimation<T extends Entity & AnimatedEntity> {
 			setPartAngles(entity.getPart(part, model), lastFrame, nextFrame, tickDelta, bl);
 		}
 	}
-	protected Vec3f getRot(Keyframe prev, Keyframe next, float tickDelta, boolean same) {
+	protected Vector3f getRot(Keyframe prev, Keyframe next, float tickDelta, boolean same) {
 		if(same) {
-			return new Vec3f(prev.rotation.getX(),prev.rotation.getY(), prev.rotation.getZ());
+			return new Vector3f(prev.rotation.getX(),prev.rotation.getY(), prev.rotation.getZ());
 		} else {
 			float percentage = (this.frame + tickDelta - prev.frame) / ((float) next.frame - prev.frame);
-			return new Vec3f(MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.rotation.getX(), next.rotation.getX()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.rotation.getY(), next.rotation.getY()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.rotation.getZ(), next.rotation.getZ()));
+			return new Vector3f(MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.rotation.getX(), next.rotation.getX()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.rotation.getY(), next.rotation.getY()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.rotation.getZ(), next.rotation.getZ()));
 		}
 	}
-	protected Vec3f getPivot(Keyframe prev, Keyframe next, float tickDelta, boolean same) {
+	protected Vector3f getPivot(Keyframe prev, Keyframe next, float tickDelta, boolean same) {
 		if(same) {
-			return new Vec3f(prev.translation.getX(), prev.translation.getY(), prev.translation.getZ());
+			return new Vector3f(prev.translation.getX(), prev.translation.getY(), prev.translation.getZ());
 		} else {
 			float percentage = (this.frame + tickDelta - prev.frame) / ((float) next.frame - prev.frame);
-			return new Vec3f(MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.translation.getX(), next.translation.getX()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.translation.getY(), next.translation.getY()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.translation.getZ(), next.translation.getZ()));
+			return new Vector3f(MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.translation.getX(), next.translation.getX()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.translation.getY(), next.translation.getY()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.translation.getZ(), next.translation.getZ()));
 		}
 	}
-	protected Vec3f getOffset(Keyframe prev, Keyframe next, float tickDelta, boolean same) {
+	protected Vector3f getOffset(Keyframe prev, Keyframe next, float tickDelta, boolean same) {
 		if(same) {
-			return new Vec3f(prev.offset.getX(), prev.offset.getY(), prev.offset.getZ());
+			return new Vector3f(prev.offset.getX(), prev.offset.getY(), prev.offset.getZ());
 		} else {
 			float percentage = (this.frame + tickDelta - prev.frame) / ((float) next.frame - prev.frame);
-			return new Vec3f(MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.offset.getX(), next.offset.getX()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.offset.getY(), next.offset.getY()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.offset.getZ(), next.offset.getZ()));
+			return new Vector3f(MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.offset.getX(), next.offset.getX()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.offset.getY(), next.offset.getY()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.offset.getZ(), next.offset.getZ()));
 		}
 	}
 	protected void setPartAngles(ModelPart part, Keyframe prev, Keyframe next, float tickDelta, boolean same) {
 		if(same) {
 			part.setAngles(prev.rotation.getX() + (!prev.override ? part.pitch : 0),prev.rotation.getY() + (!prev.override ? part.yaw : 0), prev.rotation.getZ() + (!prev.override ? part.roll : 0));
-			part.translate(new Vec3f(prev.translation.getX(), prev.translation.getY(), prev.translation.getZ()));
-			part.scaleX = prev.scale.getX();
-			part.scaleY = prev.scale.getY();
-			part.scaleZ = prev.scale.getZ();
+			part.translate(new Vector3f(prev.translation.getX(), prev.translation.getY(), prev.translation.getZ()));
+			part.xScale = prev.scale.getX();
+			part.yScale = prev.scale.getY();
+			part.zScale = prev.scale.getZ();
 			((OffsetModelPart)(Object)part).setOffset(prev.offset.getX(), prev.offset.getY(), prev.offset.getZ());
 		} else {
 			float percentage = (this.frame + tickDelta - prev.frame) / ((float) next.frame - prev.frame);
 			part.setAngles(MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.rotation.getX() + (!prev.override ? part.pitch : 0), next.rotation.getX() + (!next.override ? part.pitch : 0)), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.rotation.getY() + (!prev.override ? part.yaw : 0), next.rotation.getY() + (!next.override ? part.yaw : 0)), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.rotation.getZ() + (!prev.override ? part.roll : 0), next.rotation.getZ() + (!next.override ? part.roll : 0)));
-			part.translate(new Vec3f(MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.translation.getX(), next.translation.getX()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.translation.getY(), next.translation.getY()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.translation.getZ(), next.translation.getZ())));
-			part.scaleX = MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.scale.getX(), next.scale.getX());
-			part.scaleY = MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.scale.getY(), next.scale.getY());
-			part.scaleZ = MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.scale.getZ(), next.scale.getZ());
+			part.translate(new Vector3f(MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.translation.getX(), next.translation.getX()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.translation.getY(), next.translation.getY()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.translation.getZ(), next.translation.getZ())));
+			part.xScale = MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.scale.getX(), next.scale.getX());
+			part.yScale = MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.scale.getY(), next.scale.getY());
+			part.zScale = MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.scale.getZ(), next.scale.getZ());
 			((OffsetModelPart)(Object)part).setOffset(MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.offset.getX(), next.offset.getX()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.offset.getY(), next.offset.getY()), MathHelper.lerp(prev.easing.ease(percentage, 0, 1, 1), prev.offset.getZ(), next.offset.getZ()));
 		}
 	}

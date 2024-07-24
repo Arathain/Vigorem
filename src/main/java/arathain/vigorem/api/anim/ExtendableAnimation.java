@@ -1,7 +1,7 @@
 package arathain.vigorem.api.anim;
 
+import arathain.vigorem.Vigorem;
 import arathain.vigorem.api.Keyframe;
-import arathain.vigorem.api.anim.Animation;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
 import net.minecraft.client.util.math.MatrixStack;
@@ -9,7 +9,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3f;
+import org.joml.Vector3f;
 
 import java.util.List;
 import java.util.Map;
@@ -90,9 +90,9 @@ public abstract class ExtendableAnimation extends Animation {
 	}
 
 	@Override
-	public Vec3f getRot(String query, float tickDelta) {
+	public Vector3f getRot(String query, float tickDelta) {
 		if(!keyframes.containsKey(query)) {
-			return Vec3f.ZERO;
+			return Vigorem.ZERO;
 		}
 		if(stage == 1) {
 			return this.getCodeRot(query, tickDelta);
@@ -133,12 +133,12 @@ public abstract class ExtendableAnimation extends Animation {
 		}
 		return super.getRot(query, tickDelta);
 	}
-	protected abstract Vec3f getCodeRot(String query, float tickDelta);
+	protected abstract Vector3f getCodeRot(String query, float tickDelta);
 
 	@Override
-	public Vec3f getPivot(String query, float tickDelta) {
+	public Vector3f getPivot(String query, float tickDelta) {
 		if(!keyframes.containsKey(query)) {
-			return Vec3f.ZERO;
+			return Vigorem.ZERO;
 		}
 		if(stage == 1) {
 			return this.getCodePivot(query, tickDelta);
@@ -180,30 +180,30 @@ public abstract class ExtendableAnimation extends Animation {
 		return super.getPivot(query, tickDelta);
 	}
 
-	protected abstract Vec3f getCodePivot(String query, float tickDelta);
+	protected abstract Vector3f getCodePivot(String query, float tickDelta);
 
-	public Vec3f getOffsetSuper(String query, float tickDelta) {
+	public Vector3f getOffsetSuper(String query, float tickDelta) {
 		return super.getOffset(query, tickDelta);
 	}
-	public Vec3f getPivotSuper(String query, float tickDelta) {
+	public Vector3f getPivotSuper(String query, float tickDelta) {
 		return super.getPivot(query, tickDelta);
 	}
-	public Vec3f getRotSuper(String query, float tickDelta) {
+	public Vector3f getRotSuper(String query, float tickDelta) {
 		return super.getRot(query, tickDelta);
 	}
 
 	@Override
 	public Vec3d getCameraOffset(float yaw, float pitch, float tickDelta) {
 		entityQuery.pitch = pitch;
-		Vec3f bodyRot = this.getRot("body", tickDelta);
-		Vec3f headRot = this.getRot("head", tickDelta);
-		return new Vec3d(0, -1, 0).add(new Vec3d(0, (12d / 16d), 0).rotateY(-bodyRot.getY()).rotateX(-bodyRot.getX()).rotateZ(bodyRot.getZ())).add(new Vec3d(0, 4/16f, 0).rotateY(-headRot.getY()).rotateX(-headRot.getX()).rotateZ(-headRot.getZ())).rotateY((float) (yaw * -Math.PI / 180f));
+		Vector3f bodyRot = this.getRot("body", tickDelta);
+		Vector3f headRot = this.getRot("head", tickDelta);
+		return new Vec3d(0, -1, 0).add(new Vec3d(0, (12d / 16d), 0).rotateY(-bodyRot.y()).rotateX(-bodyRot.x()).rotateZ(bodyRot.z())).add(new Vec3d(0, 4/16f, 0).rotateY(-headRot.y()).rotateX(-headRot.x()).rotateZ(-headRot.z())).rotateY((float) (yaw * -Math.PI / 180f));
 	}
 
 	@Override
-	public Vec3f getOffset(String query, float tickDelta) {
+	public Vector3f getOffset(String query, float tickDelta) {
 		if(!endKeyframes.containsKey(query)) {
-			return Vec3f.ZERO;
+			return Vigorem.ZERO;
 		}
 		if(stage == 1) {
 			return this.getCodeOffset(query, tickDelta);
@@ -245,7 +245,7 @@ public abstract class ExtendableAnimation extends Animation {
 		return super.getOffset(query, tickDelta);
 	}
 
-	protected abstract Vec3f getCodeOffset(String query, float tickDelta);
+	protected abstract Vector3f getCodeOffset(String query, float tickDelta);
 
 	protected void setModelAnglesSuper(PlayerEntityModel<AbstractClientPlayerEntity> model, PlayerEntity player, float tickDelta) {
 		super.setModelAngles(model, player, tickDelta);

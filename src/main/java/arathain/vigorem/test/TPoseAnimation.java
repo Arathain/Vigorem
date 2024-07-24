@@ -8,7 +8,7 @@ import net.minecraft.client.render.entity.model.PlayerEntityModel;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3f;
+import org.joml.Vector3f;
 
 import java.util.List;
 import java.util.Map;
@@ -34,17 +34,17 @@ public class TPoseAnimation extends ExtendableAnimation {
 	}
 
 	@Override
-	protected Vec3f getCodeRot(String query, float tickDelta) {
+	protected Vector3f getCodeRot(String query, float tickDelta) {
 		return getRotSuper(query, 0);
 	}
 
 	@Override
-	protected Vec3f getCodePivot(String query, float tickDelta) {
+	protected Vector3f getCodePivot(String query, float tickDelta) {
 		return getPivotSuper(query, 0);
 	}
 
 	@Override
-	protected Vec3f getCodeOffset(String query, float tickDelta) {
+	protected Vector3f getCodeOffset(String query, float tickDelta) {
 		return getOffsetSuper(query,0);
 	}
 

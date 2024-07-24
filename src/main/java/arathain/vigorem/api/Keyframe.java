@@ -1,46 +1,47 @@
 package arathain.vigorem.api;
 
+import arathain.vigorem.Vigorem;
 import arathain.vigorem.anim.EntityQuery;
-import arathain.vigorem.anim.MoLangVec3fSupplier;
-import arathain.vigorem.anim.ProperVec3fSupplier;
-import net.minecraft.util.math.Vec3f;
+import arathain.vigorem.anim.MoLangVector3fSupplier;
+import arathain.vigorem.anim.ProperVector3fSupplier;
+import org.joml.Vector3f;
 
 public class Keyframe {
 	public final Easing easing;
-	public final Vec3fSupplier translation;
-	public final Vec3fSupplier rotation;
-	public final Vec3fSupplier offset;
-	public final Vec3fSupplier scale;
+	public final Vector3fSupplier translation;
+	public final Vector3fSupplier rotation;
+	public final Vector3fSupplier offset;
+	public final Vector3fSupplier scale;
 	public final boolean override;
 
 	public final float frame;
-	public Keyframe(Easing easing, Vec3f translation, Vec3f rot, Vec3f scale, Vec3f offset, float frame) {
-		if(scale == Vec3f.ZERO) {
-			scale = new Vec3f(1, 1, 1);
+	public Keyframe(Easing easing, Vector3f translation, Vector3f rot, Vector3f scale, Vector3f offset, float frame) {
+		if(scale == Vigorem.ZERO) {
+			scale = new Vector3f(1, 1, 1);
 		}
 		this.override = true;
 		this.easing = easing;
-		this.translation = new ProperVec3fSupplier(translation);
-		this.rotation = new ProperVec3fSupplier(rot);
-		this.scale = new ProperVec3fSupplier(scale);
+		this.translation = new ProperVector3fSupplier(translation);
+		this.rotation = new ProperVector3fSupplier(rot);
+		this.scale = new ProperVector3fSupplier(scale);
 		this.frame = frame;
-		this.offset = new ProperVec3fSupplier(offset);
+		this.offset = new ProperVector3fSupplier(offset);
 	}
-	public Keyframe(Easing easing, Vec3f translation, Vec3f rot, Vec3f scale, Vec3f offset, float frame, boolean override) {
-		if(scale == Vec3f.ZERO) {
-			scale = new Vec3f(1, 1, 1);
+	public Keyframe(Easing easing, Vector3f translation, Vector3f rot, Vector3f scale, Vector3f offset, float frame, boolean override) {
+		if(scale == Vigorem.ZERO) {
+			scale = new Vector3f(1, 1, 1);
 		}
 		this.override = override;
 		this.easing = easing;
-		this.translation = new ProperVec3fSupplier(translation);
-		this.rotation = new ProperVec3fSupplier(rot);
-		this.scale = new ProperVec3fSupplier(scale);
+		this.translation = new ProperVector3fSupplier(translation);
+		this.rotation = new ProperVector3fSupplier(rot);
+		this.scale = new ProperVector3fSupplier(scale);
 		this.frame = frame;
-		this.offset = new ProperVec3fSupplier(offset);
+		this.offset = new ProperVector3fSupplier(offset);
 	}
-	public Keyframe(Easing easing, Vec3fSupplier translation, Vec3fSupplier rot, Vec3fSupplier scale, Vec3fSupplier offset, float frame) {
-		if(scale == ProperVec3fSupplier.ZERO) {
-			scale = ProperVec3fSupplier.ONE;
+	public Keyframe(Easing easing, Vector3fSupplier translation, Vector3fSupplier rot, Vector3fSupplier scale, Vector3fSupplier offset, float frame) {
+		if(scale == ProperVector3fSupplier.ZERO) {
+			scale = ProperVector3fSupplier.ONE;
 		}
 		this.override = true;
 		this.easing = easing;
@@ -50,9 +51,9 @@ public class Keyframe {
 		this.frame = frame;
 		this.offset = offset;
 	}
-	public Keyframe(Easing easing, Vec3fSupplier translation, Vec3fSupplier rot, Vec3fSupplier scale, Vec3fSupplier offset, float frame, boolean override) {
-		if(scale == ProperVec3fSupplier.ZERO) {
-			scale = ProperVec3fSupplier.ONE;
+	public Keyframe(Easing easing, Vector3fSupplier translation, Vector3fSupplier rot, Vector3fSupplier scale, Vector3fSupplier offset, float frame, boolean override) {
+		if(scale == ProperVector3fSupplier.ZERO) {
+			scale = ProperVector3fSupplier.ONE;
 		}
 		this.override = override;
 		this.easing = easing;
@@ -65,16 +66,16 @@ public class Keyframe {
 
 	public void update(EntityQuery q) {
 		if(translation.isMoLang()) {
-			((MoLangVec3fSupplier)translation).update(q);
+			((MoLangVector3fSupplier)translation).update(q);
 		}
 		if(rotation.isMoLang()) {
-			((MoLangVec3fSupplier)rotation).update(q);
+			((MoLangVector3fSupplier)rotation).update(q);
 		}
 		if(scale.isMoLang()) {
-			((MoLangVec3fSupplier)scale).update(q);
+			((MoLangVector3fSupplier)scale).update(q);
 		}
 		if(offset.isMoLang()) {
-			((MoLangVec3fSupplier)offset).update(q);
+			((MoLangVector3fSupplier)offset).update(q);
 		}
 	}
 
