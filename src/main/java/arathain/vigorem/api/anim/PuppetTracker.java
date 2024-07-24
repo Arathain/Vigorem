@@ -6,7 +6,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.Quaternion;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3f;
+import org.joml.Vector3f;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,13 +18,13 @@ public class PuppetTracker {
 
 	}
 	protected Vec3d[] pivots;
-	protected Vec3f[] rotations;
+	protected Vector3f[] rotations;
 
 	public PuppetTracker setPivots(Vec3d... pivots) {
 		this.pivots = pivots;
 		return this;
 	}
-	public PuppetTracker setRotations(Vec3f... rot) {
+	public PuppetTracker setRotations(Vector3f... rot) {
 		this.rotations = rot;
 		return this;
 	}
@@ -33,7 +33,7 @@ public class PuppetTracker {
 			throw new RuntimeException("Rotation and pivot amounts aren't equal! Get your pivots & rotations in order! Repent!! Dismissed!!!");
 		}
 		for(int i = 0; i < pivots.length; i++) {
-			Vec3f[] rot = new Vec3f[i+1];
+			Vector3f[] rot = new Vector3f[i+1];
 			System.arraycopy(rotations, 0, rot, 0, i + 1);
 			initialOffset = initialOffset.add(rotatoProper(pivots[i], rot));
 		}
@@ -50,18 +50,18 @@ public class PuppetTracker {
 	 * @param rotationProviders the providers for rotation - should take in a single float value as the delta parameter, and return all of your rotations.
 	 * **/
 	@SafeVarargs
-	public final List<Entity> getCollided(Vec3d box, PlayerEntity player, Vec3d initialOffset, float yaw, int precision, float precisionOffset, Function<Float, Vec3f>... rotationProviders) {
+	public final List<Entity> getCollided(Vec3d box, PlayerEntity player, Vec3d initialOffset, float yaw, int precision, float precisionOffset, Function<Float, Vector3f>... rotationProviders) {
 		List<Entity> entities = new ArrayList<>();
 		OrientedBox OBB = new OrientedBox(Vec3d.ZERO, box, 0, 0, 0);
 		for(int i = 1; i <= precision; i++) {
-			Vec3f[] rot = new Vec3f[rotationProviders.length];
+			Vector3f[] rot = new Vector3f[rotationProviders.length];
 			for(int l = 0; l < rotationProviders.length; l++) {
 				rot[l] = rotationProviders[l].apply((i/precision) * (1-precisionOffset) + precisionOffset);
 			}
 			setRotations(rot);
 			Vec3d offset = getPlayerOffset(player, initialOffset, yaw);
-			Vec3f rotation = rotatoProper(rot);
-			OBB.offset(offset).setRotation(rotation.getX(), rotation.getY(), rotation.getZ()).updateVertex();
+			Vector3f rotation = rotatoProper(rot);
+			OBB.offset(offset).setRotation(rotation.x(), rotation.y(), rotation.z()).updateVertex();
 			entities.addAll(player.getWorld().getOtherEntities(player, player.getBoundingBox().expand(160, 160, 160), entity -> OBB.intersects(entity.getBoundingBox()) && !entities.contains(entity)));
 			OBB.resetOffset();
 		}
@@ -78,17 +78,17 @@ public class PuppetTracker {
 	 * @param rotationProviders the providers for rotation - should take in a single float value as the delta parameter, and return all of your rotations.
 	 * **/
 	@SafeVarargs
-	public final List<Entity> getCollided(Vec3d box, Entity target, Vec3d initialOffset, float yaw, int precision, float precisionOffset, Function<Float, Vec3f>... rotationProviders) {
+	public final List<Entity> getCollided(Vec3d box, Entity target, Vec3d initialOffset, float yaw, int precision, float precisionOffset, Function<Float, Vector3f>... rotationProviders) {
 		List<Entity> entities = new ArrayList<>();
 		OrientedBox OBB = new OrientedBox(Vec3d.ZERO, box, 0, 0, 0);
 		for(int i = 1; i <= precision; i++) {
-			Vec3f[] rot = new Vec3f[rotationProviders.length];
+			Vector3f[] rot = new Vector3f[rotationProviders.length];
 			for(int l = 0; l < rotationProviders.length; l++) {
 				rot[l] = rotationProviders[l].apply((i/precision) * (1-precisionOffset) + precisionOffset);
 			}
 			setRotations(rot);
 			Vec3d offset = getEntityOffset(target, initialOffset, yaw);
-			Vec3f rotation = rotatoProper(rot);
+			Vector3f rotation = rotatoProper(rot);
 			OBB.offset(offset).setRotation(rotation.getX(), rotation.getY(), rotation.getZ()).updateVertex();
 			entities.addAll(target.getWorld().getOtherEntities(target, target.getBoundingBox().expand(160, 160, 160), entity -> OBB.intersects(entity.getBoundingBox()) && !entities.contains(entity)));
 			OBB.resetOffset();
@@ -110,16 +110,16 @@ public class PuppetTracker {
 		q.hamiltonProduct(qPrime);
 		return new Vec3d(q.getX(), q.getY(), q.getZ());
 	}
-	public static Vec3d rotatoProper(Vec3d input, Vec3f... rotations) {
+	public static Vec3d rotatoProper(Vec3d input, Vector3f... rotations) {
 		Quaternion q = null;
-		for(Vec3f v : rotations) {
+		for(Vector3f v : rotations) {
 			if(q == null) {
-				q = Vec3f.POSITIVE_Z.getRadialQuaternion(v.getZ());
+				q = Vector3f.POSITIVE_Z.getRadialQuaternion(v.getZ());
 			} else {
-				q.hamiltonProduct(Vec3f.POSITIVE_Z.getRadialQuaternion(v.getZ()));
+				q.hamiltonProduct(Vector3f.POSITIVE_Z.getRadialQuaternion(v.getZ()));
 			}
-			q.hamiltonProduct(Vec3f.POSITIVE_Y.getRadialQuaternion(v.getY()));
-			q.hamiltonProduct(Vec3f.POSITIVE_X.getRadialQuaternion(v.getX()));
+			q.hamiltonProduct(Vector3f.POSITIVE_Y.getRadialQuaternion(v.getY()));
+			q.hamiltonProduct(Vector3f.POSITIVE_X.getRadialQuaternion(v.getX()));
 			q.normalize();
 		}
 		assert q != null;
@@ -127,16 +127,16 @@ public class PuppetTracker {
 		input = rotateViaQuat(input, q);
 		return input;
 	}
-	public static Vec3f rotatoProper(Vec3f... rotations) {
+	public static Vector3f rotatoProper(Vector3f... rotations) {
 		Quaternion q = null;
-		for(Vec3f v : rotations) {
+		for(Vector3f v : rotations) {
 			if(q == null) {
-				q = Vec3f.POSITIVE_Z.getRadialQuaternion(v.getZ());
+				q = Vector3f.POSITIVE_Z.getRadialQuaternion(v.getZ());
 			} else {
-				q.hamiltonProduct(Vec3f.POSITIVE_Z.getRadialQuaternion(v.getZ()));
+				q.hamiltonProduct(Vector3f.POSITIVE_Z.getRadialQuaternion(v.getZ()));
 			}
-			q.hamiltonProduct(Vec3f.POSITIVE_Y.getRadialQuaternion(v.getY()));
-			q.hamiltonProduct(Vec3f.POSITIVE_X.getRadialQuaternion(v.getX()));
+			q.hamiltonProduct(Vector3f.POSITIVE_Y.getRadialQuaternion(v.getY()));
+			q.hamiltonProduct(Vector3f.POSITIVE_X.getRadialQuaternion(v.getX()));
 			q.normalize();
 		}
 		assert q != null;

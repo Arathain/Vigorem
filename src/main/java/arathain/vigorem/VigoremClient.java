@@ -2,18 +2,17 @@ package arathain.vigorem;
 
 import arathain.vigorem.anim.EntityAnimationSyncPacket;
 import eu.midnightdust.lib.config.MidnightConfig;
-import org.quiltmc.loader.api.ModContainer;
-import org.quiltmc.loader.api.QuiltLoader;
-import org.quiltmc.qsl.base.api.entrypoint.client.ClientModInitializer;
-import org.quiltmc.qsl.networking.api.client.ClientPlayNetworking;
+import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.loader.api.FabricLoader;
 
 import static arathain.vigorem.Vigorem.MODID;
 
 public class VigoremClient implements ClientModInitializer {
 	@Override
-	public void onInitializeClient(ModContainer mod) {
-		ClientPlayNetworking.registerGlobalReceiver(EntityAnimationSyncPacket.ID, (client, handler, buf, responseSender) -> EntityAnimationSyncPacket.handle(client, buf));
-		if(QuiltLoader.isDevelopmentEnvironment())
+	public void onInitializeClient() {
+		ClientPlayNetworking.registerGlobalReceiver(EntityAnimationSyncPacket.PACKET_ID, (p, c) -> p.handle(c.client()));
+		if(FabricLoader.getInstance().isDevelopmentEnvironment())
 			MidnightConfig.init(MODID, VigoremConfig.class);
 	}
 }

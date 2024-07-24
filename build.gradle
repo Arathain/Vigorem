@@ -1,6 +1,6 @@
 plugins {
 	id 'maven-publish'
-	id 'org.quiltmc.loom' version '1.4.+'
+	id 'fabric-loom' version '1.7-SNAPSHOT'
 }
 
 archivesBaseName = project.archives_base_name
@@ -30,34 +30,27 @@ repositories {
 // All dependency versions are declared in the gradle.properties file
 dependencies {
 	minecraft "com.mojang:minecraft:${minecraft_version}"
-	mappings "org.quiltmc:quilt-mappings:${minecraft_version}+build.${project.quilt_mappings_version}:intermediary-v2"
-	modImplementation "org.quiltmc:quilt-loader:${project.quilt_loader_version}"
+	mappings "net.fabricmc:yarn:${minecraft_version}+${project.mappings_version}:v2"
+	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
-	modImplementation "org.quiltmc.quilted-fabric-api:quilted-fabric-api:${quilted_fabric_api_version}-${minecraft_version}"
+	// Fabric API. This is technically optional, but you probably want it anyway.
+	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 
-	modImplementation include ("dev.onyxstudios.cardinal-components-api:cardinal-components-base:${cca_version}") {
-		exclude(group: "net.fabricmc")
-		exclude(group: "net.fabricmc.fabric-api")
-	}
-	modImplementation include ("dev.onyxstudios.cardinal-components-api:cardinal-components-entity:${cca_version}") {
-		exclude(group: "net.fabricmc")
-		exclude(group: "net.fabricmc.fabric-api")
-	}
-	modImplementation include("maven.modrinth:midnightlib:$midnightlib_version") { transitive=false }
-	modRuntimeOnly ("carpet:fabric-carpet:${project.minecraft_version}-${project.carpet_core_version}") { transitive=false }
-	modRuntimeOnly("maven.modrinth:ears:1.4.6+fabric-1.19") { transitive=false }
-	modCompileOnly("maven.modrinth:ears:1.4.6+fabric-1.19") { transitive=false }
-	modImplementation("com.github.Chocohead:Fabric-ASM:v2.3") { transitive=false }
+	modImplementation include ("dev.onyxstudios.cardinal-components-api:cardinal-components-base:${cca_version}")
+	modImplementation include ("dev.onyxstudios.cardinal-components-api:cardinal-components-entity:${cca_version}")
+	modImplementation include("maven.modrinth:midnightlib:$midnightlib_version")
+	modRuntimeOnly ("carpet:fabric-carpet:${project.minecraft_version}-${project.carpet_core_version}")
+	modRuntimeOnly("maven.modrinth:ears:1.4.6")
+	modCompileOnly("maven.modrinth:ears:1.4.6")
+	modImplementation("com.github.Chocohead:Fabric-ASM:v2.3")
 
 	// modCompileOnly("software.bernie.geckolib:geckolib-quilt-1.19:3.1.41") {
 	//	exclude group: 'org.quiltmc.qsl'
 	//}
 
-//	modImplementation include ("com.github.LlamaLad7.MixinExtras:mixinextras-fabric:0.2.0-beta.6")
-//	annotationProcessor "com.github.LlamaLad7.MixinExtras:mixinextras-fabric:0.2.0-beta.6"
-	modImplementation("maven.modrinth:pehkui:${project.pehkui_version}") { transitive=false }
-	modImplementation("com.github.Virtuoel:KanosConfig:0.4.0") { transitive=false }
-	implementation include ('org.reflections:reflections:0.10.2') { transitive=false }
+	modImplementation("maven.modrinth:pehkui:${project.pehkui_version}")
+	modImplementation("com.github.Virtuoel:KanosConfig:0.4.0")
+	implementation include ('org.reflections:reflections:0.10.2')
 }
 
 

@@ -1,6 +1,5 @@
 package arathain.vigorem.anim;
 
-import arathain.vigorem.VigoremClient;
 import arathain.vigorem.VigoremComponents;
 import arathain.vigorem.VigoremConfig;
 import arathain.vigorem.api.AnimationCycle;
@@ -8,16 +7,17 @@ import arathain.vigorem.api.anim.Animation;
 import arathain.vigorem.api.anim.ExtendableAnimation;
 import arathain.vigorem.api.init.Animations;
 import arathain.vigorem.test.SneakCycle;
-import dev.onyxstudios.cca.api.v3.component.sync.AutoSyncedComponent;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.quiltmc.loader.api.QuiltLoader;
-import org.quiltmc.loader.api.minecraft.ClientOnly;
+import org.ladysnake.cca.api.v3.component.sync.AutoSyncedComponent;
 
 
 public class AnimationComponent implements AutoSyncedComponent {
@@ -26,7 +26,7 @@ public class AnimationComponent implements AutoSyncedComponent {
 	@Nullable
 	public Animation queued;
 
-	@ClientOnly
+	@Environment(EnvType.CLIENT)
 	@Nullable
 	public AnimationCycle currentCycle;
 	private final PlayerEntity obj;
@@ -56,7 +56,7 @@ public class AnimationComponent implements AutoSyncedComponent {
 		}
 	}
 	public void clientTick() {
-		if (QuiltLoader.isDevelopmentEnvironment() && VigoremConfig.fancySneak && obj.isSneaking()) {
+		if (FabricLoader.getInstance().isDevelopmentEnvironment() && VigoremConfig.fancySneak && obj.isSneaking()) {
 			if(!(currentCycle instanceof SneakCycle)) {
 				currentCycle = new SneakCycle();
 			}
@@ -86,16 +86,16 @@ public class AnimationComponent implements AutoSyncedComponent {
 		}
 	}
 	@Override
-	public void readFromNbt(NbtCompound tag) {
-		if(tag.contains("namespace") && Animations.getAnimation(new Identifier(tag.getString("namespace"), tag.getString("path"))) != null) {
-			this.current = Animations.getAnimation(new Identifier(tag.getString("namespace"), tag.getString("path")));
+	public void readFromNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registryLookup) {
+		if(tag.contains("namespace") && Animations.getAnimation(Identifier.of(tag.getString("namespace"), tag.getString("path"))) != null) {
+			this.current = Animations.getAnimation(Identifier.of(tag.getString("namespace"), tag.getString("path")));
 			assert this.current != null;
 			this.current.readNbt(tag);
 		} else {
 			this.current = null;
 		}
-		if(tag.contains("Quu") && Animations.getAnimation(new Identifier(tag.getString("Quu"))) != null) {
-			this.queued = Animations.getAnimation(new Identifier(tag.getString("Quu")));
+		if(tag.contains("Quu") && Animations.getAnimation(Identifier.of(tag.getString("Quu"))) != null) {
+			this.queued = Animations.getAnimation(Identifier.of(tag.getString("Quu")));
 		} else {
 			this.queued = null;
 		}
@@ -113,7 +113,7 @@ public class AnimationComponent implements AutoSyncedComponent {
 	}
 
 	@Override
-	public void writeToNbt(@NotNull NbtCompound tag) {
+	public void writeToNbt(@NotNull NbtCompound tag, RegistryWrapper.WrapperLookup registryLookup) {
 		if(current != null) {
 			tag.putString("namespace", current.getId().getNamespace());
 			tag.putString("path", current.getId().getPath());

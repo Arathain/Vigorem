@@ -1,16 +1,11 @@
 package arathain.vigorem.mixin;
 
-import arathain.vigorem.Vigorem;
 import arathain.vigorem.anim.CrackCocaine;
 import arathain.vigorem.anim.OffsetModelPart;
 import net.minecraft.client.model.ModelPart;
-import net.minecraft.client.model.ModelPartBuilder;
-import net.minecraft.client.model.ModelPartData;
-import net.minecraft.client.model.ModelTransform;
-import net.minecraft.client.render.entity.feature.ArmorFeatureRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3f;
+import net.minecraft.util.math.RotationAxis;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -18,7 +13,6 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Map;
 import java.util.function.Supplier;
@@ -132,19 +126,19 @@ public class ModelPartMixin implements OffsetModelPart, CrackCocaine {
 	private void act(ModelPart part, MatrixStack matrix) {
 		matrix.translate((double) (part.pivotX / 16.0F), (double) (part.pivotY / 16.0F), (double) (part.pivotZ / 16.0F));
 		if (part.roll != 0.0F) {
-			matrix.multiply(Vec3f.POSITIVE_Z.getRadialQuaternion(part.roll));
+			matrix.multiply(RotationAxis.POSITIVE_Z.rotation(part.roll));
 		}
 
 		if (part.yaw != 0.0F) {
-			matrix.multiply(Vec3f.POSITIVE_Y.getRadialQuaternion(part.yaw));
+			matrix.multiply(RotationAxis.POSITIVE_Y.rotation(part.yaw));
 		}
 
 		if (part.pitch != 0.0F) {
-			matrix.multiply(Vec3f.POSITIVE_X.getRadialQuaternion(part.pitch));
+			matrix.multiply(RotationAxis.POSITIVE_X.rotation(part.pitch));
 		}
 
-		if (part.scaleX != 1.0F || part.scaleY != 1.0F || part.scaleZ != 1.0F) {
-			matrix.scale(part.scaleX, part.scaleY, part.scaleZ);
+		if (part.xScale != 1.0F || part.yScale != 1.0F || part.zScale != 1.0F) {
+			matrix.scale(part.xScale, part.yScale, part.zScale);
 		}
 
 		if (((OffsetModelPart) (Object) part).getOffsetX() != 0F || ((OffsetModelPart) (Object) part).getOffsetY() != 0F || ((OffsetModelPart) (Object) part).getOffsetZ() != 0F) {
@@ -153,13 +147,13 @@ public class ModelPartMixin implements OffsetModelPart, CrackCocaine {
 
 		if (getHead()) {
 			if (part.pitch != 0.0F) {
-				matrix.multiply(Vec3f.NEGATIVE_X.getRadialQuaternion(part.pitch));
+				matrix.multiply(RotationAxis.NEGATIVE_X.rotation(part.pitch));
 			}
 			if (part.yaw != 0.0F) {
-				matrix.multiply(Vec3f.NEGATIVE_Y.getRadialQuaternion(part.yaw));
+				matrix.multiply(RotationAxis.NEGATIVE_Y.rotation(part.yaw));
 			}
 			if (part.roll != 0.0F) {
-				matrix.multiply(Vec3f.NEGATIVE_Z.getRadialQuaternion(part.roll));
+				matrix.multiply(RotationAxis.NEGATIVE_Z.rotation(part.roll));
 			}
 		}
 

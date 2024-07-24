@@ -9,7 +9,7 @@ public class CapsuleCollider {
 	private final float radius;
 	public CapsuleCollider(Vec3d one, Vec3d two, float radius) {
 		this.one = one;
-		this.two = one;
+		this.two = two;
 		this.radius = radius;
 	}
 

@@ -50,6 +50,7 @@ public class PlayerInventoryMixin {
 			cir.setReturnValue(ItemStack.EMPTY);
 		}
 	}
+	@Unique
 	private boolean yeah() {
 		if(player.getComponent(VigoremComponents.ANIMATION).current != null && player.getComponent(VigoremComponents.ANIMATION).current.lockHeldItem()) {
 			if(selectedLockedSlot == -1) {
@@ -62,6 +63,7 @@ public class PlayerInventoryMixin {
 			return false;
 		}
 	}
+	@Unique
 	private void checkLock() {
 		if(player.getComponent(VigoremComponents.ANIMATION).current != null && player.getComponent(VigoremComponents.ANIMATION).current.lockHeldItem()) {
 			if(selectedLockedSlot == -1) {

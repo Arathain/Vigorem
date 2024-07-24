@@ -3,11 +3,12 @@ package arathain.vigorem.mixin;
 import arathain.vigorem.VigoremComponents;
 import arathain.vigorem.api.AnimationPacket;
 import arathain.vigorem.api.AnimatingWeaponItem;
-import com.llamalad7.mixinextras.injector.WrapWithCondition;
+import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.network.Packet;
+import net.minecraft.network.packet.Packet;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -33,7 +34,7 @@ public abstract class MinecraftClientMixin {
 		if (client.player.getMainHandStack().getItem() instanceof AnimatingWeaponItem anim && (player.getPose().equals(STANDING) || player.getPose().equals(CROUCHING))) {
 			Identifier id = anim.getAnimId(client.player, false, client.player.getMainArm(), client.player.getComponent(VigoremComponents.ANIMATION).current);
 			if(id != null) {
-				AnimationPacket.send(id);
+				ClientPlayNetworking.send(new AnimationPacket(id));
 				info.setReturnValue(false);
 				info.cancel();
 			}
@@ -42,7 +43,7 @@ public abstract class MinecraftClientMixin {
 
 	@WrapWithCondition(
 			method = "handleInputEvents",
-			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayNetworkHandler;sendPacket(Lnet/minecraft/network/Packet;)V")
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayNetworkHandler;sendPacket(Lnet/minecraft/network/packet/Packet;)V")
 	)
 	private boolean vigorem$hand(ClientPlayNetworkHandler instance, Packet packet) {
 		return player != null && !(player.getComponent(VigoremComponents.ANIMATION).current != null && player.getComponent(VigoremComponents.ANIMATION).current.lockHeldItem());

@@ -50,7 +50,7 @@ public class BipedEntityModelMixin<T extends LivingEntity> implements Methylened
 		if(this.isAnimating())
 			this.body.rotate(matrices);
 	}
-	@Inject(method = "setAttributes", at = @At("TAIL"))
+	@Inject(method = "copyBipedStateTo", at = @At("TAIL"))
 	private void vigorem$setAttrs(BipedEntityModel<T> model, CallbackInfo ci) {
 		((Methylenedioxymethamphetamine)model).setAnimating(this.isAnimating());
 	}

@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "id": "vigorem",
+  "version": "${version}",
+  "name": "Vigorem",
+  "description": "Bring life to the minecraft player's animations (and more!)",
+  "authors": [
+    "Arathain"
+  ],
+  "contact": {
+    "issues": "https://github.com/Arathain/Vigorem/issues",
+    "sources": "https://github.com/Arathain/Vigorem"
+  },
+  "license": "ARR",
+  "icon": "assets/vigorem/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "arathain.vigorem.Vigorem"
+    ],
+    "client": [
+      "arathain.vigorem.VigoremClient"
+    ],
+    "preLaunch": [
+      "arathain.vigorem.VigoremPreLaunch"
+    ],
+    "cardinal-components-entity": [
+      "arathain.vigorem.VigoremComponents"
+    ]
+  },
+  "mixins": [
+    "vigorem.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.15.11",
+    "minecraft": "~1.21",
+    "java": ">=21",
+    "fabric-api": "*",
+    "pehkui": "*"
+  },
+  "suggests": {
+    "another-mod": "*"
+  }
+}

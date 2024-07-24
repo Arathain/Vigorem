@@ -1,20 +1,13 @@
 package arathain.vigorem.mixin;
 
-import arathain.vigorem.VigoremClient;
 import arathain.vigorem.VigoremComponents;
 import arathain.vigorem.anim.AnimationComponent;
-import arathain.vigorem.test.SneakCycle;
-import com.mojang.blaze3d.texture.NativeImage;
-import net.minecraft.client.texture.PlayerSkinTexture;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MovementType;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.Vec3d;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Entity.class)
 public class EntityMixin {

@@ -25,7 +25,7 @@ public class GameRendererMixin {
 	@Final
 	private Camera camera;
 
-	@ModifyArg(method = "renderWorld", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/WorldRenderer;render(Lnet/minecraft/client/util/math/MatrixStack;FJZLnet/minecraft/client/render/Camera;Lnet/minecraft/client/render/GameRenderer;Lnet/minecraft/client/render/LightmapTextureManager;Lnet/minecraft/util/math/Matrix4f;)V"), index = 0)
+	@ModifyArg(method = "renderWorld", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/WorldRenderer;render(Lnet/minecraft/client/render/RenderTickCounter;ZLnet/minecraft/client/render/Camera;Lnet/minecraft/client/render/GameRenderer;Lnet/minecraft/client/render/LightmapTextureManager;Lorg/joml/Matrix4f;Lorg/joml/Matrix4f;)V"), index = 0)
 	private MatrixStack vigorem$preCameraUpdate(MatrixStack matrix, @Local(ordinal = 0) float tickDelta) {
 		if(client.player != null && !camera.isThirdPerson()) {
 			Animation a = client.player.getComponent(VigoremComponents.ANIMATION).current;

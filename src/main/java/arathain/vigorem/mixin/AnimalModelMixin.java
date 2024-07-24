@@ -3,14 +3,13 @@ package arathain.vigorem.mixin;
 import arathain.vigorem.anim.CrackCocaine;
 import arathain.vigorem.anim.Methylenedioxymethamphetamine;
 import arathain.vigorem.anim.OffsetModelPart;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.ModelPart;
+import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.entity.model.AnimalModel;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.client.render.entity.model.EndermanEntityModel;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.Vec3d;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -37,26 +36,17 @@ public abstract class AnimalModelMixin implements Methylenedioxymethamphetamine 
 	@Unique
 	int overlay;
 	@Unique
-	float red;
-	@Unique
-	float green;
-	@Unique
-	float blue;
-	@Unique
-	float alpha;
+	int col;
 
-	@Inject(method = "render(Lnet/minecraft/client/util/math/MatrixStack;Lcom/mojang/blaze3d/vertex/VertexConsumer;IIFFFF)V", at = @At("HEAD"))
-	private void vigorem$cursedhijackery(MatrixStack matrices, VertexConsumer vertices, int light, int overlay, float red, float green, float blue, float alpha, CallbackInfo ci) {
+	@Inject(method = "render", at = @At("HEAD"))
+	private void vigorem$cursedhijackery(MatrixStack matrices, VertexConsumer vertices, int light, int overlay, int color, CallbackInfo ci) {
 		this.matrices = () -> matrices;
 		this.vertices = vertices;
 		this.light = light;
 		this.overlay = overlay;
-		this.red = red;
-		this.green = green;
-		this.blue = blue;
-		this.alpha = alpha;
+		this.col = color;
 	}
-	@ModifyArgs(method = "render(Lnet/minecraft/client/util/math/MatrixStack;Lcom/mojang/blaze3d/vertex/VertexConsumer;IIFFFF)V", at = @At(value = "INVOKE", target = "Ljava/lang/Iterable;forEach(Ljava/util/function/Consumer;)V"))
+	@ModifyArgs(method = "render", at = @At(value = "INVOKE", target = "Ljava/lang/Iterable;forEach(Ljava/util/function/Consumer;)V"))
 	private void vigorem$doublethecursed(Args args) {
 		if(((AnimalModel)(Object)this) instanceof BipedEntityModel<?> biped && !(biped instanceof EndermanEntityModel)) {
 			args.set(0, ((Consumer<ModelPart>)(headPart) -> {
@@ -75,7 +65,7 @@ public abstract class AnimalModelMixin implements Methylenedioxymethamphetamine 
 				} else {
 					((CrackCocaine) (Object) headPart).setParent(() -> null);
 				}
-				headPart.render(temp, vertices, light, overlay, red, green, blue, alpha);
+				headPart.render(temp, vertices, light, overlay, col);
 				temp.pop();
 			}));
 		}
