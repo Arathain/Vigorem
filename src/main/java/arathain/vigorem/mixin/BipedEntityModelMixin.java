@@ -45,6 +45,7 @@ public class BipedEntityModelMixin<T extends LivingEntity> implements Methylened
 	private boolean vigorem$cancelSneak(boolean original) {
 		return original && !this.isAnimating();
 	}
+
 	@Inject(method = "setArmAngle", at = @At("TAIL"))
 	private void vigorem$setArmAngle(Arm arm, MatrixStack matrices, CallbackInfo ci) {
 		if(this.isAnimating())

@@ -1,11 +1,13 @@
 package arathain.vigorem.mixin;
 
 import arathain.vigorem.VigoremComponents;
+import arathain.vigorem.anim.CameraAttachment;
 import arathain.vigorem.api.anim.Animation;
 import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.GameRenderer;
+import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -13,27 +15,36 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.ModifyArg;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(GameRenderer.class)
 public class GameRendererMixin {
 	@Shadow
 	@Final
-	private MinecraftClient client;
+	MinecraftClient client;
 
 	@Shadow
 	@Final
 	private Camera camera;
 
-	@ModifyArg(method = "renderWorld", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/WorldRenderer;render(Lnet/minecraft/client/render/RenderTickCounter;ZLnet/minecraft/client/render/Camera;Lnet/minecraft/client/render/GameRenderer;Lnet/minecraft/client/render/LightmapTextureManager;Lorg/joml/Matrix4f;Lorg/joml/Matrix4f;)V"), index = 0)
-	private MatrixStack vigorem$preCameraUpdate(MatrixStack matrix, @Local(ordinal = 0) float tickDelta) {
+	@Inject(method = "renderWorld", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/LightmapTextureManager;update(F)V", shift = At.Shift.BEFORE))
+	private void vigorem$preCameraUpdate(RenderTickCounter tickCounter, CallbackInfo ci, @Local(ordinal = 0) float tickDelta) {
 		if(client.player != null && !camera.isThirdPerson()) {
 			Animation a = client.player.getComponent(VigoremComponents.ANIMATION).current;
 			if(a != null) {
 				Vec3d offset = a.getCameraOffset(client.player.getYaw(tickDelta), MathHelper.lerp(tickDelta, client.player.prevPitch, client.player.getPitch()), tickDelta);
-				matrix.translate(-offset.x, -offset.y, -offset.z);
+				((CameraAttachment) camera).vigorem$setOffset(offset.negate());
 			}
 		}
-		return matrix;
+	}
+	@Inject(method = "renderWorld", at = @At("TAIL"))
+	private void vigorem$postCameraUpdate(RenderTickCounter tickCounter, CallbackInfo ci) {
+		if(client.player != null && !camera.isThirdPerson()) {
+			Animation a = client.player.getComponent(VigoremComponents.ANIMATION).current;
+			if(a != null) {
+				((CameraAttachment) camera).vigorem$setOffset(Vec3d.ZERO);
+			}
+		}
 	}
 }

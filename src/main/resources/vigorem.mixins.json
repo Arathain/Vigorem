@@ -20,6 +20,7 @@
   "client": [
     "ArmorFeatureRendererMixin",
     "BipedEntityModelMixin",
+    "CameraAttachmentMixin",
     "ClientPlayerEntityMixin",
     "DebugRendererMixin",
     "EntityRenderDispatcherMixin",

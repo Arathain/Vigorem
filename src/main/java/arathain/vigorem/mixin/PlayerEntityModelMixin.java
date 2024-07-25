@@ -24,6 +24,7 @@ public abstract class PlayerEntityModelMixin<T extends LivingEntity> extends Bip
 	public PlayerEntityModelMixin(ModelPart modelPart) {
 		super(modelPart);
 	}
+
 	@Inject(method = "setAngles(Lnet/minecraft/entity/LivingEntity;FFFFF)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/model/ModelPart;copyTransform(Lnet/minecraft/client/model/ModelPart;)V", ordinal = 0))
 	private void vigorem$angles(T livingEntity, float f, float g, float h, float i, float j, CallbackInfo ci) {
 		if (livingEntity instanceof PlayerEntity plr) {

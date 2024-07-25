@@ -1,19 +1,12 @@
 package arathain.vigorem.api.anim;
 
 import arathain.vigorem.Vigorem;
-import arathain.vigorem.api.box.OrientedBox;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.Quaternion;
 import net.minecraft.util.math.RotationAxis;
 import net.minecraft.util.math.Vec3d;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.function.Function;
 
 public class PuppetTracker {
 	public PuppetTracker() {

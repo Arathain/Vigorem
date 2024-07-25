@@ -40,5 +40,10 @@
   },
   "suggests": {
     "another-mod": "*"
+  },
+  "custom": {
+    "cardinal-components": [
+      "vigorem:animation"
+    ]
   }
 }

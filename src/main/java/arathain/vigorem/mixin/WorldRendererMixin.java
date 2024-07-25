@@ -5,6 +5,8 @@ import arathain.vigorem.VigoremComponents;
 import arathain.vigorem.anim.AnimationComponent;
 import arathain.vigorem.api.anim.Animation;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.Camera;
@@ -62,15 +64,16 @@ public class WorldRendererMixin {
 		}
 	}
 
-	@ModifyVariable(method = "render", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/client/render/Camera;getPos()Lnet/minecraft/util/math/Vec3d;", ordinal = 0))
-	private Vec3d vigorem$modifyMovement(Vec3d value, @Local float tickDelta, @Local Camera camera) {
-		if(client.player != null && !camera.isThirdPerson()) {
-			Animation a = client.player.getComponent(VigoremComponents.ANIMATION).current;
-			if(a != null) {
-				Vec3d offset = a.getCameraOffset(client.player.getYaw(tickDelta), MathHelper.lerp(tickDelta, client.player.prevPitch, client.player.getPitch()), tickDelta);
-				value.add(-offset.x, -offset.y, -offset.z);
-			}
-		}
-		return value;
-	}
+//	@WrapOperation(method = "render", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/client/render/Camera;getPos()Lnet/minecraft/util/math/Vec3d;"))
+//	private Vec3d vigorem$cameraOffset(Camera c, Operation<Vec3d> op, @Local float tickDelta) {
+//		Vec3d value = op.call(c);
+//		if(client.player != null && !c.isThirdPerson()) {
+//			Animation a = client.player.getComponent(VigoremComponents.ANIMATION).current;
+//			if(a != null) {
+//				Vec3d offset = a.getCameraOffset(client.player.getYaw(tickDelta), MathHelper.lerp(tickDelta, client.player.prevPitch, client.player.getPitch()), tickDelta);
+//				value.add(-offset.x, -offset.y, -offset.z);
+//			}
+//		}
+//		return value;
+//	}
 }

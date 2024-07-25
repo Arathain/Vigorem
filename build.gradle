@@ -49,7 +49,7 @@ dependencies {
 	//}
 
 	modImplementation("maven.modrinth:pehkui:${project.pehkui_version}")
-	modImplementation("com.github.Virtuoel:KanosConfig:0.4.0")
+	modImplementation("com.github.Virtuoel:KanosConfig:0.4.1")
 	implementation include ('org.reflections:reflections:0.10.2')
 }
 
