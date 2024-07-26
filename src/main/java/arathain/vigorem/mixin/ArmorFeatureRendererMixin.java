@@ -1,5 +1,6 @@
 package arathain.vigorem.mixin;
 
+import arathain.vigorem.anim.OhThisIsMyFavouriteSong;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.feature.ArmorFeatureRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
@@ -9,7 +10,6 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -22,21 +22,6 @@ public abstract class ArmorFeatureRendererMixin<T extends LivingEntity, M extend
 
 	@Inject(method = "renderArmor(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;Lnet/minecraft/entity/LivingEntity;Lnet/minecraft/entity/EquipmentSlot;ILnet/minecraft/client/render/entity/model/BipedEntityModel;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/entity/feature/ArmorFeatureRenderer;setVisible(Lnet/minecraft/client/render/entity/model/BipedEntityModel;Lnet/minecraft/entity/EquipmentSlot;)V", shift = At.Shift.AFTER))
 	private void vigorem$cursedhijackery(MatrixStack matrices, VertexConsumerProvider vertexConsumers, T entity, EquipmentSlot armorSlot, int light, A model, CallbackInfo ci) {
-		setVisible(model, this.getContextModel());
-	}
-	@Unique
-	protected void setVisible(A bipedModel, BipedEntityModel<?> model) {
-		if(!model.body.visible) {
-			bipedModel.body.visible = false;
-		}
-		if(!model.leftLeg.visible) {
-			bipedModel.leftLeg.visible = false;
-		}
-		if(!model.rightLeg.visible) {
-			bipedModel.rightLeg.visible = false;
-		}
-		if(!model.head.visible) {
-			bipedModel.head.visible = false;
-		}
+		OhThisIsMyFavouriteSong.setVisible(model, this.getContextModel());
 	}
 }
