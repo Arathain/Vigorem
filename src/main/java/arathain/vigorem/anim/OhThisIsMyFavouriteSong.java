@@ -1,5 +1,6 @@
 package arathain.vigorem.anim;
 
+import net.fabricmc.fabric.api.client.rendering.v1.ArmorRenderer;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
 

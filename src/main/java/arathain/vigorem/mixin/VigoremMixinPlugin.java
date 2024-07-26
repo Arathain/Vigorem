@@ -3,6 +3,7 @@ package arathain.vigorem.mixin;
 import arathain.vigorem.Vigorem;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
+import net.minecraft.client.render.entity.feature.HeadFeatureRenderer;
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
@@ -68,7 +69,7 @@ public class VigoremMixinPlugin implements IMixinConfigPlugin {
 				fabric.getAllMods().stream()
 					.flatMap(m -> m.getRootPaths().stream())
 					.flatMap(uncatch(w -> Files.walk(w, FileVisitOption.FOLLOW_LINKS)))
-					.filter(p -> !p.startsWith("/software/bernie/geckolib3") && p.getFileName().toString().endsWith(".class"))
+					.filter(p -> p.getFileName() != null && !p.startsWith("/software/bernie/geckolib3") && p.getFileName().toString().endsWith(".class"))
 					.forEach(p -> {
 						try {
 							ClassNode node = new ClassNode();
@@ -119,7 +120,7 @@ public class VigoremMixinPlugin implements IMixinConfigPlugin {
 			addURL.invoke(getClass().getClassLoader(), generatedMixinJarPath.toUri().toURL());
 		} catch (ClassNotFoundException e) {
 			try {
-				Class<?> KnotClassDelegateClassLoaderAccess = Class.forName("net.fabricmc.loader.impl.launch.knot.KnotClassDelegate.ClassLoaderAccess");
+				Class<?> KnotClassDelegateClassLoaderAccess = Class.forName("net.fabricmc.loader.impl.launch.knot.KnotClassDelegate$ClassLoaderAccess");
 				Method addURL = KnotClassDelegateClassLoaderAccess.getMethod("addUrlFwd", URL.class);
 				addURL.setAccessible(true);
 				addURL.invoke(getClass().getClassLoader(), generatedMixinJarPath.toUri().toURL());

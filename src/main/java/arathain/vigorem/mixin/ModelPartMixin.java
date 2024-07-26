@@ -81,6 +81,9 @@ public class ModelPartMixin implements OffsetModelPart, CrackCocaine {
 		if (this.offsetX != 0F || this.offsetY != 0F || this.offsetZ != 0F) {
 			matrix.translate(this.offsetX/16F, this.offsetY/16F, this.offsetZ/16F);
 		}
+		if(vigorem$headHijinks) {
+			matrix.scale(0, 0, 0);
+		}
 	}
 	@Inject(method = "setAngles", at = @At("TAIL"))
 	public void vigorem$modulus(float pitch, float yaw, float roll, CallbackInfo ci) {
@@ -124,7 +127,7 @@ public class ModelPartMixin implements OffsetModelPart, CrackCocaine {
 
 	@Unique
 	private void act(ModelPart part, MatrixStack matrix) {
-		matrix.translate((double) (part.pivotX / 16.0F), (double) (part.pivotY / 16.0F), (double) (part.pivotZ / 16.0F));
+		matrix.translate(part.pivotX / 16.0F, part.pivotY / 16.0F, part.pivotZ / 16.0F);
 		if (part.roll != 0.0F) {
 			matrix.multiply(RotationAxis.POSITIVE_Z.rotation(part.roll));
 		}
