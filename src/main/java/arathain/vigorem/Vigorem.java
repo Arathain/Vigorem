@@ -3,7 +3,9 @@ package arathain.vigorem;
 import arathain.vigorem.anim.EntityAnimationSyncPacket;
 import arathain.vigorem.api.AnimationPacket;
 import arathain.vigorem.api.init.Animations;
+import arathain.vigorem.api.init.FrameTags;
 import arathain.vigorem.test.BrickShithouseHammerItem;
+import com.google.common.reflect.Reflection;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.fabricmc.fabric.api.item.v1.FabricItem;
@@ -36,6 +38,7 @@ public class Vigorem implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
+		Reflection.initialize(FrameTags.class);
 		Animations.init();
 		if(FabricLoader.getInstance().isDevelopmentEnvironment()) {
 			UseItemCallback.EVENT.register((player, world, hand) -> {

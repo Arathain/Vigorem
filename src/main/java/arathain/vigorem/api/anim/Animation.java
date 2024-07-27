@@ -4,6 +4,8 @@ import arathain.vigorem.Vigorem;
 import arathain.vigorem.anim.EntityQuery;
 import arathain.vigorem.anim.OffsetModelPart;
 import arathain.vigorem.api.Keyframe;
+import arathain.vigorem.api.frametag.FrameTag;
+import arathain.vigorem.api.frametag.FrameTagData;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
@@ -16,11 +18,11 @@ import net.minecraft.util.math.RotationAxis;
 import net.minecraft.util.math.Vec3d;
 import org.joml.Vector3f;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public abstract class Animation {
 	public final Map<String, List<Keyframe>> keyframes;
+	public final List<FrameTagData> frameTagData = new LinkedList<>();
 	private final int length;
 	public int frame = 0;
 	protected final EntityQuery entityQuery = new EntityQuery();
@@ -28,6 +30,11 @@ public abstract class Animation {
 	public Animation(int length, Map<String, List<Keyframe>> keyframes) {
 		this.length = length;
 		this.keyframes = keyframes;
+	}
+
+	public <T extends Animation> T putFrameTags(Collection<FrameTagData> frametags) {
+		frameTagData.addAll(frametags);
+		return (T) this;
 	}
 
 	public boolean shouldTransformHead() {
@@ -79,7 +86,18 @@ public abstract class Animation {
 		return false;
 	}
 
-	public boolean isIFrame() {return false;}
+	public boolean hasFrameTag(FrameTag tag, float delta) {
+		for(FrameTagData data : frameTagData) {
+			if(data.getFrameTag().equals(tag)) {
+				return data.isActive(frame+delta);
+			}
+		}
+		return false;
+	}
+
+	public boolean hasFrameTag(FrameTag tag) {
+		return hasFrameTag(tag, 0);
+	}
 
 	public void rotateGlobal(MatrixStack matrices, float tickDelta) {
 		String part = "global";

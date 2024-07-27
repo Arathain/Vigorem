@@ -6,6 +6,7 @@ import arathain.vigorem.anim.ProperVector3fSupplier;
 import arathain.vigorem.api.anim.Animation;
 import arathain.vigorem.api.Easing;
 import arathain.vigorem.api.Keyframe;
+import arathain.vigorem.api.frametag.FrameTagData;
 import arathain.vigorem.test.SmashAnimation;
 import arathain.vigorem.test.TPoseAnimation;
 import net.minecraft.util.Identifier;
@@ -123,9 +124,10 @@ public class Animations {
 		cache.add(new Keyframe(Easing.QUAD_IN_OUT, Vigorem.ZERO, Vigorem.ZERO, Vigorem.ZERO, Vigorem.ZERO, 33));
 		SMASH_R.put("left_leg", new ArrayList<>(cache));
 		cache.clear();
+		List<FrameTagData> f = List.of(new FrameTagData(FrameTags.INVULNERABILITY, new float[]{15f}));
 
-		put(Vigorem.id("smash_left"), () -> new SmashAnimation(33, SMASH_R, true));
-		put(Vigorem.id("smash_right"), () -> new SmashAnimation(33, SMASH_R, false));
+		put(Vigorem.id("smash_left"), () -> new SmashAnimation(33, SMASH_R, true).putFrameTags(f));
+		put(Vigorem.id("smash_right"), () -> new SmashAnimation(33, SMASH_R, false).putFrameTags(f));
 		put(Vigorem.id("t_pose"), () -> new TPoseAnimation(30, TPOSE_START, 20, TPOSE_END));
 
 		cache.add(new Keyframe(Easing.QUAD_IN, new Vector3f(0f, 2f, 4f), deg(40f, 0f, 0f), Vigorem.ZERO, new Vector3f(0, -12, 0), 0.0f));

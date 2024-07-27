@@ -3,6 +3,7 @@ package arathain.vigorem.mixin;
 import arathain.vigorem.VigoremComponents;
 import arathain.vigorem.anim.AnimationComponent;
 import arathain.vigorem.api.anim.Animation;
+import arathain.vigorem.api.init.FrameTags;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
@@ -23,10 +24,12 @@ public abstract class PlayerEntityMixin extends LivingEntity {
 	@Inject(method = "damage", at = @At("HEAD"), cancellable = true)
 	public void vigorem$damage(DamageSource sauce, float dmg, CallbackInfoReturnable<Boolean> info) {
 		Animation c = this.getComponent(VigoremComponents.ANIMATION).current;
-		if (c != null && c.isIFrame()) {
+		if (c != null && c.hasFrameTag(FrameTags.INVULNERABILITY)) {
 			info.setReturnValue(false);
 		}
 	}
+
+
 
 
 	@Inject(method = "tick", at = @At("TAIL"))
