@@ -89,7 +89,7 @@ for i in data['animations']:
                         easings.append(data['animations'][i]['bones'][k]['scale'][keyframe]['easing'])
                     else:
                         easings.append("linear")
-                v   ecs.append(data['animations'][i]['bones'][k]['scale'][keyframe]['vector'])
+                vecs.append(data['animations'][i]['bones'][k]['scale'][keyframe]['vector'])
             easings.pop(0)
             easings.append("linear")
             for soup in range(len(easings)):
