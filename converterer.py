@@ -33,13 +33,18 @@ for i in data['animations']:
             frameTimes = []
             easings = []
             vecs = []
-            for keyframe in data['animations'][i]['bones'][k]['rotation']:
-                frameTimes.append(float(keyframe))
-                if 'easing' in data['animations'][i]['bones'][k]['rotation'][keyframe]:
-                    easings.append(data['animations'][i]['bones'][k]['rotation'][keyframe]['easing'])
-                else:
-                    easings.append("linear")
-                vecs.append(data['animations'][i]['bones'][k]['rotation'][keyframe]['vector'])
+            if len(data['animations'][i]['bones'][k]['rotation']) == 1:
+                frameTimes.append(0.0);
+                easings.append("linear");
+                vecs.append(data['animations'][i]['bones'][k]['rotation']['vector']);
+            else:
+                for keyframe in data['animations'][i]['bones'][k]['rotation']:
+                    frameTimes.append(float(keyframe))
+                    if 'easing' in data['animations'][i]['bones'][k]['rotation'][keyframe]:
+                        easings.append(data['animations'][i]['bones'][k]['rotation'][keyframe]['easing'])
+                    else:
+                        easings.append("linear")
+                    vecs.append(data['animations'][i]['bones'][k]['rotation'][keyframe]['vector'])
             easings.pop(0)
             easings.append("linear")
             for soup in range(len(easings)):
@@ -49,13 +54,18 @@ for i in data['animations']:
             frameTimes = []
             easings = []
             vecs = []
-            for keyframe in data['animations'][i]['bones'][k]['position']:
-                frameTimes.append(float(keyframe))
-                if 'easing' in data['animations'][i]['bones'][k]['position'][keyframe]:
-                    easings.append(data['animations'][i]['bones'][k]['position'][keyframe]['easing'])
-                else:
-                    easings.append("linear")
-                vecs.append(data['animations'][i]['bones'][k]['position'][keyframe]['vector'])
+            if len(data['animations'][i]['bones'][k]['position']) == 1:
+                frameTimes.append(0.0);
+                easings.append("linear");
+                vecs.append(data['animations'][i]['bones'][k]['position']['vector']);
+            else:
+                for keyframe in data['animations'][i]['bones'][k]['position']:
+                    frameTimes.append(float(keyframe))
+                    if 'easing' in data['animations'][i]['bones'][k]['position'][keyframe]:
+                        easings.append(data['animations'][i]['bones'][k]['position'][keyframe]['easing'])
+                    else:
+                        easings.append("linear")
+                    vecs.append(data['animations'][i]['bones'][k]['position'][keyframe]['vector'])
             easings.pop(0)
             easings.append("linear")
             for soup in range(len(easings)):
@@ -68,13 +78,18 @@ for i in data['animations']:
             frameTimes = []
             easings = []
             vecs = []
-            for keyframe in data['animations'][i]['bones'][k]['scale']:
-                frameTimes.append(float(keyframe))
-                if 'easing' in data['animations'][i]['bones'][k]['scale'][keyframe]:
-                    easings.append(data['animations'][i]['bones'][k]['scale'][keyframe]['easing'])
-                else:
-                    easings.append("linear")
-                vecs.append(data['animations'][i]['bones'][k]['scale'][keyframe]['vector'])
+            if len(data['animations'][i]['bones'][k]['scale']) == 1:
+                frameTimes.append(0.0);
+                easings.append("linear");
+                vecs.append(data['animations'][i]['bones'][k]['scale']['vector']);
+            else:
+                for keyframe in data['animations'][i]['bones'][k]['scale']:
+                    frameTimes.append(float(keyframe))
+                    if 'easing' in data['animations'][i]['bones'][k]['scale'][keyframe]:
+                        easings.append(data['animations'][i]['bones'][k]['scale'][keyframe]['easing'])
+                    else:
+                        easings.append("linear")
+                v   ecs.append(data['animations'][i]['bones'][k]['scale'][keyframe]['vector'])
             easings.pop(0)
             easings.append("linear")
             for soup in range(len(easings)):
